@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="blackjack.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:blackjack.Models"
+    xmlns:vm="clr-namespace:blackjack.ViewModels"
+    x:DataType="vm:MainPageVM">
+
+    <Grid>
+        <VerticalStackLayout
+                Padding="30,80"
+                Spacing="40"
+              >
+            <Label
+                    Text="{x:Static m:Strings.Welcome}"
+                    HorizontalOptions="Center"
+                    TextColor="Black"
+                    FontSize="40"
+                    HorizontalTextAlignment="Center"/>
+
+            <!-- Sign In Button -->
+            <Button
+                    Text="{x:Static m:Strings.SignIn}"
+                    BorderColor="Blue"
+                    BorderWidth="2"
+                    CornerRadius="20"
+                    WidthRequest="250"
+                    HeightRequest="70"
+                    FontSize="22"
+                    BackgroundColor="LightBlue"
+                    HorizontalOptions="Center"
+                    Command="{Binding NavToLoginCommand}"/>
+
+            <!-- Register Button -->
+            <Button
+                    Text="Register"
+                    BorderColor="Blue"
+                    BorderWidth="2"
+                    CornerRadius="20"
+                    WidthRequest="250"
+                    HeightRequest="70"
+                    FontSize="22"
+                    BackgroundColor="LightBlue"
+                    HorizontalOptions="Center" 
+                    Command="{Binding NavToRegisterCommand}"/>
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>
