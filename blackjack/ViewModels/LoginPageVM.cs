@@ -5,14 +5,24 @@ using blackjack.ModelsLogic;
 
 namespace blackjack.ViewModels
 {
-    internal class LogInPageVM
+    internal class LogInPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand LogInCommand { get; }
+        public ICommand ToggleIsPasswordCommand { get; }
+        public bool IsPassword { get; set; } = true;
         public LogInPageVM()
         {
             LogInCommand = new Command(LogIn, CanLogIn);
+            ToggleIsPasswordCommand = new Command(ToggleIsPassword);
         }
+
+        private void ToggleIsPassword()
+        {
+            IsPassword = !IsPassword;
+            OnPropertyChanged(nameof(IsPassword));
+        }
+
         public bool CanLogIn()
         {
             return  !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email);

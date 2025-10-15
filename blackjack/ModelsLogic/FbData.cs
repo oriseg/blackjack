@@ -2,6 +2,7 @@
 using Firebase.Auth.Providers;
 using Plugin.CloudFirestore;
 using blackjack.Models;
+using blackjack.Views;
 
 namespace blackjack.ModelsLogic
 {
@@ -11,8 +12,9 @@ namespace blackjack.ModelsLogic
         {
             try
             {
-                await facl.CreateUserWithEmailAndPasswordAsync(email, password, name).ContinueWith(OnComplete);
+                await facl.CreateUserWithEmailAndPasswordAsync(email, password, name).ContinueWith(OnComplete); 
                 await Shell.Current.DisplayAlert("Success", "User registered!", "OK");
+                await Shell.Current.GoToAsync(nameof(LoginPage));
 
             }
             catch (Exception)
@@ -26,7 +28,8 @@ namespace blackjack.ModelsLogic
             try
             {
                 await facl.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(OnComplete);
-                await Shell.Current.DisplayAlert("Success", "User Signed in!", "OK");
+                await Shell.Current.DisplayAlert("Success", "User Signed in!", "OK"); 
+                await Shell.Current.GoToAsync(nameof(HomePage));
 
             }
             catch (Exception)

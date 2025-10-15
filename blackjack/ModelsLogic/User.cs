@@ -20,7 +20,7 @@ namespace blackjack.ModelsLogic
         {
             Preferences.Set(Keys.NameKey, UserName);
             Preferences.Set(Keys.EmailKey, Email);
-            Preferences.Set(Keys.PasswordKey, Password);
+           
         }
 
         public override void Login()
@@ -32,7 +32,7 @@ namespace blackjack.ModelsLogic
         {
             UserName = Preferences.Get(Keys.NameKey, string.Empty);
             Email = Preferences.Get(Keys.EmailKey, string.Empty);
-            Password = Preferences.Get(Keys.PasswordKey, string.Empty);
+         
         }
     }
 }
