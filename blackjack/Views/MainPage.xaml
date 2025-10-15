@@ -34,7 +34,7 @@
 
             <!-- Register Button -->
             <Button
-                    Text="Register"
+                    Text="{x:Static m:Strings.Register}"
                     BorderColor="Blue"
                     BorderWidth="2"
                     CornerRadius="20"

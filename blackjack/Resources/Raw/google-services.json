@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496131148901",
+    "project_id": "blackjack-3fdb3",
+    "storage_bucket": "blackjack-3fdb3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496131148901:android:fcb0fd85e85758577c0a8c",
+        "android_client_info": {
+          "package_name": "com.me.blackjack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH-W6By77z-hX3_7iZ6z_B6YPEop3tqac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

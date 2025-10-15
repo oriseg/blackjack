@@ -1,15 +1,19 @@
-﻿using blackjack.ModelsLogic;
+﻿using blackjack.Models;
+using blackjack.ModelsLogic;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    internal class RegisterPageVM
+    internal class RegisterPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand RegisterCommand { get; }
+        public ICommand ToggleIsPasswordCommand { get; }
+        public bool IsPassword { get; set; } = true;
         public RegisterPageVM()
         {
             RegisterCommand = new Command(Register, CanRegister);
+            ToggleIsPasswordCommand = new Command(ToggleIsPassword);
         }
         public bool CanRegister()
         {
@@ -47,6 +51,11 @@ namespace blackjack.ViewModels
                 user.Email = value;
                 (RegisterCommand as Command)?.ChangeCanExecute();
             }
+        }
+        private void ToggleIsPassword()
+        {
+            IsPassword = !IsPassword;
+            OnPropertyChanged(nameof(IsPassword));
         }
     }
 }

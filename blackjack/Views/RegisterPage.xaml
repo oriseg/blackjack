@@ -8,17 +8,33 @@
              x:DataType="vm:RegisterPageVM">
     <VerticalStackLayout>
         <Entry
+         Placeholder="{x:Static m:Strings.Email}"
+         Text="{Binding Email}"
+         VerticalOptions="Center" />
+        <Entry
             Placeholder="{x:Static m:Strings.UserName}"
             Text="{Binding UserName}"
             VerticalOptions="Center" />
-        <Entry
-            Placeholder="{x:Static m:Strings.Password}"
-            Text="{Binding Password}"
-            VerticalOptions="Center" />
-        <Entry
-            Placeholder="{x:Static m:Strings.Email}"
-            Text="{Binding Email}"
-            VerticalOptions="Center" />
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+            <Entry
+                        IsPassword="{Binding IsPassword}"
+                        Placeholder="{x:Static m:Strings.Password}"
+                        ReturnType="Done"
+                        Text="{Binding Password}" />
+            <Button
+                        BackgroundColor="Transparent"
+                        BorderWidth="0"
+                        Command="{Binding ToggleIsPasswordCommand}"
+                        FontFamily="MaterialSymbols"
+                        FontSize="24"
+                        HorizontalOptions="End"
+                       
+                        Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
+                        TextColor="Olive"
+                        VerticalOptions="Center"
+                        WidthRequest="80" />
+        </Grid>
+
         <Button Command="{Binding RegisterCommand}" Text="{x:Static m:Strings.Register}" />
     </VerticalStackLayout>
 </ContentPage>

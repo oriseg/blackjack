@@ -15,7 +15,7 @@ namespace blackjack.ViewModels
         }
         public bool CanLogIn()
         {
-            return !string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email);
+            return  !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email);
         }
 
         private void LogIn()
@@ -23,15 +23,6 @@ namespace blackjack.ViewModels
             user.Login();
         }
 
-        public string UserName
-        {
-            get => user.UserName;
-            set
-            {
-                user.UserName = value;
-                (LogInCommand as Command)?.ChangeCanExecute();
-            }
-        }
         public string Password
         {
             get => user.Password;

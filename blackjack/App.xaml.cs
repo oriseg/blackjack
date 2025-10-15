@@ -1,4 +1,7 @@
-﻿namespace blackjack
+﻿using blackjack.ModelsLogic;
+using blackjack.Views;
+
+namespace blackjack
 {
     public partial class App : Application
     {
@@ -7,6 +10,9 @@
             InitializeComponent();
 
             MainPage = new AppShell();
+            //User user = new();
+            //Page page = user.IsRegistered ? new LoginPage() : new RegisterPage();
+            //MainPage = page;
         }
     }
 }

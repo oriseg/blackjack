@@ -9,17 +9,16 @@
 
     <VerticalStackLayout Margin="10" Spacing="15">
         <Entry
-            Placeholder="{x:Static m:Strings.UserName}"
-            Text="{Binding UserName}"
-            VerticalOptions="Center" />
+          Placeholder="{x:Static m:Strings.Email}"
+          Text="{Binding Email}"
+          VerticalOptions="Center" />
         <Entry
-            Placeholder="{x:Static m:Strings.Password}"
-            Text="{Binding Password}"
-            VerticalOptions="Center" />
-        <Entry
-            Placeholder="{x:Static m:Strings.Email}"
-            Text="{Binding Email}"
-            VerticalOptions="Center" />
+          Placeholder="{x:Static m:Strings.Password}"
+          Text="{Binding Password}"
+          VerticalOptions="Center" />
+
+
+
         <Button Command="{Binding LogInCommand}" Text="{x:Static m:Strings.LogIn}" />
     </VerticalStackLayout>
 </ContentPage>

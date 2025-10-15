@@ -6,7 +6,15 @@ public partial class LoginPage : ContentPage
 {
 	public LoginPage()
 	{
-		InitializeComponent();
+		try
+		{
+            InitializeComponent();
+        }
+		catch(Exception ex)
+		{
+            Console.WriteLine(ex.Message);
+        }
+        
         BindingContext = new LogInPageVM();
     }
 }
