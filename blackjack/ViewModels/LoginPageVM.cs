@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Windows.Input;
+using blackjack.Views;
 using blackjack.Models;
 using blackjack.ModelsLogic;
 
@@ -15,6 +16,7 @@ namespace blackjack.ViewModels
         {
             LogInCommand = new Command(LogIn, CanLogIn);
             ToggleIsPasswordCommand = new Command(ToggleIsPassword);
+            user.OnAuthComplete += OnAuthComplete;
         }
 
         private void ToggleIsPassword()
@@ -22,7 +24,16 @@ namespace blackjack.ViewModels
             IsPassword = !IsPassword;
             OnPropertyChanged(nameof(IsPassword));
         }
-
+        private void OnAuthComplete(object? sender, EventArgs e)
+        {
+            if (Application.Current != null)
+            {
+                MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Application.Current.MainPage = new HomePage();
+                });
+            }
+        }
         public bool CanLogIn()
         {
             return  !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email);

@@ -1,19 +1,62 @@
 ﻿using blackjack.Models;
-namespace blackjack.ModelsLogic
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using System.Threading.Tasks; 
+
+namespace blackjack.ModelsLogic 
 {
     internal class User : UserModel
     {
         public override void Register()
         {
-            fbd.CreateUserWithEmailAndPasswordAsync(Email, Password, UserName, OnComplete);
+            fbd.CreateUserWithEmailAndPasswordAsync(Email, Password, UserName, OnCompleteReg);
         }
 
-        private void OnComplete(Task task)
+        private void OnCompleteReg(Task task)
         {
             if (task.IsCompletedSuccessfully)
+            {
                 SaveToPreferences();
+                OnAuthComplete?.Invoke(this, EventArgs.Empty);
+            }
+            
+            else if (task.Exception != null)
+            {
+                string msg = task.Exception.Message;
+                ShowAlert(GetFirebaseErrorMessage(msg));
+
+            } 
             else
-                Shell.Current.DisplayAlert(Strings.CreateUserError, task.Exception?.Message, Strings.Ok);
+            {
+                ShowAlert(Strings.CreateUserError);
+
+            }
+
+
+        }
+
+
+        public override string GetFirebaseErrorMessage(string msg)
+        {
+            if (msg.Contains(Strings.Reason))
+            {
+                if (msg.Contains(Strings.EmailExists))
+                    return Strings.EmailExistsmsg;
+                if (msg.Contains(Strings.InvalidEmailAddress))
+                    return Strings.InvalidEmailAddressmsg;
+                if (msg.Contains(Strings.WeakPassword))
+                    return Strings.WeakPasswordmsg;
+                if (msg.Contains(Strings.UserNotFound))
+                    return Strings.UserNotFoundmsg;
+            }
+            return Strings.UnknownError;
+        }
+        private static void ShowAlert(string msg)
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Toast.Make(msg, ToastDuration.Long).Show();
+            });
         }
 
         private void SaveToPreferences()
@@ -25,9 +68,22 @@ namespace blackjack.ModelsLogic
 
         public override void Login()
         {
-            fbd.SignInWithEmailAndPasswordAsync(Email, Password, OnComplete); 
+            fbd.SignInWithEmailAndPasswordAsync(Email, Password, OnCompleteLogin); 
         }
+        private void OnCompleteLogin(Task task)
+        {
+            if (task.IsCompletedSuccessfully)
+            {
+                SaveToPreferences();
+                OnAuthComplete?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                ShowAlert(Strings.UserLoginError);
+            }
 
+
+        }
         public User()
         {
             UserName = Preferences.Get(Keys.NameKey, string.Empty);

@@ -12,9 +12,8 @@ namespace blackjack.ModelsLogic
         {
             try
             {
-                await facl.CreateUserWithEmailAndPasswordAsync(email, password, name).ContinueWith(OnComplete); 
-                await Shell.Current.DisplayAlert("Success", "User registered!", "OK");
-                await Shell.Current.GoToAsync(nameof(LoginPage));
+                await facl.CreateUserWithEmailAndPasswordAsync(email, password, name).ContinueWith(OnComplete);
+             
 
             }
             catch (Exception)
@@ -28,8 +27,8 @@ namespace blackjack.ModelsLogic
             try
             {
                 await facl.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(OnComplete);
-                await Shell.Current.DisplayAlert("Success", "User Signed in!", "OK"); 
-                await Shell.Current.GoToAsync(nameof(HomePage));
+            
+               
 
             }
             catch (Exception)

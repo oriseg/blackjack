@@ -1,5 +1,6 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
+using blackjack.Views;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
@@ -14,6 +15,17 @@ namespace blackjack.ViewModels
         {
             RegisterCommand = new Command(Register, CanRegister);
             ToggleIsPasswordCommand = new Command(ToggleIsPassword);
+            user.OnAuthComplete += OnAuthComplete;
+        }
+        private void OnAuthComplete(object? sender, EventArgs e)
+        {
+            if (Application.Current != null)
+            {
+                MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Application.Current.MainPage = new LoginPage();
+                });
+            }
         }
         public bool CanRegister()
         {
