@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
+<ContentPage
     x:Class="blackjack.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -8,42 +8,39 @@
     x:DataType="vm:MainPageVM">
 
     <Grid>
-        <VerticalStackLayout
-                Padding="30,80"
-                Spacing="40"
-              >
+        <VerticalStackLayout Padding="30,80" Spacing="40">
             <Label
-                    Text="{x:Static m:Strings.Welcome}"
-                    HorizontalOptions="Center"
-                    TextColor="Black"
-                    FontSize="40"
-                    HorizontalTextAlignment="Center"/>
+                FontSize="40"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="{x:Static m:Strings.Welcome}"
+                TextColor="Black" />
 
-            <!-- Sign In Button -->
+            <!--  Sign In Button  -->
             <Button
-                    Text="{x:Static m:Strings.SignIn}"
-                    BorderColor="Blue"
-                    BorderWidth="2"
-                    CornerRadius="20"
-                    WidthRequest="250"
-                    HeightRequest="70"
-                    FontSize="22"
-                    BackgroundColor="LightBlue"
-                    HorizontalOptions="Center"
-                    Command="{Binding NavToLoginCommand}"/>
+                BackgroundColor="LightBlue"
+                BorderColor="Blue"
+                BorderWidth="2"
+                Command="{Binding NavToLoginCommand}"
+                CornerRadius="20"
+                FontSize="22"
+                HeightRequest="70"
+                HorizontalOptions="Center"
+                Text="{x:Static m:Strings.SignIn}"
+                WidthRequest="250" />
 
-            <!-- Register Button -->
+            <!--  Register Button  -->
             <Button
-                    Text="{x:Static m:Strings.Register}"
-                    BorderColor="Blue"
-                    BorderWidth="2"
-                    CornerRadius="20"
-                    WidthRequest="250"
-                    HeightRequest="70"
-                    FontSize="22"
-                    BackgroundColor="LightBlue"
-                    HorizontalOptions="Center" 
-                    Command="{Binding NavToRegisterCommand}"/>
+                BackgroundColor="LightBlue"
+                BorderColor="Blue"
+                BorderWidth="2"
+                Command="{Binding NavToRegisterCommand}"
+                CornerRadius="20"
+                FontSize="22"
+                HeightRequest="70"
+                HorizontalOptions="Center"
+                Text="{x:Static m:Strings.Register}"
+                WidthRequest="250" />
         </VerticalStackLayout>
 
     </Grid>
