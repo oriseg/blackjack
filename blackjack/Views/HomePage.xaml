@@ -2,16 +2,27 @@
 <ContentPage
     x:Class="blackjack.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:m="clr-namespace:blackjack.Models"
     Title="HomePage">
-    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="40">
+    <Grid>
+        <BoxView Color="#80000000" />
+        <VerticalStackLayout Padding="40" Spacing="30" VerticalOptions="Center" HorizontalOptions="Center">
+            <Label Text="{x:Static m:Strings.blackjack}" Style="{StaticResource HomeTitleStyle}" />
+            <Label Text="{x:Static m:Strings.CreateOrJoin}" Style="{StaticResource HomeSubtitleStyle}" />
+            <BoxView Style="{StaticResource DividerStyle}" />
 
-        <Button Text="Create Game"
-                Command="{Binding CreateGameCommand}"
-                Style="{StaticResource BigButtonStyle}" />
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="40">
+                <Button Text="{x:Static m:Strings.CrateGame}"
+                        Command="{Binding CreateGameCommand}"
+                        Style="{StaticResource BigButtonStyle}" />
 
-        <Button Text="Join Game"
-                Command="{Binding ShowJoinPopupCommand}"
-                Style="{StaticResource BigButtonStyle}" />
-      </StackLayout>
+                <Button Text="{x:Static m:Strings.JoinGame}"
+                        Command="{Binding ShowJoinPopupCommand}"
+                        Style="{StaticResource BigButtonStyle}" />
+            </StackLayout>
+
+          
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

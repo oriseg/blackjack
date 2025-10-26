@@ -22,7 +22,10 @@
         public const string Reason = "Reason";
         public const string UserNotFound = "INVALID_LOGIN_CREDENTIALS";
         public const string UserNotFoundmsg = "User not found.";
-
+        public const string blackjack = "♠ Blackjack ♣";
+        public const string CreateOrJoin = " Create or Join a Game to Begin";
+        public const string CrateGame = "Crate Game";
+        public const string JoinGame = "Join Game";
 
     }
 }
