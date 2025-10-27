@@ -1,48 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="blackjack.MainPage"
+    x:Class="blackjack.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     xmlns:m="clr-namespace:blackjack.Models"
-    xmlns:vm="clr-namespace:blackjack.ViewModels"
-    x:DataType="vm:MainPageVM">
-
+   >
     <Grid>
-        <VerticalStackLayout Padding="30,80" Spacing="40">
-            <Label
-                FontSize="40"
-                HorizontalOptions="Center"
-                HorizontalTextAlignment="Center"
-                Text="{x:Static m:Strings.Welcome}"
-                TextColor="Black" />
+        <BoxView Color="#80000000" />
+        <VerticalStackLayout Padding="40" Spacing="30" VerticalOptions="Center" HorizontalOptions="Center">
+            <Label Text="{x:Static m:Strings.blackjack}" Style="{StaticResource HomeTitleStyle}" />
+            <Label Text="{x:Static m:Strings.CreateOrJoin}" Style="{StaticResource HomeSubtitleStyle}" />
+            <BoxView Style="{StaticResource DividerStyle}" />
 
-            <!--  Sign In Button  -->
-            <Button
-                BackgroundColor="LightBlue"
-                BorderColor="Blue"
-                BorderWidth="2"
-                Command="{Binding NavToLoginCommand}"
-                CornerRadius="20"
-                FontSize="22"
-                HeightRequest="70"
-                HorizontalOptions="Center"
-                Text="{x:Static m:Strings.SignIn}"
-                WidthRequest="250" />
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="40">
+                <Button Text="{x:Static m:Strings.CreateGame}"
+                        Command="{Binding CreateGameCommand}"
+                        Style="{StaticResource BigButtonStyle}" />
 
-            <!--  Register Button  -->
-            <Button
-                BackgroundColor="LightBlue"
-                BorderColor="Blue"
-                BorderWidth="2"
-                Command="{Binding NavToRegisterCommand}"
-                CornerRadius="20"
-                FontSize="22"
-                HeightRequest="70"
-                HorizontalOptions="Center"
-                Text="{x:Static m:Strings.Register}"
-                WidthRequest="250" />
+                <Button Text="{x:Static m:Strings.JoinGame}"
+                        Command="{Binding ShowJoinPopupCommand}"
+                        Style="{StaticResource BigButtonStyle}" />
+            </StackLayout>
+
+
         </VerticalStackLayout>
-
     </Grid>
-
 </ContentPage>

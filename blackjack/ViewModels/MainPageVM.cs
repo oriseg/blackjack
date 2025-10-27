@@ -1,25 +1,36 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
 using blackjack.Views;
-using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui.Views;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    internal partial class MainPageVM : ObservableObject
+    internal class MainPageVM : ObservableObject
     {
-        public ICommand NavToLoginCommand { get => new Command(NavToLogin); }
-         
-        public ICommand NavToRegisterCommand { get => new Command(NavToRegister); }
+        private readonly User user = new();
+        public ICommand ShowJoinPopupCommand { get; private set; }
 
-        private async void NavToRegister()
+        public MainPageVM()
         {
-           await Shell.Current.GoToAsync(nameof(RegisterPage));
+            ShowJoinPopupCommand = new Command(ShowJoinPopup);
         }
 
-        private async void NavToLogin()
+        private void ShowJoinPopup(object obj)
         {
-            await Shell.Current.GoToAsync(nameof(LoginPage));
+            Shell.Current.ShowPopup(new JoinPopup());
+        }
+
+        public string UserName
+        {
+            get => user.UserName;
+            set
+            {
+                user.UserName = value;
+
+            }
         }
     }
+
 }
+

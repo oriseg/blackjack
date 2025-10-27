@@ -1,26 +1,27 @@
 ﻿using blackjack.Models;
-using blackjack.ModelsLogic; 
+using blackjack.ModelsLogic;
+using blackjack.Views;
+using Microsoft.Extensions.Logging;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    internal class HomePageVM : ObservableObject
+    internal partial class HomePageVM : ObservableObject
     {
-        private readonly User user = new(); 
+        public ICommand NavToLoginCommand => new Command(NavToLogin);
 
-      
-        public HomePageVM()
+        public ICommand NavToRegisterCommand => new Command(NavToRegister); 
+
+        private  void NavToRegister()
         {
-         
+            if (Application.Current != null)
+                Application.Current.MainPage = new RegisterPage();
         }
-        public string UserName
+
+        private  void NavToLogin()
         {
-            get => user.UserName;
-            set
-            {
-                user.UserName = value;
-               
-            }
+            if (Application.Current != null)
+                Application.Current.MainPage = new LoginPage();
         }
     }
 }

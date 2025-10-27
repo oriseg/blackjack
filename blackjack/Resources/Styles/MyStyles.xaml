@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Color x:Key="CasinoBackgroundColor">#0E0E0E</Color>
     <Color x:Key="GoldColor">#FFD700</Color>
     <Color x:Key="LightTextColor">#E0E0E0</Color>
     <Color x:Key="SubtleTextColor">#999999</Color>
 
-  
+
     <Style x:Key="HomeTitleStyle" TargetType="Label">
         <Setter Property="FontSize" Value="36" />
         <Setter Property="FontAttributes" Value="Bold" />
@@ -14,12 +13,15 @@
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="Shadow">
             <Setter.Value>
-                <Shadow Brush="#80000000" Radius="8" Offset="0,3" />
+                <Shadow
+                    Brush="#80000000"
+                    Radius="8"
+                    Offset="0,3" />
             </Setter.Value>
         </Setter>
     </Style>
 
-  
+
     <Style x:Key="HomeSubtitleStyle" TargetType="Label">
         <Setter Property="FontSize" Value="18" />
         <Setter Property="TextColor" Value="{StaticResource LightTextColor}" />
@@ -27,7 +29,7 @@
         <Setter Property="Opacity" Value="0.8" />
     </Style>
 
-  
+
     <Style x:Key="DividerStyle" TargetType="BoxView">
         <Setter Property="HeightRequest" Value="2" />
         <Setter Property="WidthRequest" Value="150" />
@@ -36,21 +38,51 @@
         <Setter Property="HorizontalOptions" Value="Center" />
     </Style>
 
-  
-    <Style x:Key="BigButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource GoldColor}" />
-        <Setter Property="TextColor" Value="Black" />
-        <Setter Property="FontSize" Value="20" />
+
+    <Style x:Key="WelcomeLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="40" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="CornerRadius" Value="25" />
-        <Setter Property="HeightRequest" Value="55" />
-        <Setter Property="Shadow">
-            <Setter.Value>
-                <Shadow Brush="#55000000" Radius="10" Offset="0,5" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Margin" Value="0,5" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="TextColor" Value="{StaticResource Black}" />
+        <Setter Property="Margin" Value="0,0,0,20" />
     </Style>
 
+    <!--  Main Button Style  -->
+    <Style x:Key="MainButtonStyle" TargetType="Button">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="HeightRequest" Value="70" />
+        <Setter Property="WidthRequest" Value="250" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Black}" />
+        <Setter Property="BorderColor" Value="{StaticResource Black}" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow
+                    Brush="#40000000"
+                    Opacity="0.4"
+                    Radius="8"
+                    Offset="3,3" />
+            </Setter.Value>
+        </Setter>
+        <!--  Pressed / Hover States  -->
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Black}" />
+                            <Setter Property="Scale" Value="0.96" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

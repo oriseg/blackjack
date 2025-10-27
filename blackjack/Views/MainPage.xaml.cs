@@ -1,6 +1,6 @@
 ﻿using blackjack.ViewModels;
 
-namespace blackjack
+namespace blackjack.Views
 {
     public partial class MainPage : ContentPage
     {

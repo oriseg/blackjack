@@ -30,7 +30,7 @@ namespace blackjack.ViewModels
             {
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    Application.Current.MainPage = new HomePage();
+                    Application.Current.MainPage = new AppShell();
                 });
             }
         }
