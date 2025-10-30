@@ -4,14 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:m="clr-namespace:blackjack.Models"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+    
+    >
     <Border
-        Stroke="White"
+        Stroke="Gold"   
         StrokeThickness="2"
-        StrokeShape="RoundRectangle 15"
+        StrokeShape="RoundRectangle 20"
         Background="Black"
         WidthRequest="300"
-        Padding="20">
+        Padding="60" 
+        >
+
         <VerticalStackLayout BackgroundColor="Black" WidthRequest="300" >
             <Label
             FontAttributes="Bold"
@@ -22,7 +26,7 @@
             <Entry
             Margin="10"
             FontSize="Title"
-            Placeholder="{x:Static m:Strings.EnterCode}"
+            Placeholder="{x:Static m:Strings.EnterCode}" 
             Text="{Binding Code}" />
         </VerticalStackLayout>
     </Border>

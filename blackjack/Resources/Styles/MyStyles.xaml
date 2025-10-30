@@ -44,7 +44,7 @@
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
-        <Setter Property="TextColor" Value="{StaticResource Black}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
         <Setter Property="Margin" Value="0,0,0,20" />
     </Style>
 
@@ -58,7 +58,7 @@
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="TextColor" Value="{StaticResource White}" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="BackgroundColor" Value="{StaticResource Black}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource GoldColor}" />
         <Setter Property="BorderColor" Value="{StaticResource Black}" />
         <Setter Property="Shadow">
             <Setter.Value>

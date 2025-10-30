@@ -6,8 +6,9 @@
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:HomePageVM">
-
+    
     <Grid>
+        <BoxView Color="#80000000" />
         <VerticalStackLayout Padding="30,80" Spacing="40">
 
             <Label

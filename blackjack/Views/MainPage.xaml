@@ -15,11 +15,11 @@
             <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="40">
                 <Button Text="{x:Static m:Strings.CreateGame}"
                         Command="{Binding CreateGameCommand}"
-                        Style="{StaticResource BigButtonStyle}" />
+                        Style="{StaticResource MainButtonStyle}" />
 
                 <Button Text="{x:Static m:Strings.JoinGame}"
                         Command="{Binding ShowJoinPopupCommand}"
-                        Style="{StaticResource BigButtonStyle}" />
+                        Style="{StaticResource MainButtonStyle}" />
             </StackLayout>
 
 

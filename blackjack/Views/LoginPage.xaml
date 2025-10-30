@@ -7,32 +7,41 @@
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:LogInPageVM">
 
+    <Grid>
+        <BoxView BackgroundColor="Black" />
+        <VerticalStackLayout Margin="10" Spacing="15">
 
-    <VerticalStackLayout Margin="10" Spacing="15">
-        <Entry
-            Placeholder="{x:Static m:Strings.Email}"
-            Text="{Binding Email}"
-            VerticalOptions="Center" />
-        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
             <Entry
-                IsPassword="{Binding IsPassword}"
-                Placeholder="{x:Static m:Strings.Password}"
-                ReturnType="Done"
-                Text="{Binding Password}" />
+                Placeholder="{x:Static m:Strings.Email}"
+                Text="{Binding Email}"
+                TextColor="White"
+                VerticalOptions="Center" />
+            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                <Entry
+                    IsPassword="{Binding IsPassword}"
+                    Placeholder="{x:Static m:Strings.Password}"
+                    ReturnType="Done"
+                    Text="{Binding Password}"
+                    TextColor="White" />
+
+                <Button
+                    BackgroundColor="Transparent"
+                    BorderWidth="0"
+                    Command="{Binding ToggleIsPasswordCommand}"
+                    FontFamily="MaterialSymbols"
+                    FontSize="24"
+                    HorizontalOptions="End"
+                    Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
+                    TextColor="Olive"
+                    VerticalOptions="Center"
+                    WidthRequest="80" />
+            </Grid>
+
+
             <Button
-                BackgroundColor="Transparent"
-                BorderWidth="0"
-                Command="{Binding ToggleIsPasswordCommand}"
-                FontFamily="MaterialSymbols"
-                FontSize="24"
-                HorizontalOptions="End"
-                Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
-                TextColor="Olive"
-                VerticalOptions="Center"
-                WidthRequest="80" />
-        </Grid>
-
-
-        <Button Command="{Binding LogInCommand}" Text="{x:Static m:Strings.LogIn}" />
-    </VerticalStackLayout>
+                BackgroundColor="Gold"
+                Command="{Binding LogInCommand}"
+                Text="{x:Static m:Strings.LogIn}" />
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
