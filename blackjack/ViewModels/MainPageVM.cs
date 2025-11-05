@@ -8,28 +8,33 @@ namespace blackjack.ViewModels
 {
     internal class MainPageVM : ObservableObject
     {
-        private readonly User user = new();
-        public ICommand ShowJoinPopupCommand { get; private set; }
+        private readonly Game game = new();
+        public ICommand ShowJoinPopupCommand => new Command(ShowJoinPopup);
+        public ICommand CreateGameCommand => new Command(CreateGame);
 
         public MainPageVM()
         {
-            ShowJoinPopupCommand = new Command(ShowJoinPopup);
+            game.OnGameAdded += OnGameAdded;
+
         }
+        private void CreateGame(object obj)
+        {
+            game.crateGame();
+        }
+
+        private void OnGameAdded(object? sender, bool e)
+        {
+          OnPropertyChanged(nameof(e));
+        }
+
+      
 
         private void ShowJoinPopup(object obj)
         {
             Shell.Current.ShowPopup(new JoinPopup());
         }
 
-        public string UserName
-        {
-            get => user.UserName;
-            set
-            {
-                user.UserName = value;
-
-            }
-        }
+      
     }
 
 }

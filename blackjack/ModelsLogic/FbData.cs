@@ -37,6 +37,13 @@ namespace blackjack.ModelsLogic
             }
             
         }
+        public override string SetDocument(object obj, string collectonName, string id, Action<System.Threading.Tasks.Task> OnComplete)
+        {
+            IDocumentReference dr = string.IsNullOrEmpty(id) ? fdb.Collection(collectonName).Document() : fdb.Collection(collectonName).Document(id); 
+            ((Game)obj).Id = dr.Id;
+            dr.SetAsync(obj).ContinueWith(OnComplete); 
+            return dr.Id;
+        }
         public override string DisplayName
         {
             get
