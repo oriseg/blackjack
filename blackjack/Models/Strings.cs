@@ -26,7 +26,8 @@
         public const string CreateOrJoin = " Create or Join a Game to Begin";
         public const string CreateGame = "Create";
         public const string JoinGame = "Join Game";
-        public const string EnterCode = "Enter Code";
+        public const string EnterCode = "Enter Code"; 
+        public const string SelectPlayerAmount = "players Amount "; 
        
 
     }

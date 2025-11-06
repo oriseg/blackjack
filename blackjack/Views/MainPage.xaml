@@ -2,27 +2,66 @@
 <ContentPage
     x:Class="blackjack.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-    xmlns:m="clr-namespace:blackjack.Models"
-   >
-    <Grid>
-        <BoxView Color="#80000000" />
-        <VerticalStackLayout Padding="40" Spacing="30" VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="{x:Static m:Strings.blackjack}" Style="{StaticResource HomeTitleStyle}" />
-            <Label Text="{x:Static m:Strings.CreateOrJoin}" Style="{StaticResource HomeSubtitleStyle}" />
-            <BoxView Style="{StaticResource DividerStyle}" />
-
-            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="40">
-                <Button Text="{x:Static m:Strings.CreateGame}"
-                        Command="{Binding CreateGameCommand}"
-                        Style="{StaticResource MainButtonStyle}" />
-
-                <Button Text="{x:Static m:Strings.JoinGame}"
-                        Command="{Binding ShowJoinPopupCommand}"
-                        Style="{StaticResource MainButtonStyle}" />
-            </StackLayout>
-
-
-        </VerticalStackLayout>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:blackjack.Models">
+    <Grid
+        Padding="40"
+        BackgroundColor="Black"
+        ColumnDefinitions="*,Auto,Auto,*"
+        ColumnSpacing="20"
+        RowDefinitions="Auto,Auto,100,Auto,100,Auto,Auto"
+        RowSpacing="20">
+        <!--  Title  -->
+        <Label
+            Grid.Row="0"
+            Grid.ColumnSpan="4"
+            HorizontalOptions="Center"
+            Style="{StaticResource HomeTitleStyle}"
+            Text="{x:Static m:Strings.blackjack}" />
+        <!--  Subtitle  -->
+        <Label
+            Grid.Row="1"
+            Grid.ColumnSpan="4"
+            HorizontalOptions="Center"
+            Style="{StaticResource HomeSubtitleStyle}"
+            Text="{x:Static m:Strings.CreateOrJoin}" />
+        <!--  Divider  -->
+        <BoxView
+            Grid.Row="2"
+            Grid.ColumnSpan="4"
+            Style="{StaticResource DividerStyle}" />
+        <!--  Picker with underline  -->
+        <Grid
+            Grid.Row="3"
+            Grid.Column="1"
+            WidthRequest="120">
+            <Picker
+                Title="{x:Static m:Strings.SelectPlayerAmount}"
+                BackgroundColor="Transparent"
+                ItemsSource="{Binding PlayerCountOptions}"
+                SelectedItem="{Binding SelectedPlayerCount}"
+                TextColor="White"
+                TitleColor="White" />
+            <BoxView
+                BackgroundColor="White"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="End" />
+        </Grid>
+        <!--  Create Game Button  -->
+        <Button
+            Grid.Row="3"
+            Grid.Column="2"
+            Command="{Binding CreateGameCommand}"
+            Style="{StaticResource MainButtonStyle}"
+            Text="{x:Static m:Strings.CreateGame}" />
+        <!--  Join Game Button  -->
+        <Button
+            Grid.Row="4"
+            Grid.ColumnSpan="4"
+            Command="{Binding ShowJoinPopupCommand}"
+            HorizontalOptions="Center"
+            Style="{StaticResource SecondaryMainButtonStyle}"
+            Text="{x:Static m:Strings.JoinGame}" />
     </Grid>
 </ContentPage>

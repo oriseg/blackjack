@@ -9,7 +9,7 @@ namespace blackjack.ViewModels
     internal class MainPageVM : ObservableObject
     {
         private readonly Game game = new();
-        public ICommand ShowJoinPopupCommand => new Command(ShowJoinPopup);
+        public ICommand ShowJoinPopupCommand => new Command(ShowJoinPopup); 
         public ICommand CreateGameCommand => new Command(CreateGame);
 
         public MainPageVM()
@@ -32,9 +32,9 @@ namespace blackjack.ViewModels
         private void ShowJoinPopup(object obj)
         {
             Shell.Current.ShowPopup(new JoinPopup());
-        }
+        } 
 
-      
+
     }
 
 }
