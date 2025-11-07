@@ -9,5 +9,10 @@ namespace blackjack.Views
             InitializeComponent();
             BindingContext = new MainPageVM();
         }
+
+        private void Picker_SizeChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

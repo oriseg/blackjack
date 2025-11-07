@@ -2,6 +2,8 @@
 using blackjack.ModelsLogic;
 using blackjack.Views;
 using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
@@ -11,7 +13,8 @@ namespace blackjack.ViewModels
         private readonly Game game = new();
         public ICommand ShowJoinPopupCommand => new Command(ShowJoinPopup); 
         public ICommand CreateGameCommand => new Command(CreateGame);
-
+        public ObservableCollection<PlayerCount>? PlayerCount { get => game.PlayerCount; set => game.PlayerCount = value; }
+        public PlayerCount SelectedPlayerCount { get => game.SelectedPlayerCount; set => game.SelectedPlayerCount = value; }
         public MainPageVM()
         {
             game.OnGameAdded += OnGameAdded;
