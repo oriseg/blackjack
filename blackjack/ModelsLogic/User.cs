@@ -60,7 +60,7 @@ namespace blackjack.ModelsLogic
         }
 
         private void SaveToPreferences()
-        {
+        {          
             Preferences.Set(Keys.NameKey, UserName);
             Preferences.Set(Keys.EmailKey, Email);
            
@@ -74,7 +74,7 @@ namespace blackjack.ModelsLogic
         {
             if (task.IsCompletedSuccessfully)
             {
-                SaveToPreferences();
+                this.IsRegistered = true;
                 OnAuthComplete?.Invoke(this, EventArgs.Empty);
             }
             else

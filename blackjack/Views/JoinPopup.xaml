@@ -27,7 +27,10 @@
             Margin="10"
             FontSize="Title"
             Placeholder="{x:Static m:Strings.EnterCode}" 
-            Text="{Binding Code}" />
+            Text="{Binding Code}" 
+                
+                />
+            
         </VerticalStackLayout>
     </Border>
 </toolkit:Popup>

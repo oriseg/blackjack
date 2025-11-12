@@ -60,12 +60,23 @@
             Style="{StaticResource MainButtonStyle}"
             Text="{x:Static m:Strings.CreateGame}" />
         <!--  Join Game Button  -->
-        <Button
+        <Entry 
             Grid.Row="4"
-            Grid.ColumnSpan="4"
-            Command="{Binding ShowJoinPopupCommand}"
-            HorizontalOptions="Center"
+            Grid.ColumnSpan="4" 
+            Margin="10"
+            FontSize="Title"
+            Placeholder="{x:Static m:Strings.EnterCode}" 
+            Text="{Binding GameCode}"  
+            TextColor="White"
+           
+        />
+        <Button
+            Grid.Row="5"
+            Grid.ColumnSpan="4" 
+            HorizontalOptions="Center" 
+            Command="{Binding JoinGameCommand}"
             Style="{StaticResource SecondaryMainButtonStyle}"
-            Text="{x:Static m:Strings.JoinGame}" />
+            Text="{x:Static m:Strings.JoinGame}" /> 
+        
     </Grid>
 </ContentPage>

@@ -27,8 +27,9 @@ namespace blackjack.ModelsLogic
             try
             {
                 await facl.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(OnComplete);
-            
-               
+
+                Preferences.Set(Keys.NameKey, facl.User.Info.DisplayName);
+                Preferences.Set(Keys.EmailKey, facl.User.Info.Email);
 
             }
             catch (Exception)
@@ -43,6 +44,12 @@ namespace blackjack.ModelsLogic
             ((Game)obj).Id = dr.Id;
             dr.SetAsync(obj).ContinueWith(OnComplete); 
             return dr.Id;
+        }
+        public async void GetDocumentsWhereEqualTo(string collectonName, string fName, object fValue, Action<IQuerySnapshot> OnComplete)
+        {
+            ICollectionReference cr = fdb.Collection(collectonName);
+            IQuerySnapshot qs = await cr.WhereEqualsTo(fName, fValue).GetAsync();
+            OnComplete(qs);
         }
         public override string DisplayName
         {
