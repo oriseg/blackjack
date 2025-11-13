@@ -5,7 +5,8 @@ using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    internal class RegisterPageVM : ObservableObject
+   
+    class RegisterPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand RegisterCommand { get; }

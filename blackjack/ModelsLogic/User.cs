@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace blackjack.ModelsLogic 
 {
-    internal class User : UserModel
+    public class User : UserModel
     {
         public override void Register()
         {

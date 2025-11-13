@@ -2,7 +2,7 @@
 
 namespace blackjack.Models
 {
-    abstract class UserModel
+    public abstract class UserModel
     {
         protected FbData fbd = new();
         public EventHandler? OnAuthComplete;
@@ -13,5 +13,6 @@ namespace blackjack.Models
         public abstract void Register();
         public abstract void Login(); 
         public abstract string GetFirebaseErrorMessage(string msg);
+
     }
 }

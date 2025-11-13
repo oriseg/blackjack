@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    internal partial class HomePageVM : ObservableObject
+    public partial class HomePageVM : ObservableObject
     {
         public ICommand NavToLoginCommand => new Command(NavToLogin);
 

@@ -3,13 +3,15 @@
     x:Class="blackjack.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:m="clr-namespace:blackjack.Models">
+    xmlns:m="clr-namespace:blackjack.Models"
+    xmlns:vm="clr-namespace:blackjack.ViewModels"
+    x:DataType="vm:MainPageVM">
     <Grid
         Padding="40"
         BackgroundColor="Black"
         ColumnDefinitions="*,Auto,Auto,*"
         ColumnSpacing="20"
-        RowDefinitions="Auto,Auto,100,Auto,100,Auto,Auto"
+        RowDefinitions="Auto,Auto,100,Auto,50,Auto,Auto"
         RowSpacing="20">
         <!--  Title  -->
         <Label
@@ -60,23 +62,22 @@
             Style="{StaticResource MainButtonStyle}"
             Text="{x:Static m:Strings.CreateGame}" />
         <!--  Join Game Button  -->
-        <Entry 
-            Grid.Row="4"
-            Grid.ColumnSpan="4" 
+
+        <Entry
+            Grid.Row="5"
+            Grid.ColumnSpan="4"
             Margin="10"
             FontSize="Title"
-            Placeholder="{x:Static m:Strings.EnterCode}" 
-            Text="{Binding GameCode}"  
-            TextColor="White"
-           
-        />
+            Placeholder="{x:Static m:Strings.EnterCode}"
+            Text="{Binding GameCode}"
+            TextColor="White" />
         <Button
-            Grid.Row="5"
-            Grid.ColumnSpan="4" 
-            HorizontalOptions="Center" 
+            Grid.Row="6"
+            Grid.ColumnSpan="4"
             Command="{Binding JoinGameCommand}"
+            HorizontalOptions="Center"
             Style="{StaticResource SecondaryMainButtonStyle}"
-            Text="{x:Static m:Strings.JoinGame}" /> 
-        
+            Text="{x:Static m:Strings.JoinGame}" />
+
     </Grid>
 </ContentPage>

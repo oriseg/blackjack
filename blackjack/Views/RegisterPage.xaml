@@ -14,7 +14,7 @@
 
             <Entry
                 Placeholder="{x:Static m:Strings.Email}"
-                Text="{Binding Email}" 
+                Text="{Binding Email}"
                 TextColor="White"
                 VerticalOptions="Center" />
             <Entry

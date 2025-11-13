@@ -3,7 +3,7 @@ using Plugin.CloudFirestore.Attributes;
 
 namespace blackjack.Models
 {
-    class PlayerCount
+    public class PlayerCount
     { 
         public int Count { get; set; }
         [Ignored]

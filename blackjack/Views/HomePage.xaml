@@ -6,24 +6,22 @@
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:HomePageVM">
-    
+
     <Grid>
         <BoxView Color="#80000000" />
         <VerticalStackLayout Padding="30,80" Spacing="40">
 
-            <Label
-                Text="{x:Static m:Strings.Welcome}"
-                Style="{StaticResource WelcomeLabelStyle}" />
+            <Label Style="{StaticResource WelcomeLabelStyle}" Text="{x:Static m:Strings.Welcome}" />
 
             <Button
-                Text="{x:Static m:Strings.SignIn}"
                 Command="{Binding NavToLoginCommand}"
-                Style="{StaticResource MainButtonStyle}" />
+                Style="{StaticResource MainButtonStyle}"
+                Text="{x:Static m:Strings.SignIn}" />
 
             <Button
-                Text="{x:Static m:Strings.Register}"
                 Command="{Binding NavToRegisterCommand}"
-                Style="{StaticResource MainButtonStyle}" />
+                Style="{StaticResource MainButtonStyle}"
+                Text="{x:Static m:Strings.Register}" />
 
         </VerticalStackLayout>
     </Grid>

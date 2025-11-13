@@ -37,7 +37,13 @@
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="HorizontalOptions" Value="Center" />
     </Style>
-
+    <Style x:Key="DividerStyle2" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="2" />
+        <Setter Property="WidthRequest" Value="300" />
+        <Setter Property="Color" Value="{StaticResource GoldColor}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
 
     <Style x:Key="WelcomeLabelStyle" TargetType="Label">
         <Setter Property="FontSize" Value="40" />

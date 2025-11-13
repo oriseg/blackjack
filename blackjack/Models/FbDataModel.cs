@@ -3,7 +3,7 @@ using Firebase.Auth.Providers;
 using Plugin.CloudFirestore;
 namespace blackjack.Models
 {
-    abstract class FbDataModel
+    public abstract class FbDataModel
     {
         protected FirebaseAuthClient facl;
         protected IFirestore fdb;
@@ -12,6 +12,9 @@ namespace blackjack.Models
         public abstract void CreateUserWithEmailAndPasswordAsync(string email, string password, string name, Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void SignInWithEmailAndPasswordAsync(string email, string password, Action<System.Threading.Tasks.Task> OnComplete);
         public abstract string SetDocument(object obj, string collectonName, string id, Action<System.Threading.Tasks.Task> OnComplete);
+        public abstract void DeleteDocument(string collectonName, string id, Action<Task> OnComplete);
+        public abstract IListenerRegistration AddSnapshotListener(string collectonName, Plugin.CloudFirestore.QuerySnapshotHandler OnChange);
+        public abstract IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange);
         public FbDataModel()
         {
             FirebaseAuthConfig fac = new()

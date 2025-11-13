@@ -5,22 +5,22 @@ using Plugin.CloudFirestore;
 
 namespace blackjack.ModelsLogic
 {
-    internal class Game : GameModel
-    { 
-        internal Game()
+    public class Game : GameModel
+    {
+        public Game()
         {
             HostName = new User().UserName; 
             Created = DateTime.Now; 
             
         }
-        internal Game(int playercount)
+        public Game(int playercount)
         {
             HostName = new User().UserName;
             Created = DateTime.Now;
             PlayerCount = playercount;
 
         }
-        internal void createGame(int PlayerCount)
+        public void createGame(int PlayerCount)
         {
             Game game = new Game(PlayerCount); 
             game.Players.Add(new Player(HostName));
@@ -35,7 +35,7 @@ namespace blackjack.ModelsLogic
         {
             Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete); 
         } 
-        internal void joinGame(string GameCode)
+        public void joinGame(string GameCode)
         { 
 
             Game game = new Game();
@@ -57,6 +57,29 @@ namespace blackjack.ModelsLogic
 
        
             }
+        }
+        private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
+        {
+            Game? updatedGame = snapshot?.ToObject<Game>();
+            if (updatedGame != null)
+            {
+                IsFull = updatedGame.IsFull;
+                OnGameChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public override void AddSnapshotListener()
+        {
+            ilr = fbd.AddSnapshotListener(Keys.GamesCollection, Id, OnChange);
+        }
+
+        public override void RemoveSnapshotListener()
+        {
+            ilr?.Remove();
+            DeleteDocument(OnComplete);
+        }
+        public override void DeleteDocument(Action<Task> OnComplete)
+        {
+            fbd.DeleteDocument(Keys.GamesCollection, Id, OnComplete);
         }
     }
 }

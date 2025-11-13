@@ -1,6 +1,6 @@
 ﻿namespace blackjack.Models
 {
-    internal class Strings
+    public class Strings
     {
         public const string Welcome = "Welcome";
         public const string UserName = "User name";

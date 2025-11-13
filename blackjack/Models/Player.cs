@@ -1,13 +1,13 @@
 ﻿namespace blackjack.Models
 {
-    internal class Player
+    public class Player
     { 
         public string UserName { get; set; } = string.Empty; 
-        internal Player(string username)
+        public Player(string username)
         {
             UserName= username;
         }
-        internal Player()
+        public Player()
         {
 
         }

@@ -6,7 +6,7 @@ using blackjack.Views;
 
 namespace blackjack.ModelsLogic
 {
-    class FbData:FbDataModel
+    public class FbData:FbDataModel
     {   
         public override async void CreateUserWithEmailAndPasswordAsync(string email, string password, string name, Action<System.Threading.Tasks.Task> OnComplete)
         {
@@ -50,6 +50,21 @@ namespace blackjack.ModelsLogic
             ICollectionReference cr = fdb.Collection(collectonName);
             IQuerySnapshot qs = await cr.WhereEqualsTo(fName, fValue).GetAsync();
             OnComplete(qs);
+        }
+        public override IListenerRegistration AddSnapshotListener(string collectonName, Plugin.CloudFirestore.QuerySnapshotHandler OnChange)
+        {
+            ICollectionReference cr = fdb.Collection(collectonName);
+            return cr.AddSnapshotListener(OnChange);
+        }
+        public override IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange)
+        {
+            IDocumentReference cr = fdb.Collection(collectonName).Document(id);
+            return cr.AddSnapshotListener(OnChange);
+        }
+        public override async void DeleteDocument(string collectonName, string id, Action<Task> OnComplete)
+        {
+            IDocumentReference dr = fdb.Collection(collectonName).Document(id);
+            await dr.DeleteAsync().ContinueWith(OnComplete);
         }
         public override string DisplayName
         {

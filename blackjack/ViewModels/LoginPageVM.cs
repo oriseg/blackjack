@@ -6,7 +6,7 @@ using blackjack.ModelsLogic;
 
 namespace blackjack.ViewModels
 {
-    internal class LogInPageVM : ObservableObject
+    public class LogInPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand LogInCommand { get; }
