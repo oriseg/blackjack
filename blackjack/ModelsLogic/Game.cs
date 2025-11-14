@@ -22,13 +22,16 @@ namespace blackjack.ModelsLogic
         }
         public void createGame(int PlayerCount)
         {
-            Game game = new Game(PlayerCount); 
-            game.Players.Add(new Player(HostName));
-            game.SetDocument(OnComplete);
-        }
+            //Game game = new Game(PlayerCount); 
+            //game.Players.Add(new Player(HostName));
+            //game.SetDocument(OnComplete);
+            this.PlayerCount = PlayerCount;
+            this.Players.Add(new Player(HostName));
+            this.SetDocument(OnComplete); 
+
+        } 
         private void OnComplete(Task task)
-        {
-         
+        {  
             OnGameAdded?.Invoke(this, task.IsCompletedSuccessfully);
         }
         public override void SetDocument(Action<System.Threading.Tasks.Task> OnComplete)

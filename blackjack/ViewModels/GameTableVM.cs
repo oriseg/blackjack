@@ -8,14 +8,17 @@ namespace blackjack.ViewModels
         private readonly Game game;
         public GameTableVM (Game game)
         {
-            this.game = game;
+            this.game = game; 
+            game.OnGameAdded+= OnGameAdded;
+        } 
+
+        private void OnGameAdded(object? sender, bool e)
+        {
+           OnPropertyChanged(nameof(Players));
         }
         public ObservableCollection<Player> Players => game.Players;
 
-        private void OnGameChanged(object? sender, EventArgs e)
-        {
-          
-        }
+      
 
     
 

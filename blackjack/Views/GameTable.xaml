@@ -3,13 +3,52 @@
     x:Class="blackjack.Views.GameTable"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="GameTable">
-    <ListView ItemsSource="{Binding Players}">
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <Label Text="{Binding UserName}" />
-                <!--  Assuming Player has a 'Name' property  -->
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+    xmlns:m="clr-namespace:blackjack.Models"
+    xmlns:vm="clr-namespace:blackjack.ViewModels"
+    Title="GameTable"
+    x:DataType="vm:GameTableVM"
+    BackgroundColor="LightGreen">
+
+    <Grid
+        x:Name="TableGrid"
+        BackgroundColor="Transparent"
+        ColumnDefinitions="*,*,*"
+        RowDefinitions="*,*,*">
+
+        <!--  GREEN TABLE IN CENTER  -->
+        <Frame
+            Grid.Row="1"
+            Grid.Column="1"
+            BackgroundColor="DarkGreen"
+            CornerRadius="150"
+            HeightRequest="300"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            WidthRequest="300" />
+
+        <!--  PLAYER CHAIRS  -->
+        <StackLayout BindableLayout.ItemsSource="{Binding Players}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="m:Player">
+                    <Frame
+                        BackgroundColor="Black"
+                        CornerRadius="30"
+                        HeightRequest="60"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="60">
+
+                        <Label
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            Text="{Binding UserName}"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </Frame>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+
+    </Grid>
+
 </ContentPage>
