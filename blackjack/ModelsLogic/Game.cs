@@ -39,10 +39,10 @@ namespace blackjack.ModelsLogic
             Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete); 
         } 
         public void joinGame(string GameCode)
-        { 
-
-            Game game = new Game();
-            fbd.GetDocumentsWhereEqualTo(Keys.GamesCollection, Strings.Id, GameCode, OnComplete);
+        {
+            Player joinedPlayer = new Player(HostName);
+            fbd.UpdateFields(Keys.GamesCollection, GameCode, "Players", FieldValue.ArrayUnion(joinedPlayer), OnComplete);
+           
         }
         private void OnComplete(IQuerySnapshot qs)
         {
@@ -53,14 +53,15 @@ namespace blackjack.ModelsLogic
                 {
                     //if game not full
                     //if username not exist in list
-
-                    IDocumentReference dr = CrossCloudFirestore.Current.Instance.Collection(Keys.GamesCollection).Document(ds.Id);
-                    dr.UpdateAsync("Players", FieldValue.ArrayUnion(new Player(HostName)));
+                    this.Players = game.Players;
+                    this.Created = game.Created;
                 }
 
        
             }
+            OnGameJoined?.Invoke(this, EventArgs.Empty);
         }
+
         private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
         {
             Game? updatedGame = snapshot?.ToObject<Game>();

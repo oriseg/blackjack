@@ -23,7 +23,15 @@ namespace blackjack.ViewModels
         {
             game.OnGameAdded += OnGameAdded;
             game.OnGameChanged += OnGameChanged;
+            game.OnGameJoined += OnGameJoined;
+        }
 
+        private void OnGameJoined(object? sender, EventArgs e)
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Shell.Current.Navigation.PushAsync(new GameTable(game));
+            });
         }
 
         private void OnGameChanged(object? sender, EventArgs e)
@@ -52,10 +60,7 @@ namespace blackjack.ViewModels
             {
                 game.joinGame(GameCode);
             }
-            MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Shell.Current.Navigation.PushAsync(new GameTable(game));
-            });
+       
         } 
 
 

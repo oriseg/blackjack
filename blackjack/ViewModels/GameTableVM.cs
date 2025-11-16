@@ -18,10 +18,6 @@ namespace blackjack.ViewModels
         }
         public ObservableCollection<Player> Players => game.Players;
 
-      
-
-    
-
         public void AddSnapshotListener()
         {
             game.AddSnapshotListener();
