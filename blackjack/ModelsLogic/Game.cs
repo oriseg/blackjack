@@ -1,6 +1,5 @@
 ﻿
 using blackjack.Models;
-using Microsoft.Maui.Storage;
 using Plugin.CloudFirestore;
 
 namespace blackjack.ModelsLogic

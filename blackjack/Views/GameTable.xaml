@@ -14,17 +14,17 @@
         BackgroundColor="Transparent"
         ColumnDefinitions="*,*,*"
         RowDefinitions="*,*,*">
-
         <!--  GREEN TABLE IN CENTER  -->
         <Frame
             Grid.Row="1"
             Grid.Column="1"
             BackgroundColor="DarkGreen"
-            CornerRadius="150"
-            HeightRequest="300"
+            CornerRadius="100"
+            HasShadow="False"
+            HeightRequest="200"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            WidthRequest="300" />
+            WidthRequest="350" />
 
         <!--  PLAYER CHAIRS  -->
         <StackLayout BindableLayout.ItemsSource="{Binding Players}">
