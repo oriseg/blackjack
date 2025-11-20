@@ -22,9 +22,11 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler<bool>? OnGameAdded;
         [Ignored]
-        public EventHandler? OnGameChanged;
+        public EventHandler<bool>? OnGameChanged;
+        [Ignored]
         public EventHandler? OnGameJoined;
         public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
+        [Ignored]
         protected IListenerRegistration? ilr;
         public abstract void RemoveSnapshotListener();
         public abstract void AddSnapshotListener();
