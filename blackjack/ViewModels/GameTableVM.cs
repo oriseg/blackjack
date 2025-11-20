@@ -10,11 +10,17 @@ namespace blackjack.ViewModels
         {
             this.game = game; 
             game.OnGameAdded+= OnGameAdded;
+            game.OnGameChanged+= OnGameChanged;
+            game.AddSnapshotListener();
         } 
 
         private void OnGameAdded(object? sender, bool e)
         {
            OnPropertyChanged(nameof(Players));
+        }
+        private void OnGameChanged(object? sender, bool e)
+        {
+            OnPropertyChanged(nameof(Players));
         }
         public ObservableCollection<Player> Players => game.Players;
 

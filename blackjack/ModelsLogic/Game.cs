@@ -65,10 +65,20 @@ namespace blackjack.ModelsLogic
         private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
         {
             Game? updatedGame = snapshot?.ToObject<Game>();
+            bool gameChanged = false;
             if (updatedGame != null)
             {
-                IsFull = updatedGame.IsFull;
-                OnGameChanged?.Invoke(this, EventArgs.Empty);
+                if(Players.Count != updatedGame.Players.Count)
+                {
+                    Players = updatedGame.Players;
+                    IsFull = updatedGame.IsFull;
+                    gameChanged = true;
+                }
+                if(gameChanged)
+                {
+                    OnGameChanged?.Invoke(this, true);
+                }
+                
             }
         }
         public override void AddSnapshotListener()
