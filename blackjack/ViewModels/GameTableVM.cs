@@ -5,7 +5,8 @@ namespace blackjack.ViewModels
 {
     public partial class GameTableVM : ObservableObject
     {
-        private readonly Game game;
+        private readonly Game game; 
+        private readonly SeatsArrangement seatsArrangement = new();
         public GameTableVM (Game game)
         {
             this.game = game; 
@@ -13,7 +14,11 @@ namespace blackjack.ViewModels
             game.OnGameChanged+= OnGameChanged;
             game.AddSnapshotListener();
         } 
-
+         
+        public void ArrangeSeats(double width, double height)
+        {
+            seatsArrangement.ArrangeSeats(game.Players, width, height);
+        }
         private void OnGameAdded(object? sender, bool e)
         {
            OnPropertyChanged(nameof(Players));

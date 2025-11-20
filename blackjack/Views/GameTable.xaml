@@ -1,54 +1,58 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="blackjack.Views.GameTable"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
-    Title="GameTable"
     x:DataType="vm:GameTableVM"
     BackgroundColor="LightGreen">
 
-    <Grid
-        x:Name="TableGrid"
-        BackgroundColor="Transparent"
-        ColumnDefinitions="*,*,*"
-        RowDefinitions="*,*,*">
-        <!--  GREEN TABLE IN CENTER  -->
+    <AbsoluteLayout x:Name="RootLayout">
+
+        <!--  TABLE  -->
         <Frame
-            Grid.Row="1"
-            Grid.Column="1"
+            x:Name="Table"
+            AbsoluteLayout.LayoutBounds="0.5,0.45,300,160"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
             BackgroundColor="DarkGreen"
             CornerRadius="100"
-            HasShadow="False"
-            HeightRequest="200"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            WidthRequest="350" />
+            HeightRequest="160"
+            WidthRequest="300" />
 
-        <!--  PLAYER CHAIRS  -->
-        <StackLayout BindableLayout.ItemsSource="{Binding Players}">
-            <BindableLayout.ItemTemplate>
+        <!--  DEALER  -->
+        <Frame
+            x:Name="Dealer"
+            AbsoluteLayout.LayoutBounds="0.5,0.1,80,80"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="Maroon"
+            CornerRadius="40"
+            HeightRequest="85"
+            WidthRequest="85">
+            <Label
+                HorizontalOptions="Center"
+                Text="Dealer"
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Frame>
+
+        <!--  PLAYERS (Dynamic)  -->
+        <CollectionView ItemsSource="{Binding Players}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="m:Player">
                     <Frame
                         BackgroundColor="Black"
                         CornerRadius="30"
                         HeightRequest="60"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
                         WidthRequest="60">
-
                         <Label
-                            FontSize="12"
                             HorizontalOptions="Center"
                             Text="{Binding UserName}"
                             TextColor="White"
                             VerticalOptions="Center" />
                     </Frame>
                 </DataTemplate>
-            </BindableLayout.ItemTemplate>
-        </StackLayout>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-    </Grid>
-
+    </AbsoluteLayout>
 </ContentPage>
