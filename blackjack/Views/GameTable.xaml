@@ -2,14 +2,22 @@
     x:Class="blackjack.Views.GameTable"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:blackjack.Converters"
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:GameTableVM"
     BackgroundColor="LightGreen">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:PlayerToRectConverter x:Key="PlayerToRectConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <AbsoluteLayout x:Name="RootLayout">
 
-        <!--  TABLE  -->
+        <!--  Table  -->
+
         <Frame
             x:Name="Table"
             AbsoluteLayout.LayoutBounds="0.5,0.45,300,160"
@@ -17,9 +25,10 @@
             BackgroundColor="DarkGreen"
             CornerRadius="100"
             HeightRequest="160"
-            WidthRequest="300" />
-
-        <!--  DEALER  -->
+            WidthRequest="300"  
+           
+            />
+        <!--  Dealer  -->
         <Frame
             x:Name="Dealer"
             AbsoluteLayout.LayoutBounds="0.5,0.1,80,80"
@@ -35,11 +44,13 @@
                 VerticalOptions="Center" />
         </Frame>
 
-        <!--  PLAYERS (Dynamic)  -->
-        <CollectionView ItemsSource="{Binding Players}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <!--  Players  -->
+        <AbsoluteLayout x:Name="PlayersLayout" BindableLayout.ItemsSource="{Binding Players}">
+            <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="m:Player">
                     <Frame
+                        AbsoluteLayout.LayoutBounds="{Binding ., Converter={StaticResource PlayerToRectConverter}}"
+                        AbsoluteLayout.LayoutFlags="None"
                         BackgroundColor="Black"
                         CornerRadius="30"
                         HeightRequest="60"
@@ -51,8 +62,8 @@
                             VerticalOptions="Center" />
                     </Frame>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </BindableLayout.ItemTemplate>
+        </AbsoluteLayout>
 
     </AbsoluteLayout>
 </ContentPage>

@@ -21,9 +21,6 @@ namespace blackjack.ModelsLogic
         }
         public void createGame(int PlayerCount)
         {
-            //Game game = new Game(PlayerCount); 
-            //game.Players.Add(new Player(HostName));
-            //game.SetDocument(OnComplete);
             this.PlayerCount = PlayerCount;
             this.Players.Add(new Player(HostName));
             this.SetDocument(OnComplete); 
@@ -50,10 +47,14 @@ namespace blackjack.ModelsLogic
                 Game? game = ds.ToObject<Game>();
                 if (game != null)
                 {
-                    //if game not full
-                    //if username not exist in list
                     this.Players = game.Players;
                     this.Created = game.Created;
+                    if (this.Players.Count >= this.maxPlayers)
+                    {
+                        this.IsFull = true;
+                    }
+                    //if username not exist in list
+                 
                 }
 
        

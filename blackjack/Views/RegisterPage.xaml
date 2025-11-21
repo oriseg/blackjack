@@ -7,46 +7,106 @@
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     Title="RegisterPage"
     x:DataType="vm:RegisterPageVM">
-    <Grid>
-        <BoxView Color="Black" />
+    <Grid Padding="30">
 
-        <VerticalStackLayout>
+        <!--  Background gradient effect  -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#1E1E1E" />
+                <GradientStop Offset="1.0" Color="#121212" />
+            </LinearGradientBrush>
+        </Grid.Background>
 
-            <Entry
-                Placeholder="{x:Static m:Strings.Email}"
-                Text="{Binding Email}"
-                TextColor="White"
-                VerticalOptions="Center" />
-            <Entry
-                Placeholder="{x:Static m:Strings.UserName}"
-                Text="{Binding UserName}"
-                TextColor="White"
-                VerticalOptions="Center" />
-            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            Spacing="35"
+            VerticalOptions="Center">
+
+            <!--  Page Title  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="40"
+                HorizontalOptions="Center"
+                Text="{x:Static m:Strings.Register}"
+                TextColor="Gold" />
+
+            <!--  Email Entry  -->
+            <Frame
+                Padding="11"
+                BackgroundColor="#1E1E1E"
+                CornerRadius="15"
+                HasShadow="True"
+                HeightRequest="70"
+                WidthRequest="350">
                 <Entry
-                    IsPassword="{Binding IsPassword}"
-                    Placeholder="{x:Static m:Strings.Password}"
-                    ReturnType="Done"
-                    Text="{Binding Password}"
+                    FontSize="22"
+                    Keyboard="Email"
+                    Placeholder="{x:Static m:Strings.Email}"
+                    PlaceholderColor="Gray"
+                    Text="{Binding Email}"
                     TextColor="White" />
+            </Frame>
 
-                <Button
-                    BackgroundColor="Transparent"
-                    BorderWidth="0"
-                    Command="{Binding ToggleIsPasswordCommand}"
-                    FontFamily="MaterialSymbols"
-                    FontSize="24"
-                    HorizontalOptions="End"
-                    Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
-                    TextColor="Olive"
-                    VerticalOptions="Center"
-                    WidthRequest="80" />
-            </Grid>
+            <!--  Username Entry  -->
+            <Frame
+                Padding="11"
+                BackgroundColor="#1E1E1E"
+                CornerRadius="15"
+                HasShadow="True"
+                HeightRequest="70"
+                WidthRequest="350">
+                <Entry
+                    FontSize="22"
+                    Placeholder="{x:Static m:Strings.UserName}"
+                    PlaceholderColor="Gray"
+                    Text="{Binding UserName}"
+                    TextColor="White" />
+            </Frame>
 
+            <!--  Password Entry with toggle  -->
+            <Frame
+                Padding="0"
+                BackgroundColor="#1E1E1E"
+                CornerRadius="15"
+                HasShadow="True"
+                HeightRequest="70"
+                WidthRequest="350">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry
+                        Margin="15,0"
+                        FontSize="22"
+                        IsPassword="{Binding IsPassword}"
+                        Placeholder="{x:Static m:Strings.Password}"
+                        PlaceholderColor="Gray"
+                        ReturnType="Done"
+                        Text="{Binding Password}"
+                        TextColor="White" />
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        BorderWidth="0"
+                        Command="{Binding ToggleIsPasswordCommand}"
+                        FontFamily="MaterialSymbols"
+                        FontSize="28"
+                        HorizontalOptions="End"
+                        Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
+                        TextColor="Gold"
+                        WidthRequest="60" />
+                </Grid>
+            </Frame>
+
+            <!--  Register Button  -->
             <Button
                 BackgroundColor="Gold"
                 Command="{Binding RegisterCommand}"
-                Text="{x:Static m:Strings.Register}" />
+                CornerRadius="15"
+                FontAttributes="Bold"
+                FontSize="24"
+                HeightRequest="60"
+                Text="{x:Static m:Strings.Register}"
+                TextColor="Black"
+                WidthRequest="350" />
+
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

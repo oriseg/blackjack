@@ -7,18 +7,29 @@ namespace blackjack.ViewModels
     {
         private readonly Game game; 
         private readonly SeatsArrangement seatsArrangement = new();
+        public ObservableCollection<Player> Players => game.Players;
+
         public GameTableVM (Game game)
         {
             this.game = game; 
             game.OnGameAdded+= OnGameAdded;
             game.OnGameChanged+= OnGameChanged;
             game.AddSnapshotListener();
-        } 
-         
-        public void ArrangeSeats(double width, double height)
-        {
-            seatsArrangement.ArrangeSeats(game.Players, width, height);
+            ArrangePlayerSeats();
         }
+
+        private void ArrangePlayerSeats()
+        {
+            double width = 400;
+            double height = 600;
+            seatsArrangement.ArrangeSeats(Players, width, height);
+            foreach (var player in Players)
+            {
+                OnPropertyChanged(nameof(player.X));
+                OnPropertyChanged(nameof(player.Y));
+            }
+        }
+
         private void OnGameAdded(object? sender, bool e)
         {
            OnPropertyChanged(nameof(Players));
@@ -27,7 +38,7 @@ namespace blackjack.ViewModels
         {
             OnPropertyChanged(nameof(Players));
         }
-        public ObservableCollection<Player> Players => game.Players;
+        
 
         public void AddSnapshotListener()
         {

@@ -1,6 +1,6 @@
 ﻿namespace blackjack.Models
 {
-    public class Player
+    public class Player 
     { 
         public string UserName { get; set; } = string.Empty;
         public double X { get; set; }
@@ -13,5 +13,6 @@
         {
 
         }
+   
     }
 }

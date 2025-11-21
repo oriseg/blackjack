@@ -12,12 +12,14 @@ namespace blackjack.Models
         public string HostName { get; set; } = string.Empty;
         public string Id { get; set; } = string.Empty;
         public DateTime Created { get; set; }
-        public bool IsFull { get; set; }
+        public bool IsFull { get; set; } 
         [Ignored]
         public ObservableCollection<PlayerCount>? PlayerCountDL { get; set; } = [new PlayerCount(2), new PlayerCount(3), new PlayerCount(4)];
         public int PlayerCount { get; set; }
         [Ignored]
         public PlayerCount SelectedPlayerCount { get; set; } = new PlayerCount();
+        [Ignored]
+        public int maxPlayers => SelectedPlayerCount.Count;
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         [Ignored]
         public EventHandler<bool>? OnGameAdded;

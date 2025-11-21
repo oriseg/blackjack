@@ -7,41 +7,90 @@
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:LogInPageVM">
 
-    <Grid>
-        <BoxView BackgroundColor="Black" />
-        <VerticalStackLayout Margin="10" Spacing="15">
+    <Grid Padding="30">
 
-            <Entry
-                Placeholder="{x:Static m:Strings.Email}"
-                Text="{Binding Email}"
-                TextColor="White"
-                VerticalOptions="Center" />
-            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+        <!--  Background gradient  -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#1E1E1E" />
+                <GradientStop Offset="1.0" Color="#121212" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            Spacing="35"
+            VerticalOptions="Center">
+
+            <!--  Page Title  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="40"
+                HorizontalOptions="Center"
+                Text="{x:Static m:Strings.LogIn}"
+                TextColor="Gold" />
+
+            <!--  Email Entry  -->
+            <Frame
+                Padding="11"
+                BackgroundColor="#1E1E1E"
+                CornerRadius="15"
+                HasShadow="True"
+                HeightRequest="70"
+                WidthRequest="350">
                 <Entry
-                    IsPassword="{Binding IsPassword}"
-                    Placeholder="{x:Static m:Strings.Password}"
-                    ReturnType="Done"
-                    Text="{Binding Password}"
+                    FontSize="22"
+                    Keyboard="Email"
+                    Placeholder="{x:Static m:Strings.Email}"
+                    PlaceholderColor="Gray"
+                    Text="{Binding Email}"
                     TextColor="White" />
+            </Frame>
 
-                <Button
-                    BackgroundColor="Transparent"
-                    BorderWidth="0"
-                    Command="{Binding ToggleIsPasswordCommand}"
-                    FontFamily="MaterialSymbols"
-                    FontSize="24"
-                    HorizontalOptions="End"
-                    Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
-                    TextColor="Olive"
-                    VerticalOptions="Center"
-                    WidthRequest="80" />
-            </Grid>
+            <!--  Password Entry with toggle  -->
+            <Frame
+                Padding="11"
+                BackgroundColor="#1E1E1E"
+                CornerRadius="15"
+                HasShadow="True"
+                HeightRequest="70"
+                WidthRequest="350">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry
+                        Margin="15,0"
+                        FontSize="22"
+                        IsPassword="{Binding IsPassword}"
+                        Placeholder="{x:Static m:Strings.Password}"
+                        PlaceholderColor="Gray"
+                        ReturnType="Done"
+                        Text="{Binding Password}"
+                        TextColor="White" />
 
+                    <Button
+                        BackgroundColor="Transparent"
+                        BorderWidth="0"
+                        Command="{Binding ToggleIsPasswordCommand}"
+                        FontFamily="MaterialSymbols"
+                        FontSize="28"
+                        HorizontalOptions="End"
+                        Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
+                        TextColor="Gold"
+                        WidthRequest="60" />
+                </Grid>
+            </Frame>
 
+            <!--  Login Button  -->
             <Button
                 BackgroundColor="Gold"
                 Command="{Binding LogInCommand}"
-                Text="{x:Static m:Strings.LogIn}" />
+                CornerRadius="15"
+                FontAttributes="Bold"
+                FontSize="24"
+                HeightRequest="60"
+                Text="{x:Static m:Strings.LogIn}"
+                TextColor="Black"
+                WidthRequest="350" />
+
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
