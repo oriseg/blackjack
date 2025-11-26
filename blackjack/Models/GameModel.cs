@@ -30,6 +30,7 @@ namespace blackjack.Models
         public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
         [Ignored]
         protected IListenerRegistration? ilr;
+        public abstract void ArrangePlayerSeats();
         public abstract void RemoveSnapshotListener();
         public abstract void AddSnapshotListener();
         public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete);

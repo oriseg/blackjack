@@ -15,20 +15,10 @@ namespace blackjack.ViewModels
             game.OnGameAdded+= OnGameAdded;
             game.OnGameChanged+= OnGameChanged;
             game.AddSnapshotListener();
-            ArrangePlayerSeats();
+            game.ArrangePlayerSeats();
         }
 
-        private void ArrangePlayerSeats()
-        {
-            double width = 400;
-            double height = 600;
-            seatsArrangement.ArrangeSeats(Players, width, height);
-            foreach (var player in Players)
-            {
-                OnPropertyChanged(nameof(player.X));
-                OnPropertyChanged(nameof(player.Y));
-            }
-        }
+ 
 
         private void OnGameAdded(object? sender, bool e)
         {

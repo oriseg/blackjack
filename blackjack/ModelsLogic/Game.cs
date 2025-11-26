@@ -1,6 +1,7 @@
 ﻿
 using blackjack.Models;
 using Plugin.CloudFirestore;
+using System.Collections.ObjectModel;
 
 namespace blackjack.ModelsLogic
 {
@@ -21,11 +22,42 @@ namespace blackjack.ModelsLogic
         }
         public void createGame(int PlayerCount)
         {
+            //clean prev game after back
+            this.Id= string.Empty;
+            this.Players.Clear();
+
             this.PlayerCount = PlayerCount;
             this.Players.Add(new Player(HostName));
             this.SetDocument(OnComplete); 
 
-        } 
+        }
+        public override void ArrangePlayerSeats()
+        {
+            double width = 400;
+            double height = 600;
+            ArrangeSeats(width, height);
+
+        }
+        public void ArrangeSeats(double width, double height)
+        {
+            double centerX = width / 2;
+            double centerY = height * 0.55; // slightly below table center
+            double radius = 200; // distance from table center
+
+            int count = Players.Count;
+            double angleStep = 180.0 / (count + 1);
+
+            for (int i = 0; i < count; i++)
+            {
+                // Semicircle from left to right (facing dealer at top)
+                double angle = 0 + angleStep * (i + 1); // 0° = left, 180° = right
+                double rad = angle * Math.PI / 180;
+
+                // MAUI Y axis increases downward
+                Players[i].X = centerX + radius * Math.Cos(rad);
+                Players[i].Y = centerY + radius * Math.Sin(rad);
+            }
+        }
         private void OnComplete(Task task)
         {  
             OnGameAdded?.Invoke(this, task.IsCompletedSuccessfully);
@@ -49,10 +81,9 @@ namespace blackjack.ModelsLogic
                 {
                     this.Players = game.Players;
                     this.Created = game.Created;
-                    if (this.Players.Count >= this.maxPlayers)
-                    {
-                        this.IsFull = true;
-                    }
+                    this.Id = game.Id;
+                    
+   
                     //if username not exist in list
                  
                 }
@@ -72,10 +103,11 @@ namespace blackjack.ModelsLogic
                 {
                     Players = updatedGame.Players;
                     IsFull = updatedGame.IsFull;
-                    gameChanged = true;
+                    gameChanged = true; 
+                    ArrangePlayerSeats();
                 }
                 if(gameChanged)
-                {
+                { 
                     OnGameChanged?.Invoke(this, true);
                 }
                 
