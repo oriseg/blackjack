@@ -1,6 +1,8 @@
 ﻿using blackjack.Models;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using Firebase.Auth;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks; 
 
 namespace blackjack.ModelsLogic 
@@ -23,7 +25,7 @@ namespace blackjack.ModelsLogic
             else if (task.Exception != null)
             {
                 string msg = task.Exception.Message;
-                ShowAlert(GetFirebaseErrorMessage(msg));
+                ShowAlert(fbd.GetFirebaseErrorMessage(msg));
 
             } 
             else
@@ -36,21 +38,7 @@ namespace blackjack.ModelsLogic
         }
 
 
-        public override string GetFirebaseErrorMessage(string msg)
-        {
-            if (msg.Contains(Strings.Reason))
-            {
-                if (msg.Contains(Strings.EmailExists))
-                    return Strings.EmailExistsmsg;
-                if (msg.Contains(Strings.InvalidEmailAddress))
-                    return Strings.InvalidEmailAddressmsg;
-                if (msg.Contains(Strings.WeakPassword))
-                    return Strings.WeakPasswordmsg;
-                if (msg.Contains(Strings.UserNotFound))
-                    return Strings.UserNotFoundmsg;
-            }
-            return Strings.UnknownError;
-        }
+  
         private static void ShowAlert(string msg)
         {
             MainThread.InvokeOnMainThreadAsync(() =>
@@ -79,7 +67,21 @@ namespace blackjack.ModelsLogic
             }
             else
             {
-                ShowAlert(Strings.UserLoginError);
+                if (task.Exception?.InnerExceptions.Count >0)
+                { 
+                    if(task.Exception.InnerExceptions[0] is Firebase.Auth.FirebaseAuthHttpException)
+                    {
+                       string msg = ((FirebaseAuthHttpException)task.Exception.InnerExceptions[0]).ResponseData;
+                        ShowAlert(fbd.GetFirebaseErrorMessage(msg));
+                    }
+                    else
+                    {
+                        ShowAlert(Strings.UserLoginError);
+                    }
+
+                } 
+
+                
             }
 
 

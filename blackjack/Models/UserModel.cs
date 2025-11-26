@@ -12,7 +12,7 @@ namespace blackjack.Models
         public string Password { get; set; } = string.Empty;
         public abstract void Register();
         public abstract void Login(); 
-        public abstract string GetFirebaseErrorMessage(string msg);
+      
 
     }
 }

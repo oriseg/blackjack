@@ -8,5 +8,16 @@
         public const string EmailKey = "Email";
         public const string PasswordKey = "Password"; 
         public const string GamesCollection = "Games";
+        public const string MessageKey = "message";
+        public const string ErrorsKey = "errors";
+        public const string WordsDelimiter = " ";
+        public const string TitleDelimiter = "_";
+        public const string ReasonKey = "reason";
+        public const string UpperCaseDelimiter = "(?=[A-Z])";
+        public const string NewLine = "\n";
+        public const string Apostrophe = "'";
+        public const string Colon = ":";
+        public const string Comma = ",";
+
     }
 }

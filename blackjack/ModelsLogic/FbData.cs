@@ -4,6 +4,7 @@ using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Newtonsoft.Json.Linq;
 using Plugin.CloudFirestore;
+using System.Text.RegularExpressions;
 
 
 namespace blackjack.ModelsLogic
@@ -29,9 +30,12 @@ namespace blackjack.ModelsLogic
             try
             {
                 await facl.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(OnComplete);
-
-                Preferences.Set(Keys.NameKey, facl.User.Info.DisplayName);
-                Preferences.Set(Keys.EmailKey, facl.User.Info.Email);
+                if (facl.User != null)
+                {
+                    Preferences.Set(Keys.NameKey, facl.User.Info.DisplayName);
+                    Preferences.Set(Keys.EmailKey, facl.User.Info.Email);
+                }
+             
 
             }
             catch (Exception)
@@ -39,6 +43,40 @@ namespace blackjack.ModelsLogic
                 await Shell.Current.DisplayAlert("Error", Strings.UserLoginError, "OK");
             }
             
+        }
+        public override string GetFirebaseErrorMessage(string errMessage)
+        {
+            string retMessage;
+            int end, start = errMessage.IndexOf(Keys.MessageKey);
+            if (start > 0)
+            {
+                end = errMessage.IndexOf(Keys.ErrorsKey, start);
+
+                string title = errMessage[(start + Keys.MessageKey.Length)..end]
+                    .Replace(Keys.Apostrophe, string.Empty)
+                    .Replace(Keys.Colon, string.Empty)
+                    .Replace(Keys.Comma, string.Empty)
+                    .Replace("\"", string.Empty)
+                    .Trim();
+                title = string.Join(Keys.WordsDelimiter, title.Split(Keys.TitleDelimiter));
+                string reason = errMessage[(errMessage.IndexOf(Keys.ReasonKey) +
+                    Keys.ReasonKey.Length)..]
+                    .Replace(Keys.Apostrophe, string.Empty)
+                    .Replace(Keys.Colon, string.Empty)
+                    .Replace(Keys.Comma, string.Empty)
+                    .Replace("\"", string.Empty)
+                    .Replace(Keys.NewLine, string.Empty)
+                    .Replace("}", string.Empty)
+                    .Replace("]", string.Empty)
+                    .Trim();
+                
+                
+                retMessage = title + Keys.NewLine + Keys.ReasonKey +
+                Keys.WordsDelimiter + reason;
+            }
+            else
+                retMessage = errMessage;
+            return retMessage;
         }
         public override string SetDocument(object obj, string collectonName, string id, Action<System.Threading.Tasks.Task> OnComplete)
         {
