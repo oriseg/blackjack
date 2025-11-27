@@ -1,7 +1,6 @@
 ﻿
 using blackjack.Models;
 using Plugin.CloudFirestore;
-using System.Collections.ObjectModel;
 
 namespace blackjack.ModelsLogic
 {
@@ -33,8 +32,8 @@ namespace blackjack.ModelsLogic
         }
         public override void ArrangePlayerSeats()
         {
-            double width = 400;
-            double height = 600;
+            double width = Keys.Width;
+            double height = Keys.Length;
             ArrangeSeats(width, height);
 
         }
@@ -43,7 +42,6 @@ namespace blackjack.ModelsLogic
             double centerX = width / 2;
             double centerY = height * 0.55; // slightly below table center
             double radius = 200; // distance from table center
-
             int count = Players.Count;
             double angleStep = 180.0 / (count + 1);
 
@@ -57,6 +55,16 @@ namespace blackjack.ModelsLogic
                 Players[i].X = centerX + radius * Math.Cos(rad);
                 Players[i].Y = centerY + radius * Math.Sin(rad);
             }
+        }
+        public override void NextTurn()
+        {
+            Players[currentIndex].IsCurrentTurn = false;
+
+            currentIndex = (currentIndex + 1) % Players.Count;
+
+            Players[currentIndex].IsCurrentTurn = true;
+
+            OnGameChanged?.Invoke(this, true);
         }
         private void OnComplete(Task task)
         {  
@@ -82,13 +90,8 @@ namespace blackjack.ModelsLogic
                     this.Players = game.Players;
                     this.Created = game.Created;
                     this.Id = game.Id;
-                    
-   
                     //if username not exist in list
-                 
                 }
-
-       
             }
             OnGameJoined?.Invoke(this, EventArgs.Empty);
         }

@@ -8,16 +8,17 @@
     x:DataType="vm:GameTableVM"
     BackgroundColor="LightGreen">
 
+    <!--  Converters  -->
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:PlayerToRectConverter x:Key="PlayerToRectConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <!--  ROOT LAYOUT  -->
     <AbsoluteLayout x:Name="RootLayout">
 
-        <!--  Table  -->
-
+        <!--  TABLE  -->
         <Frame
             x:Name="Table"
             AbsoluteLayout.LayoutBounds="0.5,0.45,300,160"
@@ -25,10 +26,9 @@
             BackgroundColor="DarkGreen"
             CornerRadius="100"
             HeightRequest="160"
-            WidthRequest="300"  
-           
-            />
-        <!--  Dealer  -->
+            WidthRequest="300" />
+
+        <!--  DEALER  -->
         <Frame
             x:Name="Dealer"
             AbsoluteLayout.LayoutBounds="0.5,0.1,80,80"
@@ -37,6 +37,7 @@
             CornerRadius="40"
             HeightRequest="85"
             WidthRequest="85">
+
             <Label
                 HorizontalOptions="Center"
                 Text="Dealer"
@@ -44,26 +45,68 @@
                 VerticalOptions="Center" />
         </Frame>
 
-        <!--  Players  -->
+        <!--  PLAYERS AROUND TABLE  -->
         <AbsoluteLayout x:Name="PlayersLayout" BindableLayout.ItemsSource="{Binding Players}">
+
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="m:Player">
-                    <Frame
+
+                    <Border
                         AbsoluteLayout.LayoutBounds="{Binding ., Converter={StaticResource PlayerToRectConverter}}"
                         AbsoluteLayout.LayoutFlags="None"
                         BackgroundColor="Black"
-                        CornerRadius="30"
-                        HeightRequest="60"
-                        WidthRequest="60">
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 30"
+                        StrokeThickness="2">
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Stroke" Value="Transparent" />
+                                <Setter Property="StrokeThickness" Value="2" />
+                                <Setter Property="BackgroundColor" Value="Black" />
+
+                                <Style.Triggers>
+                                    <!--  Highlight active player  -->
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsCurrentTurn}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="Gold" />
+                                        <Setter Property="Stroke" Value="Red" />
+                                        <Setter Property="StrokeThickness" Value="4" />
+                                        <Setter Property="Shadow">
+                                            <Setter.Value>
+                                                <Shadow
+                                                    Brush="Red"
+                                                    Opacity="0.7"
+                                                    Radius="20"
+                                                    Offset="0,0" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
                         <Label
                             HorizontalOptions="Center"
                             Text="{Binding UserName}"
                             TextColor="White"
                             VerticalOptions="Center" />
-                    </Frame>
+
+                    </Border>
+
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
+
         </AbsoluteLayout>
+
+        <!--  NEXT TURN BUTTON  -->
+        <Button
+            AbsoluteLayout.LayoutBounds="0.5,0.95,140,45"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="DarkBlue"
+            Command="{Binding NextTurnCommand}"
+            CornerRadius="15"
+            Text="Next Turn"
+            TextColor="White" />
 
     </AbsoluteLayout>
 </ContentPage>

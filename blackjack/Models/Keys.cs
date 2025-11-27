@@ -17,7 +17,9 @@
         public const string NewLine = "\n";
         public const string Apostrophe = "'";
         public const string Colon = ":";
-        public const string Comma = ",";
+        public const string Comma = ","; 
+        public const int Width = 400;
+        public const int Length = 600;
 
     }
 }
