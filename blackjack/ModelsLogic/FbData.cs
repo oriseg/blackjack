@@ -105,6 +105,14 @@ namespace blackjack.ModelsLogic
             IQuerySnapshot qs = await cr.WhereEqualsTo(Strings.Id, id).GetAsync();
             OnComplete(qs);
         }
+        public override async void UpdateFields(string collectonName, string id, string fieldName, object value, Action<IQuerySnapshot> OnComplete)
+        {
+            IDocumentReference dr = fdb.Collection(collectonName).Document(id);
+            await dr.UpdateAsync(fieldName, value);
+            ICollectionReference cr = fdb.Collection(collectonName);
+            IQuerySnapshot qs = await cr.WhereEqualsTo(Strings.Id, id).GetAsync();
+            OnComplete(qs);
+        }
         public override IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange)
         {
             IDocumentReference cr = fdb.Collection(collectonName).Document(id);

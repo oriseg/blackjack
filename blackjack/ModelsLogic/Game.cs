@@ -26,7 +26,9 @@ namespace blackjack.ModelsLogic
             this.Players.Clear();
 
             this.PlayerCount = PlayerCount;
-            this.Players.Add(new Player(HostName));
+            Player host = new Player(HostName);
+            host.IsCurrentTurn= true;
+            this.Players.Add(host);
             this.SetDocument(OnComplete); 
 
         }
@@ -58,13 +60,18 @@ namespace blackjack.ModelsLogic
         }
         public override void NextTurn()
         {
-            Players[currentIndex].IsCurrentTurn = false;
+            if (Players.Count == 0)
+                return;
 
-            currentIndex = (currentIndex + 1) % Players.Count;
-
-            Players[currentIndex].IsCurrentTurn = true;
-
-            OnGameChanged?.Invoke(this, true);
+           int nextPlayerIndex = (CurrentPlayerIndex + 1) % Players.Count;
+            
+            // Update the CurrentPlayerIndex field in Firestore.
+            // The last parameter '_ => { }' is a lambda expression (anonymous function) 
+            // that acts as a callback when the update is complete. 
+            // Here it is empty because we don’t need to do anything after the update.
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), nextPlayerIndex, _ => { }); 
+           
+            //OnTurnChanged?.Invoke(this, true);
         }
         private void OnComplete(Task task)
         {  
@@ -97,23 +104,30 @@ namespace blackjack.ModelsLogic
         }
 
         private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
-        {
+        { 
             Game? updatedGame = snapshot?.ToObject<Game>();
-            bool gameChanged = false;
             if (updatedGame != null)
             {
-                if(Players.Count != updatedGame.Players.Count)
+                if (Players.Count != updatedGame.Players.Count)
                 {
                     Players = updatedGame.Players;
                     IsFull = updatedGame.IsFull;
-                    gameChanged = true; 
                     ArrangePlayerSeats();
                 }
-                if(gameChanged)
-                { 
-                    OnGameChanged?.Invoke(this, true);
+
+                if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
+                {
+                    int prevCurrnetPlayerIndex = CurrentPlayerIndex;
+                    CurrentPlayerIndex = updatedGame.CurrentPlayerIndex;                    
+                    Players[CurrentPlayerIndex].IsCurrentTurn = true;
+                    Players[prevCurrnetPlayerIndex].IsCurrentTurn = false;
                 }
                 
+
+                OnTurnChanged?.Invoke(this, true);
+                OnGameChanged?.Invoke(this, true);
+              
+
             }
         }
         public override void AddSnapshotListener()
@@ -129,6 +143,12 @@ namespace blackjack.ModelsLogic
         public override void DeleteDocument(Action<Task> OnComplete)
         {
             fbd.DeleteDocument(Keys.GamesCollection, Id, OnComplete);
+        }
+
+        public bool IsMyTurn()
+        {
+           string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
+           return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
         }
     }
 }

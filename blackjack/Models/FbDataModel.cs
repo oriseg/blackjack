@@ -14,6 +14,7 @@ namespace blackjack.Models
         public abstract string GetFirebaseErrorMessage(string msg);
         public abstract string SetDocument(object obj, string collectonName, string id, Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void DeleteDocument(string collectonName, string id, Action<Task> OnComplete);
+        public abstract void UpdateFields(string collectonName, string id, string fieldName, object value, Action<IQuerySnapshot> OnComplete);
         public abstract void UpdateFields(string collectonName, string id, string fieldName, FieldValue fieldValue, Action<IQuerySnapshot> OnComplete);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, Plugin.CloudFirestore.QuerySnapshotHandler OnChange);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange);

@@ -13,7 +13,7 @@ namespace blackjack.Models
         public string Id { get; set; } = string.Empty;
         public DateTime Created { get; set; }
         public bool IsFull { get; set; }
-        public int currentIndex = 0;
+        public int CurrentPlayerIndex { get; set; }
         [Ignored]
         public ObservableCollection<PlayerCount>? PlayerCountDL { get; set; } = [new PlayerCount(2), new PlayerCount(3), new PlayerCount(4)];
         public int PlayerCount { get; set; }
@@ -27,6 +27,8 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler<bool>? OnGameChanged;
         [Ignored]
+        public EventHandler<bool>? OnTurnChanged;
+        [Ignored]
         public EventHandler? OnGameJoined;
         public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
         [Ignored]
@@ -36,5 +38,7 @@ namespace blackjack.Models
         public abstract void AddSnapshotListener();
         public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete); 
         public abstract void NextTurn();
+
+   
     }
 }
