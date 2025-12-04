@@ -17,7 +17,27 @@
 
     <!--  ROOT LAYOUT  -->
     <AbsoluteLayout x:Name="RootLayout">
+        <Frame
+            AbsoluteLayout.LayoutBounds="0,0,70,50"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="#222"
+            CornerRadius="10"
+            Padding="8"
+            HasShadow="True">
 
+            <HorizontalStackLayout Spacing="6">
+
+                <!-- The ID itself -->
+                <Label
+            Text="{Binding Id}" 
+            TextColor="White"
+            VerticalOptions="Center"
+            FontSize="14"/>
+
+  
+            </HorizontalStackLayout>
+
+        </Frame>
         <!--  TABLE  -->
         <Frame
             x:Name="Table"

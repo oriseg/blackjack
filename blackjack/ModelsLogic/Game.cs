@@ -22,7 +22,9 @@ namespace blackjack.ModelsLogic
         public void createGame(int PlayerCount)
         {
             //clean prev game after back
-            this.Id= string.Empty;
+            int uniqueSeed = Guid.NewGuid().GetHashCode();
+            Random generator = new Random(uniqueSeed);
+            this.Id =  generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
 
             this.PlayerCount = PlayerCount;
@@ -150,5 +152,7 @@ namespace blackjack.ModelsLogic
            string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
            return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
         }
+
+   
     }
 }

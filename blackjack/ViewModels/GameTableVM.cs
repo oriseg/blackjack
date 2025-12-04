@@ -1,6 +1,7 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
 using System.Collections.ObjectModel;
+using System.Reflection.Metadata;
 using System.Windows.Input;
 namespace blackjack.ViewModels
 {
@@ -9,7 +10,8 @@ namespace blackjack.ViewModels
         private readonly Game game; 
         public ObservableCollection<Player> Players => game.Players;
         public ICommand NextTurnCommand => new Command(NextTurn);
-        public bool IsMyTurn => game.IsMyTurn(); 
+        public bool IsMyTurn => game.IsMyTurn();
+        public string Id => game.Id;
 
 
 
@@ -30,6 +32,7 @@ namespace blackjack.ViewModels
             OnPropertyChanged(nameof(Players));
         }
 
+
         private void NextTurn()
         {
             game.NextTurn();
@@ -45,13 +48,15 @@ namespace blackjack.ViewModels
         {
             UpdatePlayersTurnState();
             OnPropertyChanged(nameof(Players));
+      
+       
         }
         private void OnGameChanged(object? sender, bool e)
         {
             OnPropertyChanged(nameof(Players));
+       
+     
         }
-        
-
         public void AddSnapshotListener()
         {
             game.AddSnapshotListener();
