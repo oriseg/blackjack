@@ -18,40 +18,37 @@
     <!--  ROOT LAYOUT  -->
     <AbsoluteLayout x:Name="RootLayout">
         <Frame
-            AbsoluteLayout.LayoutBounds="0,0,70,50"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            BackgroundColor="#222"
-            CornerRadius="10"
             Padding="8"
+            AbsoluteLayout.LayoutBounds="1,0,67,50"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="Green"
+            CornerRadius="10"
             HasShadow="True">
-
-            <HorizontalStackLayout Spacing="6">
-
-                <!-- The ID itself -->
-                <Label
-            Text="{Binding Id}" 
-            TextColor="White"
-            VerticalOptions="Center"
-            FontSize="14"/>
-
-  
-            </HorizontalStackLayout>
-
+            <!--  The ID itself  -->
+            <Label
+                FontSize="14"
+                Text="{Binding Id}"
+                TextColor="White"
+                VerticalOptions="Center" />
         </Frame>
+        <!--  WaitingMessage  -->
+        <Label
+            FontSize="20"
+            HorizontalOptions="Center"
+            Text="{Binding WaitingMessage}"
+            VerticalOptions="Center" />
         <!--  TABLE  -->
         <Frame
             x:Name="Table"
-            AbsoluteLayout.LayoutBounds="0.5,0.45,300,160"
+            AbsoluteLayout.LayoutBounds="0.5,0.45,400,160"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             BackgroundColor="DarkGreen"
-            CornerRadius="100"
-            HeightRequest="160"
-            WidthRequest="300" />
+            CornerRadius="100" />
 
         <!--  DEALER  -->
         <Frame
             x:Name="Dealer"
-            AbsoluteLayout.LayoutBounds="0.5,0.1,80,80"
+            AbsoluteLayout.LayoutBounds="0.5,0.25,80,80"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             BackgroundColor="Maroon"
             CornerRadius="40"
@@ -87,7 +84,10 @@
 
                                 <Style.Triggers>
                                     <!--  Highlight active player  -->
-                                    <DataTrigger TargetType="Border" Binding="{Binding IsCurrentTurn}" Value="True">
+                                    <DataTrigger
+                                        Binding="{Binding IsCurrentTurn}"
+                                        TargetType="Border"
+                                        Value="True">
                                         <Setter Property="BackgroundColor" Value="Gold" />
                                         <Setter Property="Stroke" Value="Red" />
                                         <Setter Property="StrokeThickness" Value="4" />
@@ -108,7 +108,7 @@
                         <Label
                             HorizontalOptions="Center"
                             Text="{Binding UserName}"
-                            TextColor="White"
+                            TextColor="Black"
                             VerticalOptions="Center" />
 
                     </Border>
@@ -119,13 +119,13 @@
         </AbsoluteLayout>
 
         <!--  NEXT TURN BUTTON  -->
-        <Button 
-            IsEnabled="{Binding IsMyTurn}"
+        <Button
             AbsoluteLayout.LayoutBounds="0.5,0.95,140,45"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             BackgroundColor="DarkBlue"
             Command="{Binding NextTurnCommand}"
             CornerRadius="15"
+            IsEnabled="{Binding IsMyTurn}"
             Text="Next Turn"
             TextColor="White" />
 

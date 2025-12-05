@@ -29,6 +29,8 @@
         public const string EnterCode = "Enter Code"; 
         public const string SelectPlayerAmount = "players\n Amount "; 
         public const string Id = "Id";
+        public const string Waitingfor = "Waiting for";
+        public const string players = "players...";
 
 
 

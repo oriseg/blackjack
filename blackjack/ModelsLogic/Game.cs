@@ -19,7 +19,7 @@ namespace blackjack.ModelsLogic
             PlayerCount = playercount;
 
         }
-        public void createGame(int PlayerCount)
+        public void CreateGame(int PlayerCount)
         {
             //clean prev game after back
             int uniqueSeed = Guid.NewGuid().GetHashCode();

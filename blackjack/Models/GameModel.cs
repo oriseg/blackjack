@@ -19,8 +19,6 @@ namespace blackjack.Models
         public int PlayerCount { get; set; }
         [Ignored]
         public PlayerCount SelectedPlayerCount { get; set; } = new PlayerCount();
-        [Ignored]
-        public int MaxPlayers => SelectedPlayerCount.Count;
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         [Ignored]
         public EventHandler<bool>? OnGameAdded;

@@ -22,7 +22,6 @@ namespace blackjack.ViewModels
         public MainPageVM()
         {
             game.OnGameAdded += OnGameAdded;
-            //game.OnGameChanged += OnGameChanged;
             game.OnGameJoined += OnGameJoined;
         }
 
@@ -34,14 +33,9 @@ namespace blackjack.ViewModels
             });
         }
 
-        //private void OnGameChanged(object? sender, EventArgs e)
-        //{
-          
-        //}
-
         private void CreateGame(object obj)
         {
-            game.createGame(SelectedPlayerCount.Count);
+            game.CreateGame(SelectedPlayerCount.Count);
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 Shell.Current.Navigation.PushAsync(new GameTable(game));
