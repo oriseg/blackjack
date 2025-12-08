@@ -17,6 +17,8 @@
 
     <!--  ROOT LAYOUT  -->
     <AbsoluteLayout x:Name="RootLayout">
+
+        <!--  Game ID  -->
         <Frame
             Padding="8"
             AbsoluteLayout.LayoutBounds="1,0,67,50"
@@ -24,20 +26,21 @@
             BackgroundColor="Green"
             CornerRadius="10"
             HasShadow="True">
-            <!--  The ID itself  -->
             <Label
                 FontSize="14"
                 Text="{Binding Id}"
                 TextColor="White"
                 VerticalOptions="Center" />
         </Frame>
-        <!--  WaitingMessage  -->
+
+        <!--  Waiting message  -->
         <Label
             FontSize="20"
             HorizontalOptions="Center"
             Text="{Binding WaitingMessage}"
             VerticalOptions="Center" />
-        <!--  TABLE  -->
+
+        <!--  Table  -->
         <Frame
             x:Name="Table"
             AbsoluteLayout.LayoutBounds="0.5,0.45,400,160"
@@ -45,7 +48,7 @@
             BackgroundColor="DarkGreen"
             CornerRadius="100" />
 
-        <!--  DEALER  -->
+        <!--  Dealer  -->
         <Frame
             x:Name="Dealer"
             AbsoluteLayout.LayoutBounds="0.5,0.25,80,80"
@@ -54,7 +57,6 @@
             CornerRadius="40"
             HeightRequest="85"
             WidthRequest="85">
-
             <Label
                 HorizontalOptions="Center"
                 Text="Dealer"
@@ -62,56 +64,88 @@
                 VerticalOptions="Center" />
         </Frame>
 
-        <!--  PLAYERS AROUND TABLE  -->
+        <!--  PLAYERS AROUND THE TABLE  -->
         <AbsoluteLayout x:Name="PlayersLayout" BindableLayout.ItemsSource="{Binding Players}">
 
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="m:Player">
 
-                    <Border
+                    <!--  Player wrapper: circle + cards  -->
+                    <VerticalStackLayout
                         AbsoluteLayout.LayoutBounds="{Binding ., Converter={StaticResource PlayerToRectConverter}}"
                         AbsoluteLayout.LayoutFlags="None"
-                        BackgroundColor="Black"
-                        Stroke="Transparent"
-                        StrokeShape="RoundRectangle 30"
-                        StrokeThickness="2">
+                        HorizontalOptions="Center"
+                        Spacing="5"
+                        VerticalOptions="Center">
 
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Stroke" Value="Transparent" />
-                                <Setter Property="StrokeThickness" Value="2" />
-                                <Setter Property="BackgroundColor" Value="Black" />
-
-                                <Style.Triggers>
-                                    <!--  Highlight active player  -->
-                                    <DataTrigger
-                                        Binding="{Binding IsCurrentTurn}"
-                                        TargetType="Border"
-                                        Value="True">
-                                        <Setter Property="BackgroundColor" Value="Gold" />
-                                        <Setter Property="Stroke" Value="Red" />
-                                        <Setter Property="StrokeThickness" Value="4" />
-                                        <Setter Property="Shadow">
-                                            <Setter.Value>
-                                                <Shadow
-                                                    Brush="Red"
-                                                    Opacity="0.7"
-                                                    Radius="20"
-                                                    Offset="0,0" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-
-                        <Label
+                        <!--  Player circle  -->
+                        <Border
+                            BackgroundColor="Black"
+                            HeightRequest="70"
                             HorizontalOptions="Center"
-                            Text="{Binding UserName}"
-                            TextColor="Black"
-                            VerticalOptions="Center" />
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 30"
+                            StrokeThickness="2"
+                            VerticalOptions="Center"
+                            WidthRequest="70">
 
-                    </Border>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Stroke" Value="Transparent" />
+                                    <Setter Property="StrokeThickness" Value="2" />
+                                    <Setter Property="BackgroundColor" Value="Black" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsCurrentTurn}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="Gold" />
+                                            <Setter Property="Stroke" Value="Red" />
+                                            <Setter Property="StrokeThickness" Value="4" />
+                                            <Setter Property="Shadow">
+                                                <Setter.Value>
+                                                    <Shadow
+                                                        Brush="Red"
+                                                        Opacity="0.7"
+                                                        Radius="20"
+                                                        Offset="0,0" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <!--  Username inside circle  -->
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="{Binding UserName}"
+                                TextColor="Black"
+                                VerticalOptions="Center" />
+
+                        </Border>
+
+                        <!--  Cards under circle  -->
+                        <HorizontalStackLayout
+                            BindableLayout.ItemsSource="{Binding Hand}"
+                            HorizontalOptions="Center"
+                            Spacing="-30"
+                            VerticalOptions="Center">
+
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Image
+                                        Aspect="AspectFit"
+                                        HeightRequest="90"
+                                        Source="{Binding .}"
+                                        WidthRequest="70" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
 
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
@@ -127,6 +161,16 @@
             CornerRadius="15"
             IsEnabled="{Binding IsMyTurn}"
             Text="Next Turn"
+            TextColor="White" />
+
+        <!--  DEAL BUTTON  -->
+        <Button
+            AbsoluteLayout.LayoutBounds="0.95,0.46,60,45"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="DarkOrange"
+            Command="{Binding DealCardsCommand}"
+            CornerRadius="15"
+            Text="Deal"
             TextColor="White" />
 
     </AbsoluteLayout>

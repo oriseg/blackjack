@@ -8,12 +8,15 @@ namespace blackjack.ViewModels
     {
         private readonly Game game; 
         public ObservableCollection<Player> Players => game.Players;
-        public ICommand NextTurnCommand => new Command(NextTurn);
         public bool IsMyTurn => game.IsMyTurn();
         public string Id => game.Id;
         public int SelectedPlayerCount => game.SelectedPlayerCount.Count;
         public int CurrentPlayerCount => Players.Count;
         public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
+        public ICommand NextTurnCommand => new Command(NextTurn);
+        public ICommand DealCardsCommand => new Command(DealCards);
+
+
 
         public GameTableVM (Game game)
         {
@@ -31,7 +34,10 @@ namespace blackjack.ViewModels
             OnPropertyChanged(nameof(IsMyTurn));
             OnPropertyChanged(nameof(Players));
         }
-
+        private void DealCards()
+        {
+            game.DealCards();
+        }
         private void NextTurn()
         {
             game.NextTurn();
@@ -47,12 +53,14 @@ namespace blackjack.ViewModels
         {
             UpdatePlayersTurnState();
             OnPropertyChanged(nameof(Players));
+            OnPropertyChanged(nameof(SelectedPlayerCount));
             OnPropertyChanged(nameof(WaitingMessage));
 
         }
         private void OnGameChanged(object? sender, bool e)
         {
             OnPropertyChanged(nameof(Players));
+            OnPropertyChanged(nameof(SelectedPlayerCount));
             OnPropertyChanged(nameof(WaitingMessage));
 
 

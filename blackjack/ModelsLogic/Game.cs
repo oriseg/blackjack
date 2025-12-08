@@ -8,9 +8,9 @@ namespace blackjack.ModelsLogic
     {
         public Game()
         {
-            HostName = new User().UserName; 
-            Created = DateTime.Now; 
-            
+            HostName = new User().UserName;
+            Created = DateTime.Now;
+
         }
         public Game(int playercount)
         {
@@ -24,14 +24,14 @@ namespace blackjack.ModelsLogic
             //clean prev game after back
             int uniqueSeed = Guid.NewGuid().GetHashCode();
             Random generator = new Random(uniqueSeed);
-            this.Id =  generator.Next(0, 1000000).ToString("D6");
+            this.Id = generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
 
             this.PlayerCount = PlayerCount;
             Player host = new Player(HostName);
-            host.IsCurrentTurn= true;
+            host.IsCurrentTurn = true;
             this.Players.Add(host);
-            this.SetDocument(OnComplete); 
+            this.SetDocument(OnComplete);
 
         }
         public override void ArrangePlayerSeats()
@@ -65,29 +65,29 @@ namespace blackjack.ModelsLogic
             if (Players.Count == 0)
                 return;
 
-           int nextPlayerIndex = (CurrentPlayerIndex + 1) % Players.Count;
-            
+            int nextPlayerIndex = (CurrentPlayerIndex + 1) % Players.Count;
+
             // Update the CurrentPlayerIndex field in Firestore.
             // The last parameter '_ => { }' is a lambda expression (anonymous function) 
             // that acts as a callback when the update is complete. 
             // Here it is empty because we don’t need to do anything after the update.
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), nextPlayerIndex, _ => { }); 
-           
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), nextPlayerIndex, _ => { });
+
             //OnTurnChanged?.Invoke(this, true);
         }
         private void OnComplete(Task task)
-        {  
+        {
             OnGameAdded?.Invoke(this, task.IsCompletedSuccessfully);
         }
         public override void SetDocument(Action<System.Threading.Tasks.Task> OnComplete)
         {
-            Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete); 
-        } 
+            Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete);
+        }
         public void joinGame(string GameCode)
         {
             Player joinedPlayer = new Player(HostName);
             fbd.UpdateFields(Keys.GamesCollection, GameCode, "Players", FieldValue.ArrayUnion(joinedPlayer), OnComplete);
-           
+
         }
         private void OnComplete(IQuerySnapshot qs)
         {
@@ -106,7 +106,7 @@ namespace blackjack.ModelsLogic
         }
 
         private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
-        { 
+        {
             Game? updatedGame = snapshot?.ToObject<Game>();
             if (updatedGame != null)
             {
@@ -114,21 +114,22 @@ namespace blackjack.ModelsLogic
                 {
                     Players = updatedGame.Players;
                     IsFull = updatedGame.IsFull;
+                    SelectedPlayerCount = updatedGame.SelectedPlayerCount;
                     ArrangePlayerSeats();
                 }
 
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
-                    CurrentPlayerIndex = updatedGame.CurrentPlayerIndex;                    
+                    CurrentPlayerIndex = updatedGame.CurrentPlayerIndex;
                     Players[CurrentPlayerIndex].IsCurrentTurn = true;
                     Players[prevCurrnetPlayerIndex].IsCurrentTurn = false;
                 }
-                
+
 
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
-              
+
 
             }
         }
@@ -149,10 +150,23 @@ namespace blackjack.ModelsLogic
 
         public bool IsMyTurn()
         {
-           string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
-           return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
+            string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
+            return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
         }
-
-   
+        public override void DealCards()
+        { 
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (var player in Players)
+                {
+                    int suit = rnd.Next(0, 4);   // 4 suits
+                    int rank = rnd.Next(0, 13); // 13 ranks per suit
+                    string filename = CardModel.cardsImage[suit, rank];
+                    string path = filename;
+                    player.Hand.Add(path);
+                }
+            }
+      
+        }
     }
 }
