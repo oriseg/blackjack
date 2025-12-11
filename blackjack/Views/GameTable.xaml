@@ -12,6 +12,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:PlayerToRectConverter x:Key="PlayerToRectConverter" />
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -100,7 +101,7 @@
                                             Binding="{Binding IsCurrentTurn}"
                                             TargetType="Border"
                                             Value="True">
-                                            <Setter Property="BackgroundColor" Value="Gold" />
+                                            <Setter Property="BackgroundColor" Value="Black" />
                                             <Setter Property="Stroke" Value="Red" />
                                             <Setter Property="StrokeThickness" Value="4" />
                                             <Setter Property="Shadow">
@@ -121,7 +122,7 @@
                             <Label
                                 HorizontalOptions="Center"
                                 Text="{Binding UserName}"
-                                TextColor="Black"
+                                TextColor="LightBlue"
                                 VerticalOptions="Center" />
 
                         </Border>
@@ -159,7 +160,6 @@
             BackgroundColor="DarkBlue"
             Command="{Binding NextTurnCommand}"
             CornerRadius="15"
-            IsEnabled="{Binding IsMyTurn}"
             Text="Next Turn"
             TextColor="White" />
 

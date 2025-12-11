@@ -10,9 +10,10 @@ namespace blackjack.ViewModels
         public ObservableCollection<Player> Players => game.Players;
         public bool IsMyTurn => game.IsMyTurn();
         public string Id => game.Id;
-        public int SelectedPlayerCount => game.SelectedPlayerCount.Count;
+        public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
-        public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
+        public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}"; 
+        public bool CanStart => CurrentPlayerCount >= SelectedPlayerCount;
         public ICommand NextTurnCommand => new Command(NextTurn);
         public ICommand DealCardsCommand => new Command(DealCards);
 

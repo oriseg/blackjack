@@ -19,7 +19,7 @@ namespace blackjack.Models
         [Ignored]
         public ObservableCollection<PlayerCount>? PlayerCountDL { get; set; } = [new PlayerCount(2), new PlayerCount(3), new PlayerCount(4)];
         public int PlayerCount { get; set; }
-    
+        [Ignored]
         public PlayerCount SelectedPlayerCount { get; set; } = new PlayerCount();
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         [Ignored]

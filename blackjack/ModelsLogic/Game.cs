@@ -99,6 +99,7 @@ namespace blackjack.ModelsLogic
                     this.Players = game.Players;
                     this.Created = game.Created;
                     this.Id = game.Id;
+                    this.PlayerCount = game.PlayerCount;
                     //if username not exist in list
                 }
             }
@@ -114,7 +115,6 @@ namespace blackjack.ModelsLogic
                 {
                     Players = updatedGame.Players;
                     IsFull = updatedGame.IsFull;
-                    SelectedPlayerCount = updatedGame.SelectedPlayerCount;
                     ArrangePlayerSeats();
                 }
 
