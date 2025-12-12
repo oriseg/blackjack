@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Windows.Input;
-using blackjack.Views;
-using blackjack.Models;
+﻿using blackjack.Models;
 using blackjack.ModelsLogic;
+using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {

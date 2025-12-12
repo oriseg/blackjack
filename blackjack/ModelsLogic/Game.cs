@@ -99,7 +99,8 @@ namespace blackjack.ModelsLogic
                     this.Players = game.Players;
                     this.Created = game.Created;
                     this.Id = game.Id;
-                    this.PlayerCount = game.PlayerCount;
+                    this.PlayerCount = game.PlayerCount; 
+                  
                     //if username not exist in list
                 }
             }
@@ -111,13 +112,16 @@ namespace blackjack.ModelsLogic
             Game? updatedGame = snapshot?.ToObject<Game>();
             if (updatedGame != null)
             {
+
                 if (Players.Count != updatedGame.Players.Count)
                 {
                     Players = updatedGame.Players;
                     IsFull = updatedGame.IsFull;
                     ArrangePlayerSeats();
                 }
+              
 
+               
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
@@ -154,19 +158,31 @@ namespace blackjack.ModelsLogic
             return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
         }
         public override void DealCards()
-        { 
+        {
             for (int i = 0; i < 2; i++)
             {
-                foreach (var player in Players)
+                foreach (Player player in Players)
                 {
-                    int suit = rnd.Next(0, 4);   // 4 suits
-                    int rank = rnd.Next(0, 13); // 13 ranks per suit
-                    string filename = CardModel.cardsImage[suit, rank];
-                    string path = filename;
-                    player.Hand.Add(path);
+                    int suitIndex = rnd.Next(0, 4);
+                    int rankIndex = rnd.Next(0, 13);
+
+                    var suit = (CardModel.Shapes)suitIndex;
+                    var rank = (CardModel.Ranks)rankIndex;
+
+                    string imageName = CardModel.cardsImage[suitIndex, rankIndex];
+
+                    Card card = new(suit, rank, imageName);
+
+                    player.PlayerHand.AddCard(card);
                 }
-            }
-      
+            }  
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+
+        }
+
+        public bool CanStart()
+        {
+           return CurrentPlayerCount >= PlayerCount;
         }
     }
 }

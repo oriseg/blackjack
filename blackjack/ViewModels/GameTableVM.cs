@@ -12,12 +12,12 @@ namespace blackjack.ViewModels
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
-        public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}"; 
-        public bool CanStart => CurrentPlayerCount >= SelectedPlayerCount;
-        public ICommand NextTurnCommand => new Command(NextTurn);
-        public ICommand DealCardsCommand => new Command(DealCards);
+        public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
+        public bool CanStart => game.CanStart();
+        public ICommand NextTurnCommand => new Command(NextTurn,CanNextTurn);
+        public ICommand DealCardsCommand => new Command(DealCards, CanDealCards);
 
-
+      
 
         public GameTableVM (Game game)
         {
@@ -42,6 +42,14 @@ namespace blackjack.ViewModels
         private void NextTurn()
         {
             game.NextTurn();
+        } 
+        private bool CanNextTurn()
+        {
+            return IsMyTurn&&CanStart;
+        } 
+        private bool CanDealCards()
+        {
+            return CanStart;
         }
         private void UpdatePlayersTurnState()
         {

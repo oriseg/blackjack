@@ -1,4 +1,5 @@
-﻿using Plugin.CloudFirestore.Attributes;
+﻿using blackjack.ModelsLogic;
+using Plugin.CloudFirestore.Attributes;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 namespace blackjack.Models
@@ -7,7 +8,7 @@ namespace blackjack.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public string UserName { get; set; } = string.Empty;
-        public ObservableCollection<string> Hand { get; set; } = new();
+        public Hand PlayerHand { get; set; } = new Hand();
 
         private bool _isCurrentTurn;
         [Ignored]

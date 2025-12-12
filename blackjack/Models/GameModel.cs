@@ -14,14 +14,16 @@ namespace blackjack.Models
         public DateTime Created { get; set; }
         public bool IsFull { get; set; }
         public int CurrentPlayerIndex { get; set; }
+        public int PlayerCount { get; set; }  
+        public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
+        [Ignored]
+        public int CurrentPlayerCount => Players.Count;
         [Ignored]
         public Random rnd = new();
         [Ignored]
         public ObservableCollection<PlayerCount>? PlayerCountDL { get; set; } = [new PlayerCount(2), new PlayerCount(3), new PlayerCount(4)];
-        public int PlayerCount { get; set; }
         [Ignored]
         public PlayerCount SelectedPlayerCount { get; set; } = new PlayerCount();
-        public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         [Ignored]
         public EventHandler<bool>? OnGameAdded;
         [Ignored]
@@ -30,9 +32,9 @@ namespace blackjack.Models
         public EventHandler<bool>? OnTurnChanged;
         [Ignored]
         public EventHandler? OnGameJoined;
-        public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
-        [Ignored]
+        [Ignored] 
         protected IListenerRegistration? ilr;
+        public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void ArrangePlayerSeats();
         public abstract void RemoveSnapshotListener();
         public abstract void AddSnapshotListener();

@@ -129,17 +129,17 @@
 
                         <!--  Cards under circle  -->
                         <HorizontalStackLayout
-                            BindableLayout.ItemsSource="{Binding Hand}"
+                            BindableLayout.ItemsSource="{Binding PlayerHand.Cards}"
                             HorizontalOptions="Center"
                             Spacing="-30"
                             VerticalOptions="Center">
 
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="m:CardModel">
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="90"
-                                        Source="{Binding .}"
+                                        Source="{Binding ImagePath}"
                                         WidthRequest="70" />
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
