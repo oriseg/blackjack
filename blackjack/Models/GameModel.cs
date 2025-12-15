@@ -41,7 +41,7 @@ namespace blackjack.Models
         public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete); 
         public abstract void NextTurn();
         public abstract void DealCards();
-
+        public abstract void StartCountdown();
 
     }
 }

@@ -178,6 +178,10 @@ namespace blackjack.ModelsLogic
             }  
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
 
+        } 
+        public override void StartCountdown()
+        {
+
         }
 
         public bool CanStart()

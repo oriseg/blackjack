@@ -30,7 +30,8 @@
         public const string SelectPlayerAmount = "players\n Amount "; 
         public const string Id = "Id";
         public const string Waitingfor = "Waiting for";
-        public const string players = "players...";
+        public const string players = "players..."; 
+        public const string GameStartingIn = "Game starting in";
 
 
 

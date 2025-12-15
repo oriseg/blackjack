@@ -12,7 +12,16 @@ namespace blackjack.ViewModels
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
-        public string WaitingMessage => $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
+        public string WaitingMessage
+        {
+            get
+            {
+                if (!CanStart)
+                    return $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
+
+                return $"{Strings.GameStartingIn} {game.StartCountdown}";
+            }
+        }
         public bool CanStart => game.CanStart();
         public ICommand NextTurnCommand => new Command(NextTurn,CanNextTurn);
         public ICommand DealCardsCommand => new Command(DealCards, CanDealCards);
