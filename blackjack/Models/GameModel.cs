@@ -17,6 +17,10 @@ namespace blackjack.Models
         public int PlayerCount { get; set; }  
         public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
         [Ignored]
+        public bool countdownStarted = false;
+        [Ignored]
+        public DateTime GameStartTime { get;  set; }
+        [Ignored]
         public int CurrentPlayerCount => Players.Count;
         [Ignored]
         public Random rnd = new();
@@ -31,6 +35,10 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler<bool>? OnTurnChanged;
         [Ignored]
+        public EventHandler? OnTimerChanged;
+        [Ignored]
+        public EventHandler? OnCountdownFinished;
+        [Ignored]
         public EventHandler? OnGameJoined;
         [Ignored] 
         protected IListenerRegistration? ilr;
@@ -41,7 +49,7 @@ namespace blackjack.Models
         public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete); 
         public abstract void NextTurn();
         public abstract void DealCards();
-        public abstract void StartCountdown();
+        public abstract void CheckAndStartCountdown();
 
     }
 }

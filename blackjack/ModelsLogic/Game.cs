@@ -178,15 +178,60 @@ namespace blackjack.ModelsLogic
             }  
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
 
-        } 
-        public override void StartCountdown()
-        {
-
         }
+        public override void CheckAndStartCountdown()
+        {
+            if (CanStart()&& !countdownStarted)
+            {
+                GameStartTime = DateTime.UtcNow.AddSeconds(5); 
+                countdownStarted = true;
+                _ = CountdownLoop(); 
+            }
+        }
+
+
+        private async Task CountdownLoop()
+        {
+            while (GetRemainingCountdown() > 0)
+            {
+                OnTimerChanged?.Invoke(this, EventArgs.Empty); 
+                await Task.Delay(100); 
+            }  
+            OnTimerChanged?.Invoke(this, EventArgs.Empty); 
+            OnCountdownFinished?.Invoke(this, EventArgs.Empty);
+        }
+
+        // Get seconds remaining until countdown reaches 0
+        public int GetRemainingCountdown()
+        {
+            int remaining = (int)(GameStartTime - DateTime.UtcNow).TotalSeconds;
+            return Math.Max(0, remaining);
+        } 
+
 
         public bool CanStart()
         {
            return CurrentPlayerCount >= PlayerCount;
+        }
+
+        internal void Double(object obj)
+        {
+
+        }
+
+        internal void Stand(object obj)
+        {
+
+        }
+
+        internal void Hit(object obj)
+        {
+
+        }
+
+        internal void Split(object obj)
+        {
+
         }
     }
 }
