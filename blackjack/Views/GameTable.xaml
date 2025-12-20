@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:conv="clr-namespace:blackjack.Converters"
     xmlns:m="clr-namespace:blackjack.Models"
-    xmlns:vm="clr-namespace:blackjack.ViewModels"
+    xmlns:vm="clr-namespace:blackjack.ViewModels" 
+    xmlns:ml="clr-namespace:blackjack.ModelsLogic"
     x:DataType="vm:GameTableVM"
     BackgroundColor="LightGreen">
 
@@ -12,7 +13,6 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:PlayerToRectConverter x:Key="PlayerToRectConverter" />
-            <conv:BoolAndConverter x:Key="BoolAndConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -45,22 +45,55 @@
 
         <!--  TABLE  -->
         <Frame
-            AbsoluteLayout.LayoutBounds="0.5,0.45,400,160"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            BackgroundColor="DarkGreen"
-            CornerRadius="100" />
+    AbsoluteLayout.LayoutBounds="0.5,0.45,400,160"
+    AbsoluteLayout.LayoutFlags="PositionProportional"
+    BackgroundColor="DarkGreen"
+    CornerRadius="100">
 
-        <!--  DEALER  -->
-        <Frame
-            AbsoluteLayout.LayoutBounds="0.5,0.25,85,85"
+            <AbsoluteLayout>
+                <!-- Dealer cards on table -->
+                <HorizontalStackLayout
+            BindableLayout.ItemsSource="{Binding DealerCards}"
+            AbsoluteLayout.LayoutBounds="0.5,0.2,AutoSize,AutoSize"
             AbsoluteLayout.LayoutFlags="PositionProportional"
-            BackgroundColor="Maroon"
-            CornerRadius="40">
+            Spacing="-30"
+            HorizontalOptions="Center">
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="ml:Card">
+                            <Image
+                        Aspect="AspectFit"
+                        HeightRequest="90"
+                        WidthRequest="70"
+                        Source="{Binding ImagePath}">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image"
+                                         Binding="{Binding IsFaceDown}"
+                                         Value="True">
+                                        <Setter Property="Source" Value="main_card.png" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+
+                </HorizontalStackLayout>
+            </AbsoluteLayout>
+
+        </Frame>
+
+        <!-- Dealer circle above the table -->
+        <Frame
+    AbsoluteLayout.LayoutBounds="0.5,0.25,80,80"
+    AbsoluteLayout.LayoutFlags="PositionProportional"
+    BackgroundColor="Maroon"
+    CornerRadius="40"
+    Padding="5">
             <Label
-                HorizontalOptions="Center"
-                Text="Dealer"
-                TextColor="White"
-                VerticalOptions="Center" />
+        HorizontalOptions="Center"
+        Text="Dealer"
+        TextColor="White"
+        VerticalOptions="Center" />
         </Frame>
 
         <!--  PLAYERS  -->
@@ -102,57 +135,6 @@
                                 TextColor="LightBlue"
                                 VerticalOptions="Center" />
                         </Border>
-
-                        <!--  TURN POPUP (UNDER USERNAME)  -->
-                        <Grid Margin="0,2,0,0" HorizontalOptions="Center">
-
-                            <Grid.IsVisible>
-                                <MultiBinding Converter="{StaticResource BoolAndConverter}">
-                                    <Binding Path="IsCurrentTurn" />
-                                    <Binding Path="CanStart" Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
-                                </MultiBinding>
-                            </Grid.IsVisible>
-
-                            <Frame
-                                Padding="8"
-                                BackgroundColor="DarkGreen"
-                                CornerRadius="14"
-                                WidthRequest="260">
-
-                                <HorizontalStackLayout Spacing="6">
-
-                                    <Button
-                                        BackgroundColor="DarkBlue"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.HitCommand}"
-                                        FontSize="12"
-                                        Text="Hit"
-                                        TextColor="White" />
-
-                                    <Button
-                                        BackgroundColor="DarkRed"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.StandCommand}"
-                                        FontSize="12"
-                                        Text="Stand"
-                                        TextColor="White" />
-
-                                    <Button
-                                        BackgroundColor="Purple"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SplitCommand}"
-                                        FontSize="12"
-                                        Text="Split"
-                                        TextColor="White" />
-
-                                    <Button
-                                        BackgroundColor="DarkOrange"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DoubleCommand}"
-                                        FontSize="12"
-                                        Text="Double"
-                                        TextColor="White" />
-
-                                </HorizontalStackLayout>
-                            </Frame>
-                        </Grid>
-
                         <!--  CARDS  -->
                         <HorizontalStackLayout
                             BindableLayout.ItemsSource="{Binding PlayerHand.Cards}"
@@ -177,17 +159,6 @@
             </BindableLayout.ItemTemplate>
 
         </AbsoluteLayout>
-
-        <!--  NEXT TURN  -->
-        <Button
-            AbsoluteLayout.LayoutBounds="0.5,0.95,140,45"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            BackgroundColor="DarkBlue"
-            Command="{Binding NextTurnCommand}"
-            CornerRadius="15"
-            Text="Next Turn"
-            TextColor="White" />
-
 
 
     </AbsoluteLayout>

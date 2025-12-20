@@ -9,7 +9,8 @@ namespace blackjack.Models
     public abstract class GameModel
     { 
         protected FbData fbd = new();
-        public string HostName { get; set; } = string.Empty;
+        public string HostName { get; set; } = string.Empty; 
+        public Dealer ?Dealer { get; set; } 
         public string Id { get; set; } = string.Empty;
         public DateTime Created { get; set; }
         public bool IsFull { get; set; }
@@ -35,6 +36,8 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler<bool>? OnTurnChanged;
         [Ignored]
+        public EventHandler? OnPlayerTurn;
+        [Ignored]
         public EventHandler? OnTimerChanged;
         [Ignored]
         public EventHandler? OnCountdownFinished;
@@ -48,8 +51,15 @@ namespace blackjack.Models
         public abstract void AddSnapshotListener();
         public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete); 
         public abstract void NextTurn();
+        public abstract void DealPlayersCards();
+        public abstract void DealDealerCards();
         public abstract void DealCards();
         public abstract void CheckAndStartCountdown();
+        public abstract void CheckLocalPlayerTurn(); 
+        public abstract void Stand(); 
+        public abstract void Hit(); 
+        public abstract void Double(); 
+
 
     }
 }

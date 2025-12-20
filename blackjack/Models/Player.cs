@@ -8,7 +8,17 @@ namespace blackjack.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public string UserName { get; set; } = string.Empty;
-        public Hand PlayerHand { get; set; } = new Hand();
+        private Hand _playerHand= new Hand();
+        public Hand PlayerHand 
+        {
+            get => _playerHand;
+            set
+            {
+                _playerHand = value;
+                OnPropertyChanged(nameof(PlayerHand));
+            }
+        }
+
 
         private bool _isCurrentTurn;
         [Ignored]

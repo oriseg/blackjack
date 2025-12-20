@@ -1,23 +1,21 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
+using blackjack.Views;
+using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
     public partial class GameTableVM : ObservableObject
     {
         private readonly Game game;
-
         public ObservableCollection<Player> Players => game.Players;
-
+        public ObservableCollection<Card> DealerCards => game.Dealer!.DealerHand.Cards;
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
-
- 
-
         public string WaitingMessage
         {
             get
@@ -32,25 +30,23 @@ namespace blackjack.ViewModels
         public bool CanStart => game.CanStart();
         public bool IsMyTurn => game.IsMyTurn();
 
-        public ICommand NextTurnCommand => new Command(NextTurn, CanNextTurn);
-        public ICommand HitCommand => new Command(game.Hit);
-        public ICommand StandCommand => new Command(game.Stand);
-        public ICommand SplitCommand => new Command(game.Split);
-        public ICommand DoubleCommand => new Command(game.Double);
 
         public GameTableVM(Game game)
         {
             this.game = game;
-
             game.OnGameAdded += OnGameAdded;
             game.OnGameChanged += OnGameChanged;
             game.OnTurnChanged += OnTurnChanged;
             game.OnTimerChanged += OnTimerChanged;
             game.OnCountdownFinished += OnCountdownFinished;
+            game.OnPlayerTurn += OnPlayerTurn;
             game.AddSnapshotListener();
             game.ArrangePlayerSeats();
+        }
 
-
+        private async void OnPlayerTurn(object? sender, EventArgs e)
+        {
+          await Application.Current!.MainPage!.ShowPopupAsync(new DecisionPopUp(game));
         }
 
         private void OnCountdownFinished(object? sender, EventArgs e)
@@ -69,12 +65,7 @@ namespace blackjack.ViewModels
             OnPropertyChanged(nameof(IsMyTurn));
             OnPropertyChanged(nameof(Players));
         }
-        private void NextTurn()
-        {
-            game.NextTurn();
-        }
 
-        private bool CanNextTurn() => IsMyTurn && CanStart;
 
         private void UpdatePlayersTurnState()
         {
@@ -89,14 +80,16 @@ namespace blackjack.ViewModels
             UpdatePlayersTurnState();
             OnPropertyChanged(nameof(Players));
             OnPropertyChanged(nameof(SelectedPlayerCount));
-            OnPropertyChanged(nameof(WaitingMessage));
+            OnPropertyChanged(nameof(WaitingMessage)); 
+            OnPropertyChanged(nameof(DealerCards));
         }
 
         private void OnGameChanged(object? sender, bool e)
         {
             OnPropertyChanged(nameof(Players));
             OnPropertyChanged(nameof(SelectedPlayerCount));
-            OnPropertyChanged(nameof(WaitingMessage)); 
+            OnPropertyChanged(nameof(WaitingMessage));
+            OnPropertyChanged(nameof(DealerCards));
             game.CheckAndStartCountdown();
         }
 

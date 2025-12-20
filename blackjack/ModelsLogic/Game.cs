@@ -8,12 +8,14 @@ namespace blackjack.ModelsLogic
     {
         public Game()
         {
+            Dealer = new Dealer();
             HostName = new User().UserName;
             Created = DateTime.Now;
 
         }
         public Game(int playercount)
-        {
+        { 
+            Dealer = new Dealer();
             HostName = new User().UserName;
             Created = DateTime.Now;
             PlayerCount = playercount;
@@ -100,7 +102,8 @@ namespace blackjack.ModelsLogic
                     this.Created = game.Created;
                     this.Id = game.Id;
                     this.PlayerCount = game.PlayerCount; 
-                  
+                    this.HostName = game.HostName;
+                    this.Dealer = game.Dealer;
                     //if username not exist in list
                 }
             }
@@ -119,16 +122,23 @@ namespace blackjack.ModelsLogic
                     IsFull = updatedGame.IsFull;
                     ArrangePlayerSeats();
                 }
-              
+                for(int i =0; i < Players.Count; i++)
+                {
+                    Players[i].PlayerHand = updatedGame.Players[i].PlayerHand; 
+                }
 
-               
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
                     CurrentPlayerIndex = updatedGame.CurrentPlayerIndex;
                     Players[CurrentPlayerIndex].IsCurrentTurn = true;
                     Players[prevCurrnetPlayerIndex].IsCurrentTurn = false;
+                    CheckLocalPlayerTurn();
                 }
+                HostName= updatedGame.HostName; 
+                if(Dealer != null&& updatedGame.Dealer!=null)
+                    Dealer.DealerHand = updatedGame.Dealer.DealerHand;
+
 
 
                 OnTurnChanged?.Invoke(this, true);
@@ -156,28 +166,64 @@ namespace blackjack.ModelsLogic
         {
             string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
             return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
+        }  
+        public override void CheckLocalPlayerTurn()
+        {
+            if (IsMyTurn()&& CanStart())
+            {
+                OnPlayerTurn?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public bool HostIsCurrentUser()
+        {
+            string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
+            return currLocalUserName.Equals(HostName);
+        }
+        private Card CreateRandomCard()
+        {
+            int suitIndex = rnd.Next(0, 4);
+            int rankIndex = rnd.Next(0, 13);
+
+            var suit = (CardModel.Shapes)suitIndex;
+            var rank = (CardModel.Ranks)rankIndex;
+            string imageName = CardModel.cardsImage[suitIndex, rankIndex];
+
+            return new Card(suit, rank, imageName);
         }
         public override void DealCards()
         {
+            if (!HostIsCurrentUser())
+                return;
+            DealPlayersCards();
+            DealDealerCards();
+
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+        } 
+
+        public override void DealPlayersCards()
+        {
+            if (HostIsCurrentUser())
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (Player player in Players)
+                    {
+                        player.PlayerHand.AddCard(CreateRandomCard());
+                    }
+                } 
+            }
+            CheckLocalPlayerTurn();
+        }
+        public override void DealDealerCards()
+        {
             for (int i = 0; i < 2; i++)
             {
-                foreach (Player player in Players)
-                {
-                    int suitIndex = rnd.Next(0, 4);
-                    int rankIndex = rnd.Next(0, 13);
-
-                    var suit = (CardModel.Shapes)suitIndex;
-                    var rank = (CardModel.Ranks)rankIndex;
-
-                    string imageName = CardModel.cardsImage[suitIndex, rankIndex];
-
-                    Card card = new(suit, rank, imageName);
-
-                    player.PlayerHand.AddCard(card);
-                }
-            }  
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-
+                Card card = CreateRandomCard();
+                card.IsFaceDown = true;
+                Dealer?.DealerHand.AddCard(card);
+            }
         }
         public override void CheckAndStartCountdown()
         {
@@ -188,8 +234,6 @@ namespace blackjack.ModelsLogic
                 _ = CountdownLoop(); 
             }
         }
-
-
         private async Task CountdownLoop()
         {
             while (GetRemainingCountdown() > 0)
@@ -214,24 +258,39 @@ namespace blackjack.ModelsLogic
            return CurrentPlayerCount >= PlayerCount;
         }
 
-        internal void Double(object obj)
+        public override void Double()
         {
+            if (!IsMyTurn())
+                return;
+            Player current = Players[CurrentPlayerIndex];
+            current.PlayerHand.AddCard(CreateRandomCard());
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+            NextTurn();
+        }
+        public override void Stand()
+        {
+            if (!IsMyTurn())
+                return;
 
+            NextTurn();
+        }
+       
+
+        public override void Hit()
+        {
+            if (!IsMyTurn())
+                return;
+
+            Player current = Players[CurrentPlayerIndex];
+            current.PlayerHand.AddCard(CreateRandomCard());
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+            // אם Bust → תור הבא
+            //if (current.PlayerHand.IsBust)
+            //{
+            //    NextTurn();
+            //}
         }
 
-        internal void Stand(object obj)
-        {
 
-        }
-
-        internal void Hit(object obj)
-        {
-
-        }
-
-        internal void Split(object obj)
-        {
-
-        }
     }
 }

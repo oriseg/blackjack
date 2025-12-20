@@ -5,11 +5,12 @@ namespace blackjack.ModelsLogic
 {
     public class Card : CardModel
     {
-        public Card(Shapes suit, Ranks rank, string ?imagePath)
+        public Card(Shapes suit, Ranks rank, string ?imagePath, bool isFaceDown = false)
         {
             Suit = suit;
             Rank = rank;
-            ImagePath = imagePath;
+            ImagePath = imagePath; 
+            IsFaceDown = isFaceDown;
         }
         public Card()
         {
