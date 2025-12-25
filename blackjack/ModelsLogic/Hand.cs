@@ -1,19 +1,27 @@
 ﻿
+using blackjack.Models;
 using System.Collections.ObjectModel;
 
 namespace blackjack.ModelsLogic
 {
-    public class Hand
+    public class Hand : HandModel
     {
-        public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
+        public ObservableCollection<Card> Cards { get; set; } = [];
 
-        public void AddCard(Card card)
+        public override void AddCard(Card card)
         {
             Cards.Add(card);
         }
-        public void Clear()
+        public override void Clear()
         {
-            Cards.Clear();     
+            Cards.Clear();
+        }
+        public override void CaclculateHandValue()
+        {
+            foreach (Card card in Cards)
+            {
+                HandValue += card.GetCardValue();
+            }
         }
     }
 }

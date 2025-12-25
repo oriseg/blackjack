@@ -1,6 +1,6 @@
 ﻿namespace blackjack.Models
 {
-   public class CardModel
+   public abstract class CardModel
     {
         public static readonly string[,] cardsImage = {
         {"ace_club.png","two_club.png","three_club.png","four_club.png","five_club.png","six_club.png","seven_club.png","eight_club.png","nine_club.png","ten_club.png","jack_club.png","queen_club.png","king_club.png"  },
@@ -12,6 +12,7 @@
         public Shapes Suit { get; set; }
         public Ranks Rank { get; set; }
         public string ?ImagePath { get; set; }
-        public bool IsFaceDown { get; set; } = false;
+        public bool IsFaceDown { get; set; } = false; 
+        public abstract int GetCardValue();
     }
 }

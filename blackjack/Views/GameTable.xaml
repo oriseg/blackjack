@@ -62,10 +62,10 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="ml:Card">
                             <Image
-                        Aspect="AspectFit"
-                        HeightRequest="90"
-                        WidthRequest="70"
-                        Source="{Binding ImagePath}">
+                                 Aspect="AspectFit"
+                                 HeightRequest="90"
+                                 WidthRequest="70"
+                                 Source="{Binding ImagePath}">
                                 <Image.Triggers>
                                     <DataTrigger TargetType="Image"
                                          Binding="{Binding IsFaceDown}"

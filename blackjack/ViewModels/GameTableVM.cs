@@ -3,8 +3,6 @@ using blackjack.ModelsLogic;
 using blackjack.Views;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
@@ -25,7 +23,8 @@ namespace blackjack.ViewModels
 
                 return $"Game starting in {game.GetRemainingCountdown()}";
             }
-        }
+        } 
+      
 
         public bool CanStart => game.CanStart();
         public bool IsMyTurn => game.IsMyTurn();

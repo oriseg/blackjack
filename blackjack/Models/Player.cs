@@ -1,6 +1,5 @@
 ﻿using blackjack.ModelsLogic;
 using Plugin.CloudFirestore.Attributes;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 namespace blackjack.Models
 {
