@@ -2,12 +2,40 @@
 
 namespace blackjack.Models
 {
-    public abstract class HandModel
-    { 
-       public int HandValue { get; set; }
-       public abstract void AddCard(Card card);  
-       public abstract void Clear(); 
-       public abstract void CaclculateHandValue();
+    public abstract class HandModel : ObservableObject
+    {
+        private int _handValue = 0;
+        public int HandValue
+        {
+            get => _handValue;
+            set
+            {
+                if (_handValue != value)
+                {
+                    _handValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private Color _handColor = Colors.Black;
+        public Color HandColor
+        {
+            get => _handColor;
+            protected set
+            {
+                if (_handColor != value)
+                {
+                    _handColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public int Total = 0;
+        public bool Isbust { get; protected set; } = false;
+        public EventHandler? HandValueChanged;
+        public abstract void AddCard(Card card);
+        public abstract void Clear();
+        public abstract void CaclculateHandValue();
 
 
     }

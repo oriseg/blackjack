@@ -284,11 +284,11 @@ namespace blackjack.ModelsLogic
             Player current = Players[CurrentPlayerIndex];
             current.PlayerHand.AddCard(CreateRandomCard());
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            // אם Bust → תור הבא
-            //if (current.PlayerHand.IsBust)
-            //{
-            //    NextTurn();
-            //}
+
+            if (current.PlayerHand.Isbust)
+            {
+                NextTurn();
+            }
         }
 
 
