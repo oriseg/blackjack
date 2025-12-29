@@ -19,7 +19,10 @@
         public const string Colon = ":";
         public const string Comma = ","; 
         public const int Width = 400;
-        public const int Length = 600;
+        public const int Length = 600; 
+        public const int FinishedSignal = -1 ; 
+        public const int TimerTotalTime = 10000; 
+        public const int TimerInterval = 1000;
 
     }
 }

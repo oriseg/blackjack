@@ -14,22 +14,10 @@ namespace blackjack.ViewModels
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
-        public string WaitingMessage
-        {
-            get
-            {
-                if (!CanStart)
-                    return $"{Strings.Waitingfor} {CurrentPlayerCount}/{SelectedPlayerCount} {Strings.players}";
-
-                return $"Game starting in {game.GetRemainingCountdown()}";
-            }
-        } 
-      
-
+        public string TimeLeft => game.TimeLeft;
+        public string WaitingMessage=> game.WaitingMessage;
         public bool CanStart => game.CanStart();
         public bool IsMyTurn => game.IsMyTurn();
-
-
         public GameTableVM(Game game)
         {
             this.game = game;
@@ -39,8 +27,14 @@ namespace blackjack.ViewModels
             game.OnTimerChanged += OnTimerChanged;
             game.OnCountdownFinished += OnCountdownFinished;
             game.OnPlayerTurn += OnPlayerTurn;
+            game.OnWatingMassgeChanged += OnWatingMassgeChanged;
             game.AddSnapshotListener();
             game.ArrangePlayerSeats();
+        }
+
+        private void OnWatingMassgeChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(WaitingMessage));
         }
 
         private async void OnPlayerTurn(object? sender, EventArgs e)

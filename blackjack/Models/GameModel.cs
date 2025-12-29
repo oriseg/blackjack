@@ -17,6 +17,9 @@ namespace blackjack.Models
         public int CurrentPlayerIndex { get; set; }
         public int PlayerCount { get; set; }  
         public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
+        protected TimerSettings timerSettings = new(Keys.TimerTotalTime, Keys.TimerInterval);
+        [Ignored]
+        public string TimeLeft { get; protected set; } = string.Empty;
         [Ignored]
         public bool countdownStarted = false;
         [Ignored]
@@ -43,7 +46,11 @@ namespace blackjack.Models
         public EventHandler? OnCountdownFinished;
         [Ignored]
         public EventHandler? OnGameJoined;
-        [Ignored] 
+        [Ignored]
+        public EventHandler? OnWatingMassgeChanged;
+        [Ignored]
+        public EventHandler? OnTimeLeftChanged;
+        [Ignored]
         protected IListenerRegistration? ilr;
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void ArrangePlayerSeats();
@@ -59,6 +66,21 @@ namespace blackjack.Models
         public abstract void Stand(); 
         public abstract void Hit(); 
         public abstract void Double(); 
+        public abstract bool CanStart();
+        [Ignored]
+        public string WaitingMessage
+        {
+            get
+            {
+                if (!CanStart())
+                    return $"{Strings.Waitingfor} {CurrentPlayerCount}/{PlayerCount} {Strings.players}";
+
+                if (string.IsNullOrEmpty(TimeLeft))
+                    return string.Empty; 
+
+                return $"{Strings.GameStartingIn} {TimeLeft}";
+            }
+        }
 
 
     }

@@ -1,6 +1,8 @@
 ﻿
 using blackjack.Models;
+using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
+
 
 namespace blackjack.ModelsLogic
 {
@@ -11,6 +13,7 @@ namespace blackjack.ModelsLogic
             Dealer = new Dealer();
             HostName = new User().UserName;
             Created = DateTime.Now;
+            RegisterTimer();
 
         }
         public Game(int playercount)
@@ -19,6 +22,7 @@ namespace blackjack.ModelsLogic
             HostName = new User().UserName;
             Created = DateTime.Now;
             PlayerCount = playercount;
+            RegisterTimer();
 
         }
         public void CreateGame(int PlayerCount)
@@ -35,6 +39,23 @@ namespace blackjack.ModelsLogic
             this.Players.Add(host);
             this.SetDocument(OnComplete);
 
+        }
+        private void RegisterTimer()
+        {
+            WeakReferenceMessenger.Default.Register<AppMessage<long>>(this, (r, m) =>
+            {
+                OnMessageReceived(m.Value);
+                if (m.Value == Keys.FinishedSignal)
+                {
+                    OnCountdownFinished?.Invoke(this, EventArgs.Empty);
+                }
+            });
+        }
+        private void OnMessageReceived(long timeLeft)
+        {
+            TimeLeft = timeLeft == Keys.FinishedSignal ? String.Empty : double.Round(timeLeft / 1000, 1).ToString();
+            OnTimeLeftChanged?.Invoke(this, EventArgs.Empty);
+            OnWatingMassgeChanged?.Invoke(this, EventArgs.Empty);
         }
         public override void ArrangePlayerSeats()
         {
@@ -227,33 +248,15 @@ namespace blackjack.ModelsLogic
         }
         public override void CheckAndStartCountdown()
         {
-            if (CanStart()&& !countdownStarted)
+            if (CanStart() && !countdownStarted)
             {
-                GameStartTime = DateTime.UtcNow.AddSeconds(5); 
                 countdownStarted = true;
-                _ = CountdownLoop(); 
+                OnWatingMassgeChanged?.Invoke(this, EventArgs.Empty);
+                WeakReferenceMessenger.Default.Send(new AppMessage<TimerSettings>(timerSettings));   
             }
         }
-        private async Task CountdownLoop()
-        {
-            while (GetRemainingCountdown() > 0)
-            {
-                OnTimerChanged?.Invoke(this, EventArgs.Empty); 
-                await Task.Delay(100); 
-            }  
-            OnTimerChanged?.Invoke(this, EventArgs.Empty); 
-            OnCountdownFinished?.Invoke(this, EventArgs.Empty);
-        }
 
-        // Get seconds remaining until countdown reaches 0
-        public int GetRemainingCountdown()
-        {
-            int remaining = (int)(GameStartTime - DateTime.UtcNow).TotalSeconds;
-            return Math.Max(0, remaining);
-        } 
-
-
-        public bool CanStart()
+        public override bool CanStart()
         {
            return CurrentPlayerCount >= PlayerCount;
         }
