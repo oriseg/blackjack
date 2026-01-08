@@ -4,6 +4,7 @@ namespace blackjack.Models
 {
     public abstract class HandModel : ObservableObject
     {
+        // OnPropertyChanged in the model hare temporary just to see how it looks like in the UI
         private int _handValue = 0;
         public int HandValue
         {
@@ -32,7 +33,6 @@ namespace blackjack.Models
         }
         public int Total = 0;
         public bool Isbust { get; protected set; } = false;
-        public EventHandler? HandValueChanged;
         public abstract void AddCard(Card card);
         public abstract void Clear();
         public abstract void CaclculateHandValue();
