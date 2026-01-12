@@ -87,9 +87,12 @@ namespace blackjack.ModelsLogic
         {
             if (Players.Count == 0)
                 return;
-
-            int nextPlayerIndex = (CurrentPlayerIndex + 1) % Players.Count;
-
+            if (CurrentPlayerIndex >= Players.Count - 1)
+            {
+                PlayersTurnEnds();
+                return;
+            }
+            int nextPlayerIndex = CurrentPlayerIndex + 1;
             // Update the CurrentPlayerIndex field in Firestore.
             // The last parameter '_ => { }' is a lambda expression (anonymous function) 
             // that acts as a callback when the update is complete. 
@@ -292,6 +295,14 @@ namespace blackjack.ModelsLogic
             {
                 NextTurn();
             }
+        } 
+        public override void PlayersTurnEnds()
+        {
+            foreach(Card card in Dealer!.DealerHand.Cards)
+            {
+                card.IsFaceDown = false;
+            }
+
         }
 
 

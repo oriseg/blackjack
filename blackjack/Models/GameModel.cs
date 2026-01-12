@@ -67,6 +67,7 @@ namespace blackjack.Models
         public abstract void Hit(); 
         public abstract void Double(); 
         public abstract bool CanStart();
+        public abstract void PlayersTurnEnds();
         [Ignored]
         public string WaitingMessage
         {
