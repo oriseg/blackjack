@@ -32,7 +32,6 @@ namespace blackjack.ModelsLogic
             Random generator = new Random(uniqueSeed);
             this.Id = generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
-
             this.PlayerCount = PlayerCount;
             Player host = new Player(HostName);
             host.IsCurrentTurn = true;
@@ -162,9 +161,6 @@ namespace blackjack.ModelsLogic
                 HostName= updatedGame.HostName; 
                 if(Dealer != null&& updatedGame.Dealer!=null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
-
-
-
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
 
@@ -220,10 +216,9 @@ namespace blackjack.ModelsLogic
             if (!HostIsCurrentUser())
                 return;
             DealPlayersCards();
-            DealDealerCards();
 
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+
         } 
 
         public override void DealPlayersCards()
@@ -245,7 +240,6 @@ namespace blackjack.ModelsLogic
             for (int i = 0; i < 2; i++)
             {
                 Card card = CreateRandomCard();
-                card.IsFaceDown = true;
                 Dealer?.DealerHand.AddCard(card);
             }
         }
@@ -277,7 +271,6 @@ namespace blackjack.ModelsLogic
         {
             if (!IsMyTurn())
                 return;
-
             NextTurn();
         }
        
@@ -291,18 +284,15 @@ namespace blackjack.ModelsLogic
             current.PlayerHand.AddCard(CreateRandomCard());
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
 
-            if (current.PlayerHand.Isbust)
+            if (current.PlayerHand.IsBust)
             {
                 NextTurn();
             }
         } 
         public override void PlayersTurnEnds()
         {
-            foreach(Card card in Dealer!.DealerHand.Cards)
-            {
-                card.IsFaceDown = false;
-            }
-
+            DealDealerCards();
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
         }
 
 

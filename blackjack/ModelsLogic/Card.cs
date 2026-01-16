@@ -15,7 +15,22 @@ namespace blackjack.ModelsLogic
         public Card()
         {
 
-        } 
+        }
+        private bool _isFaceDown;
+
+        // 🔥 Override the property to raise the event in logic
+        public new bool IsFaceDown
+        {
+            get => _isFaceDown;
+            set
+            {
+                if (_isFaceDown != value)
+                {
+                    _isFaceDown = value;                  
+                    FaceDownChanged?.Invoke(this, EventArgs.Empty); 
+                }
+            }
+        }
         public override int GetCardValue()
         {
             return Rank switch

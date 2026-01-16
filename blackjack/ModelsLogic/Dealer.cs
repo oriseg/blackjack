@@ -12,7 +12,6 @@ namespace blackjack.ModelsLogic
             set
             {
                 _dealerHand = value;
-
             }
         }
     }

@@ -11,6 +11,7 @@ namespace blackjack.ViewModels
         private readonly Game game;
         public ObservableCollection<Player> Players => game.Players;
         public ObservableCollection<Card> DealerCards => game.Dealer!.DealerHand.Cards;
+        private Player CurrentPlayer => game.Players[game.CurrentPlayerIndex];
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => Players.Count;
@@ -18,9 +19,14 @@ namespace blackjack.ViewModels
         public string WaitingMessage=> game.WaitingMessage;
         public bool CanStart => game.CanStart();
         public bool IsMyTurn => game.IsMyTurn();
+        public int CurrentHandValue => CurrentPlayer.PlayerHand.HandValue;
+        public Color CurrentHandColor => CurrentPlayer.PlayerHand.HandColor;
+        public bool CurrentHandIsBust => CurrentPlayer.PlayerHand.IsBust; 
         public GameTableVM(Game game)
         {
             this.game = game;
+
+            // Subscribe to game events
             game.OnGameAdded += OnGameAdded;
             game.OnGameChanged += OnGameChanged;
             game.OnTurnChanged += OnTurnChanged;
@@ -28,8 +34,32 @@ namespace blackjack.ViewModels
             game.OnCountdownFinished += OnCountdownFinished;
             game.OnPlayerTurn += OnPlayerTurn;
             game.OnWatingMassgeChanged += OnWatingMassgeChanged;
+            // Subscribe current player hand
+            CurrentPlayer.PlayerHand.OnHandValueChanged += HandValueChanged;
+            CurrentPlayer.PlayerHand.OnHandColorChanged += HandColorChanged;
+            CurrentPlayer.PlayerHand.OnHandStateChanged += HandStateChanged; 
             game.AddSnapshotListener();
             game.ArrangePlayerSeats();
+        }
+
+        //private void OnDealerCardFaceDownChanged(object? sender, EventArgs e)
+        //{
+        //    OnPropertyChanged(nameof(DealerCards));
+        //}
+
+        private void HandValueChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(CurrentHandValue));
+        }
+
+        private void HandColorChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(CurrentHandColor));
+        }
+
+        private void HandStateChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(CurrentHandIsBust));
         }
 
         private void OnWatingMassgeChanged(object? sender, EventArgs e)
