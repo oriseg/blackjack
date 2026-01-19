@@ -33,7 +33,7 @@ namespace blackjack.ModelsLogic
             this.Id = generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
             this.PlayerCount = PlayerCount;
-            Player host = new Player(HostName);
+            Player host = new(HostName);
             host.IsCurrentTurn = true;
             this.Players.Add(host);
             this.SetDocument(OnComplete);

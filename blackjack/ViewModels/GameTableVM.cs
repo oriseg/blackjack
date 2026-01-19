@@ -25,8 +25,7 @@ namespace blackjack.ViewModels
         public GameTableVM(Game game)
         {
             this.game = game;
-
-            // Subscribe to game events
+                // Subscribe to game events
             game.OnGameAdded += OnGameAdded;
             game.OnGameChanged += OnGameChanged;
             game.OnTurnChanged += OnTurnChanged;
