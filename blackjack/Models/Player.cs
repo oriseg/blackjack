@@ -1,50 +1,29 @@
 ﻿using blackjack.ModelsLogic;
 using Plugin.CloudFirestore.Attributes;
-using System.ComponentModel;
 namespace blackjack.Models
 {
-    public class Player : INotifyPropertyChanged
+    public class Player 
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         public string UserName { get; set; } = string.Empty;
-        private Hand _playerHand= new Hand();
-        public Hand PlayerHand 
-        {
-            get => _playerHand;
-            set
-            {
-                _playerHand = value;
-                OnPropertyChanged(nameof(PlayerHand));
-            }
-        }
 
+        public Hand PlayerHand { get; set; } = new Hand();
 
-        private bool _isCurrentTurn;
         [Ignored]
-        public bool IsCurrentTurn 
-        { 
-            get => _isCurrentTurn; 
-            set
-            {
-                _isCurrentTurn = value;
-                OnPropertyChanged(nameof(IsCurrentTurn));
-            }
-        } 
+        public bool IsCurrentTurn { get; set; }
+
         [Ignored]
         public double X { get; set; }
+
         [Ignored]
         public double Y { get; set; }
+
         public Player(string username)
         {
-            UserName= username;
+            UserName = username;
         }
+
         public Player()
         {
-
-        }
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

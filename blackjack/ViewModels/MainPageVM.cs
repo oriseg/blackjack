@@ -1,9 +1,6 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
 using blackjack.Views;
-using CommunityToolkit.Maui.Views;
-using Firebase.Auth;
-using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -52,7 +49,7 @@ namespace blackjack.ViewModels
         {
             if (GameCode != null)
             {
-                game.joinGame(GameCode);
+                game.JoinGame(GameCode);
             }
        
         } 

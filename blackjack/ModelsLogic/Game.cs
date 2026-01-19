@@ -2,6 +2,7 @@
 using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
+using System.Collections.ObjectModel;
 
 
 namespace blackjack.ModelsLogic
@@ -25,11 +26,19 @@ namespace blackjack.ModelsLogic
             RegisterTimer();
 
         }
+        // עדכון מי בתור
+        public void UpdatePlayersTurnState()
+        {
+            for (int i = 0; i < Players.Count; i++)
+            {
+                Players[i].IsCurrentTurn = (i == CurrentPlayerIndex);
+            }
+        }
         public void CreateGame(int PlayerCount)
         {
             //clean prev game after back
             int uniqueSeed = Guid.NewGuid().GetHashCode();
-            Random generator = new Random(uniqueSeed);
+            Random generator = new(uniqueSeed);
             this.Id = generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
 
@@ -106,11 +115,10 @@ namespace blackjack.ModelsLogic
         {
             Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete);
         }
-        public void joinGame(string GameCode)
+        public void JoinGame(string GameCode)
         {
-            Player joinedPlayer = new Player(HostName);
+            Player joinedPlayer = new(HostName);
             fbd.UpdateFields(Keys.GamesCollection, GameCode, "Players", FieldValue.ArrayUnion(joinedPlayer), OnComplete);
-
         }
         private void OnComplete(IQuerySnapshot qs)
         {
@@ -157,8 +165,13 @@ namespace blackjack.ModelsLogic
                     CheckLocalPlayerTurn();
                 }
                 HostName= updatedGame.HostName; 
-                if(Dealer != null&& updatedGame.Dealer!=null)
-                    Dealer.DealerHand = updatedGame.Dealer.DealerHand;
+                if(Dealer != null&& updatedGame.Dealer != null)
+                {
+                    Dealer.DealerHand.Clear();
+                    foreach (var card in updatedGame.Dealer.DealerHand.Cards)
+                        Dealer.DealerHand.AddCard(card);
+                }
+           
 
 
 
@@ -288,7 +301,7 @@ namespace blackjack.ModelsLogic
             current.PlayerHand.AddCard(CreateRandomCard());
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
 
-            if (current.PlayerHand.Isbust)
+            if (current.PlayerHand.IsBust)
             {
                 NextTurn();
             }

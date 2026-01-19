@@ -9,11 +9,11 @@ namespace blackjack.ViewModels
     public partial class GameTableVM : ObservableObject
     {
         private readonly Game game;
-        public ObservableCollection<Player> Players => game.Players;
+        public IEnumerable<PlayerVM> Players => game.Players.Select(p => new PlayerVM(p));
         public ObservableCollection<Card> DealerCards => game.Dealer!.DealerHand.Cards;
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
-        public int CurrentPlayerCount => Players.Count;
+        public int CurrentPlayerCount => game.CurrentPlayerCount;
         public string TimeLeft => game.TimeLeft;
         public string WaitingMessage=> game.WaitingMessage;
         public bool CanStart => game.CanStart();
@@ -54,23 +54,17 @@ namespace blackjack.ViewModels
 
         private void OnTurnChanged(object? sender, bool e)
         {
-            UpdatePlayersTurnState();
+            game.UpdatePlayersTurnState();
             OnPropertyChanged(nameof(IsMyTurn));
             OnPropertyChanged(nameof(Players));
         }
 
 
-        private void UpdatePlayersTurnState()
-        {
-            for (int i = 0; i < Players.Count; i++)
-            {
-                Players[i].IsCurrentTurn = (i == game.CurrentPlayerIndex);
-            }
-        }
+
 
         private void OnGameAdded(object? sender, bool e)
         {
-            UpdatePlayersTurnState();
+            game.UpdatePlayersTurnState();
             OnPropertyChanged(nameof(Players));
             OnPropertyChanged(nameof(SelectedPlayerCount));
             OnPropertyChanged(nameof(WaitingMessage)); 

@@ -1,36 +1,38 @@
-﻿
-using blackjack.Models;
-using System.Collections.ObjectModel;
+﻿using blackjack.Models;
+using Microsoft.Maui.Graphics;
 
 namespace blackjack.ModelsLogic
 {
     public class Hand : HandModel
     {
-        public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
-
         public override void AddCard(Card card)
         {
             Cards.Add(card);
-            CaclculateHandValue();
+            CalculateHandValue();
         }
+
         public override void Clear()
         {
             Cards.Clear();
-            Isbust = false;
+            Total = 0;
+            HandValue = 0;
+            IsBust = false;
             HandColor = Colors.Black;
         }
-        public override void CaclculateHandValue()
+
+        public override void CalculateHandValue()
         {
-            HandValue = Cards.Sum(card => card.GetCardValue());
-            Isbust = HandValue > 21;
-            if (Isbust)
+            Total = Cards.Sum(card => card.GetCardValue());
+            HandValue = Total;
+
+            IsBust = HandValue > 21;
+
+            if (IsBust)
                 HandColor = Colors.Gray;
             else if (HandValue == 21)
                 HandColor = Colors.Gold;
             else
                 HandColor = Colors.Black;
-
         }
     }
 }
-

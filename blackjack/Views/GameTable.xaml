@@ -101,7 +101,7 @@
         <AbsoluteLayout BindableLayout.ItemsSource="{Binding Players}">
 
             <BindableLayout.ItemTemplate>
-                <DataTemplate x:DataType="m:Player">
+                <DataTemplate x:DataType="vm:PlayerVM">
 
                     <!--  PLAYER CONTAINER  -->
                     <VerticalStackLayout
@@ -152,7 +152,7 @@
                             Spacing="-30">
 
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="m:CardModel">
+                                <DataTemplate x:DataType="ml:Card">
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="90"
