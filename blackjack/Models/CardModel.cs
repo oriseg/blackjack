@@ -12,7 +12,8 @@
         public Shapes Suit { get; set; }
         public Ranks Rank { get; set; }
         public string ?ImagePath { get; set; }
-        public bool IsFaceDown { get; set; } = false; 
+        public bool IsFaceDown { get; set; } = false;
+        public EventHandler? FaceDownChanged;
         public abstract int GetCardValue();
     }
 }

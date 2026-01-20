@@ -7,9 +7,10 @@
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     Title="RegisterPage"
     x:DataType="vm:RegisterPageVM">
+
     <Grid Padding="30">
 
-        <!--  Background gradient effect  -->
+        <!--  Background gradient  -->
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                 <GradientStop Offset="0.0" Color="#1E1E1E" />
@@ -19,10 +20,10 @@
 
         <VerticalStackLayout
             HorizontalOptions="Center"
-            Spacing="35"
+            Spacing="30"
             VerticalOptions="Center">
 
-            <!--  Page Title  -->
+            <!--  Title  -->
             <Label
                 FontAttributes="Bold"
                 FontSize="40"
@@ -30,7 +31,40 @@
                 Text="{x:Static m:Strings.Register}"
                 TextColor="Gold" />
 
-            <!--  Email Entry  -->
+            <!--  Profile Photo  -->
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
+
+                <Frame
+                    Padding="0"
+                    BackgroundColor="#2A2A2A"
+                    CornerRadius="70"
+                    HeightRequest="140"
+                    IsClippedToBounds="True"
+                    WidthRequest="140">
+
+                    <Image Aspect="AspectFill" Source="{Binding ProfileImage}" />
+                </Frame>
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        Command="{Binding PickProfileImageCommand}"
+                        FontSize="14"
+                        Text="Gallery"
+                        TextColor="Gold" />
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        Command="{Binding TakePhotoCommand}"
+                        FontSize="14"
+                        Text="Camera"
+                        TextColor="Gold" />
+
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!--  Email  -->
             <Frame
                 Padding="11"
                 BackgroundColor="#1E1E1E"
@@ -38,6 +72,7 @@
                 HasShadow="True"
                 HeightRequest="70"
                 WidthRequest="350">
+
                 <Entry
                     FontSize="22"
                     Keyboard="Email"
@@ -47,7 +82,7 @@
                     TextColor="White" />
             </Frame>
 
-            <!--  Username Entry  -->
+            <!--  Username  -->
             <Frame
                 Padding="11"
                 BackgroundColor="#1E1E1E"
@@ -55,6 +90,7 @@
                 HasShadow="True"
                 HeightRequest="70"
                 WidthRequest="350">
+
                 <Entry
                     FontSize="22"
                     Placeholder="{x:Static m:Strings.UserName}"
@@ -63,7 +99,7 @@
                     TextColor="White" />
             </Frame>
 
-            <!--  Password Entry with toggle  -->
+            <!--  Password  -->
             <Frame
                 Padding="0"
                 BackgroundColor="#1E1E1E"
@@ -71,7 +107,9 @@
                 HasShadow="True"
                 HeightRequest="70"
                 WidthRequest="350">
+
                 <Grid ColumnDefinitions="*,Auto">
+
                     <Entry
                         Margin="15,0"
                         FontSize="22"
@@ -88,14 +126,13 @@
                         Command="{Binding ToggleIsPasswordCommand}"
                         FontFamily="MaterialSymbols"
                         FontSize="28"
-                        HorizontalOptions="End"
                         Text="{Binding IsPassword, Converter={StaticResource passwordIconConvert}}"
                         TextColor="Gold"
                         WidthRequest="60" />
                 </Grid>
             </Frame>
 
-            <!--  Register Button  -->
+            <!--  Register  -->
             <Button
                 BackgroundColor="Gold"
                 Command="{Binding RegisterCommand}"

@@ -2,13 +2,13 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using Firebase.Auth;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks; 
+
 
 namespace blackjack.ModelsLogic 
 {
     public class User : UserModel
     {
+       
         public override void Register()
         {
             fbd.CreateUserWithEmailAndPasswordAsync(Email, Password, UserName, OnCompleteReg);
@@ -79,18 +79,28 @@ namespace blackjack.ModelsLogic
                         ShowAlert(Strings.UserLoginError);
                     }
 
-                } 
-
-                
+                }      
             }
-
-
         }
         public User()
         {
             UserName = Preferences.Get(Keys.NameKey, string.Empty);
             Email = Preferences.Get(Keys.EmailKey, string.Empty);
-         
+            ProfileImagePath = Preferences.Get(Keys.ProfileImageKey, null);
+        }
+        public async Task PickProfileImageAsync()
+        {
+            var path = await mediaService!.PickImageAsync();
+            if (path == null) return;
+
+            ProfileImagePath = path;
+        }
+
+        public async Task TakePhotoAsync()
+        {
+            var path = await mediaService!.TakePhotoAsync();
+            if (path == null) return;
+            ProfileImagePath = path;
         }
     }
 }

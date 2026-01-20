@@ -41,9 +41,8 @@ namespace blackjack.ModelsLogic
             Random generator = new(uniqueSeed);
             this.Id = generator.Next(0, 1000000).ToString("D6");
             this.Players.Clear();
-
             this.PlayerCount = PlayerCount;
-            Player host = new Player(HostName);
+            Player host = new(HostName);
             host.IsCurrentTurn = true;
             this.Players.Add(host);
             this.SetDocument(OnComplete);
@@ -96,9 +95,12 @@ namespace blackjack.ModelsLogic
         {
             if (Players.Count == 0)
                 return;
-
-            int nextPlayerIndex = (CurrentPlayerIndex + 1) % Players.Count;
-
+            if (CurrentPlayerIndex >= Players.Count - 1)
+            {
+                PlayersTurnEnds();
+                return;
+            }
+            int nextPlayerIndex = CurrentPlayerIndex + 1;
             // Update the CurrentPlayerIndex field in Firestore.
             // The last parameter '_ => { }' is a lambda expression (anonymous function) 
             // that acts as a callback when the update is complete. 
@@ -165,13 +167,8 @@ namespace blackjack.ModelsLogic
                     CheckLocalPlayerTurn();
                 }
                 HostName= updatedGame.HostName; 
-                if(Dealer != null&& updatedGame.Dealer != null)
-                {
-                    Dealer.DealerHand.Clear();
-                    foreach (var card in updatedGame.Dealer.DealerHand.Cards)
-                        Dealer.DealerHand.AddCard(card);
-                }
-           
+                if(Dealer != null&& updatedGame.Dealer!=null)
+                    Dealer.DealerHand = updatedGame.Dealer.DealerHand;
 
 
 
@@ -230,10 +227,9 @@ namespace blackjack.ModelsLogic
             if (!HostIsCurrentUser())
                 return;
             DealPlayersCards();
-            DealDealerCards();
 
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+
         } 
 
         public override void DealPlayersCards()
@@ -255,7 +251,6 @@ namespace blackjack.ModelsLogic
             for (int i = 0; i < 2; i++)
             {
                 Card card = CreateRandomCard();
-                card.IsFaceDown = true;
                 Dealer?.DealerHand.AddCard(card);
             }
         }
@@ -287,7 +282,6 @@ namespace blackjack.ModelsLogic
         {
             if (!IsMyTurn())
                 return;
-
             NextTurn();
         }
        
@@ -305,6 +299,11 @@ namespace blackjack.ModelsLogic
             {
                 NextTurn();
             }
+        } 
+        public override void PlayersTurnEnds()
+        {
+            DealDealerCards();
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
         }
 
 

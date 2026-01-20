@@ -6,7 +6,8 @@
         public const string FbAppDomainKey = "blackjack-3fdb3.firebaseapp.com";
         public const string NameKey = "NameKey";
         public const string EmailKey = "Email";
-        public const string PasswordKey = "Password"; 
+        public const string PasswordKey = "Password";
+        public const string ProfileImageKey = "ProfileImage";
         public const string GamesCollection = "Games";
         public const string MessageKey = "message";
         public const string ErrorsKey = "errors";

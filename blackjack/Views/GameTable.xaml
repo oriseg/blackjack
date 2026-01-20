@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="blackjack.Views.GameTable"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -110,14 +111,15 @@
                         HorizontalOptions="Center"
                         Spacing="4">
 
+                        <!--  PLAYER CIRCLE WITH PROFILE IMAGE  -->
                         <!--  PLAYER CIRCLE  -->
                         <Border
-                            BackgroundColor="Black"
                             HeightRequest="70"
                             HorizontalOptions="Center"
                             Stroke="Transparent"
                             StrokeShape="RoundRectangle 35"
                             StrokeThickness="2"
+                            VerticalOptions="Center"
                             WidthRequest="70">
 
                             <Border.Triggers>
@@ -130,15 +132,26 @@
                                 </DataTrigger>
                             </Border.Triggers>
 
-                            <Label
-                                HorizontalOptions="Center"
-                                Text="{Binding UserName}"
-                                TextColor="LightBlue"
-                                VerticalOptions="Center" />
+                            <!--  IMAGE INSIDE BORDER  -->
+                            <Image
+                                Aspect="AspectFill"
+                                HeightRequest="70"
+                             
+                                WidthRequest="70" />
+
                         </Border>
 
+                        <!--  USERNAME UNDER CIRCLE  -->
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            Text="{Binding UserName}"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+
                         <!--  HAND VALUE  -->
-                        <Label 
+                        <Label
                             FontAttributes="Italic"
                             FontSize="20"
                             HorizontalOptions="Center"
