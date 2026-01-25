@@ -18,7 +18,7 @@ namespace blackjack.ModelsLogic
 
         }
         public Game(int playercount)
-        { 
+        {
             Dealer = new Dealer();
             HostName = new User().UserName;
             Created = DateTime.Now;
@@ -132,7 +132,7 @@ namespace blackjack.ModelsLogic
                     this.Players = game.Players;
                     this.Created = game.Created;
                     this.Id = game.Id;
-                    this.PlayerCount = game.PlayerCount; 
+                    this.PlayerCount = game.PlayerCount;
                     this.HostName = game.HostName;
                     this.Dealer = game.Dealer;
                     //if username not exist in list
@@ -153,9 +153,9 @@ namespace blackjack.ModelsLogic
                     IsFull = updatedGame.IsFull;
                     ArrangePlayerSeats();
                 }
-                for(int i =0; i < Players.Count; i++)
+                for (int i = 0; i < Players.Count; i++)
                 {
-                    Players[i].PlayerHand = updatedGame.Players[i].PlayerHand; 
+                    Players[i].PlayerHand = updatedGame.Players[i].PlayerHand;
                 }
 
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
@@ -166,8 +166,8 @@ namespace blackjack.ModelsLogic
                     Players[prevCurrnetPlayerIndex].IsCurrentTurn = false;
                     CheckLocalPlayerTurn();
                 }
-                HostName= updatedGame.HostName; 
-                if(Dealer != null&& updatedGame.Dealer!=null)
+                HostName = updatedGame.HostName;
+                if (Dealer != null && updatedGame.Dealer != null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
 
 
@@ -197,10 +197,10 @@ namespace blackjack.ModelsLogic
         {
             string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
             return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
-        }  
+        }
         public override void CheckLocalPlayerTurn()
         {
-            if (IsMyTurn()&& CanStart())
+            if (IsMyTurn() && CanStart())
             {
                 OnPlayerTurn?.Invoke(this, EventArgs.Empty);
             }
@@ -227,10 +227,12 @@ namespace blackjack.ModelsLogic
             if (!HostIsCurrentUser())
                 return;
             DealPlayersCards();
+            DealDealerCards();
 
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
 
-        } 
+        }
 
         public override void DealPlayersCards()
         {
@@ -242,13 +244,13 @@ namespace blackjack.ModelsLogic
                     {
                         player.PlayerHand.AddCard(CreateRandomCard());
                     }
-                } 
+                }
             }
             CheckLocalPlayerTurn();
         }
         public override void DealDealerCards()
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Card card = CreateRandomCard();
                 Dealer?.DealerHand.AddCard(card);
@@ -260,13 +262,13 @@ namespace blackjack.ModelsLogic
             {
                 countdownStarted = true;
                 OnWatingMassgeChanged?.Invoke(this, EventArgs.Empty);
-                WeakReferenceMessenger.Default.Send(new AppMessage<TimerSettings>(timerSettings));   
+                WeakReferenceMessenger.Default.Send(new AppMessage<TimerSettings>(timerSettings));
             }
         }
 
         public override bool CanStart()
         {
-           return CurrentPlayerCount >= PlayerCount;
+            return CurrentPlayerCount >= PlayerCount;
         }
 
         public override void Double()
@@ -284,7 +286,7 @@ namespace blackjack.ModelsLogic
                 return;
             NextTurn();
         }
-       
+
 
         public override void Hit()
         {
@@ -299,13 +301,60 @@ namespace blackjack.ModelsLogic
             {
                 NextTurn();
             }
-        } 
+        }
         public override void PlayersTurnEnds()
         {
-            DealDealerCards();
+
+            Player current = Players[CurrentPlayerIndex];
+            current.IsCurrentTurn = false;
+
+            // Check if all players have finished their turns
+            bool allPlayersDone = Players.All(p => p.PlayerHand.IsBust || !p.IsCurrentTurn);
+
+            if (allPlayersDone)
+            {
+                DealerTurn();
+            }
+            else
+            {
+                NextTurn(); // Move to the next player's turn
+            }
+
+            // Update the database after turn ends
+            if (HostIsCurrentUser())
+            {
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+            }
+        }
+        private void DealerTurn()
+        {
+            if (Dealer == null) return;
+
+            // Dealer keeps drawing cards until 17 or more
+            while (Dealer.DealerHand.HandValue < 17)
+            {
+                Dealer.DealerHand.AddCard(CreateRandomCard());
+            }
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+
+            EvaluateWinners();
+
+        }
+
+        private void EvaluateWinners()
+        {
+
+
+
+
         }
 
 
     }
 }
+
+       
+
+
+
