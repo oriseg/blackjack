@@ -28,7 +28,7 @@ namespace blackjack.ModelsLogic
             int total = 0;
             int aceCount = 0;
 
-            foreach (var card in Cards)
+            foreach (Card card in Cards)
             {
                 total += card.GetCardValue();
 

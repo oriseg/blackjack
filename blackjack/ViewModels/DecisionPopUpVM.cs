@@ -1,9 +1,6 @@
 ﻿
 using blackjack.ModelsLogic;
 using CommunityToolkit.Maui.Views;
-using System;
-using System.Reactive;
-using System.Reflection.Metadata;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels

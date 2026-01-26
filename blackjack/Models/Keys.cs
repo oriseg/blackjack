@@ -23,7 +23,9 @@
         public const int Length = 600; 
         public const int FinishedSignal = -1 ; 
         public const int TimerTotalTime = 10000; 
-        public const int TimerInterval = 1000;
+        public const int TimerInterval = 1000; 
+        public const int TwoSecondDelay = 2000; 
+        public const int IdGenerator = 1000000;
 
     }
 }

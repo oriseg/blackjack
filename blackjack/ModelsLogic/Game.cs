@@ -2,9 +2,6 @@
 using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-
 
 namespace blackjack.ModelsLogic
 {
@@ -40,7 +37,7 @@ namespace blackjack.ModelsLogic
             //clean prev game after back
             int uniqueSeed = Guid.NewGuid().GetHashCode();
             Random generator = new(uniqueSeed);
-            this.Id = generator.Next(0, 1000000).ToString("D6");
+            this.Id = generator.Next(0, Keys.IdGenerator).ToString("D6");
             this.Players.Clear();
             this.PlayerCount = PlayerCount;
             Player host = new(HostName);
@@ -147,7 +144,6 @@ namespace blackjack.ModelsLogic
             Game? updatedGame = snapshot?.ToObject<Game>();
             if (updatedGame != null)
             {
-
                 if (Players.Count != updatedGame.Players.Count)
                 {
                     Players = updatedGame.Players;
@@ -158,7 +154,6 @@ namespace blackjack.ModelsLogic
                 {
                     Players[i].PlayerHand = updatedGame.Players[i].PlayerHand;
                 }
-
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
@@ -170,13 +165,8 @@ namespace blackjack.ModelsLogic
                 HostName = updatedGame.HostName;
                 if (Dealer != null && updatedGame.Dealer != null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
-
-
-
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
-
-
             }
         }
         public override void AddSnapshotListener()
@@ -229,10 +219,8 @@ namespace blackjack.ModelsLogic
                 return;
             DealPlayersCards();
             DealDealerCards();
-
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
-
         }
 
         public override void DealPlayersCards()
@@ -323,7 +311,7 @@ namespace blackjack.ModelsLogic
             // Dealer keeps drawing cards until 17 or more
             while (Dealer.DealerHand.HandValue < 17)
             {
-                await Task.Delay(2000);
+                await Task.Delay(Keys.TwoSecondDelay);
                 Dealer.DealerHand.AddCard(CreateRandomCard());
             }
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
@@ -333,13 +321,30 @@ namespace blackjack.ModelsLogic
 
         private void EvaluateWinners()
         {
-
-
-
-
+            foreach (Player player in Players)
+            {
+                if (player.PlayerHand.IsBust)
+                {
+                   
+                }
+                else if (Dealer != null && Dealer.DealerHand.IsBust)
+                {
+                   
+                }
+                else if (player.PlayerHand.HandValue > Dealer!.DealerHand.HandValue)
+                {
+                   
+                }
+                else if (player.PlayerHand.HandValue < Dealer!.DealerHand.HandValue)
+                {
+                   
+                }
+                else
+                {
+                   
+                }
+            }
         }
-
-
     }
 }
 

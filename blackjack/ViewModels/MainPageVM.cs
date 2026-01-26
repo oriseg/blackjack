@@ -37,7 +37,6 @@ namespace blackjack.ViewModels
             {
                 Shell.Current.Navigation.PushAsync(new GameTable(game));
             });
-
         }
 
         private void OnGameAdded(object? sender, bool e)

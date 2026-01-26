@@ -1,7 +1,5 @@
 ﻿using blackjack.Models;
-using blackjack.ModelsLogic;
 using blackjack.Views;
-using Microsoft.Extensions.Logging;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels
