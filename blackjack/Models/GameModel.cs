@@ -51,6 +51,8 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler? OnTimeLeftChanged;
         [Ignored]
+        public EventHandler? Onbust;
+        [Ignored]
         protected IListenerRegistration? ilr;
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void ArrangePlayerSeats();

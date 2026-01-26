@@ -21,7 +21,8 @@ namespace blackjack.ViewModels
         public bool IsMyTurn => game.IsMyTurn();
         public int CurrentHandValue => CurrentPlayer.PlayerHand.HandValue;
         public Color CurrentHandColor => CurrentPlayer.PlayerHand.HandColor;
-        public bool CurrentHandIsBust => CurrentPlayer.PlayerHand.IsBust; 
+        public bool CurrentHandIsBust => CurrentPlayer.PlayerHand.IsBust;
+        public int CurrentDealerHandValue=> game.Dealer!.DealerHand.HandValue;
         public GameTableVM(Game game)
         {
             this.game = game;
@@ -33,7 +34,9 @@ namespace blackjack.ViewModels
             game.OnCountdownFinished += OnCountdownFinished;
             game.OnPlayerTurn += OnPlayerTurn;
             game.OnWatingMassgeChanged += OnWatingMassgeChanged;
-            // Subscribe current player hand
+            game.Dealer!.DealerHand.OnHandValueChanged += DealerHandValueChanged;
+            // Subscribe current player hand 
+
             CurrentPlayer.PlayerHand.OnHandValueChanged += HandValueChanged;
             CurrentPlayer.PlayerHand.OnHandColorChanged += HandColorChanged;
             CurrentPlayer.PlayerHand.OnHandStateChanged += HandStateChanged; 
@@ -41,10 +44,10 @@ namespace blackjack.ViewModels
             game.ArrangePlayerSeats();
         }
 
-        //private void OnDealerCardFaceDownChanged(object? sender, EventArgs e)
-        //{
-        //    OnPropertyChanged(nameof(DealerCards));
-        //}
+        private void DealerHandValueChanged(object? sender, EventArgs e)
+        {
+          OnPropertyChanged(nameof(CurrentDealerHandValue));
+        }
 
         private void HandValueChanged(object? sender, EventArgs e)
         {
@@ -106,6 +109,7 @@ namespace blackjack.ViewModels
             OnPropertyChanged(nameof(SelectedPlayerCount));
             OnPropertyChanged(nameof(WaitingMessage));
             OnPropertyChanged(nameof(DealerCards));
+            OnPropertyChanged(nameof(CurrentDealerHandValue));
             game.CheckAndStartCountdown();
         }
 

@@ -1,7 +1,4 @@
 ﻿using blackjack.ModelsLogic;
-using System.Collections.ObjectModel;
-
-
     public abstract class HandModel
     {
         public int HandValue { get; protected set; }

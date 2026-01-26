@@ -15,7 +15,8 @@ namespace blackjack.ModelsLogic
         public Card()
         {
 
-        }
+        } 
+
         public override int GetCardValue()
         {
             return Rank switch

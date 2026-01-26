@@ -1,5 +1,4 @@
-﻿using blackjack.Models;
-using Microsoft.Maui.Graphics;
+﻿
 using System.Collections.ObjectModel;
 
 namespace blackjack.ModelsLogic
@@ -12,6 +11,7 @@ namespace blackjack.ModelsLogic
         {
             Cards.Add(card);
             CalculateHandValue();
+         
         }
 
         public override void Clear()
@@ -19,11 +19,36 @@ namespace blackjack.ModelsLogic
             Cards.Clear();
             IsBust = false;
             HandColor = Colors.Black;
+            OnHandValueChanged?.Invoke(this, EventArgs.Empty);
+            OnHandColorChanged?.Invoke(this, EventArgs.Empty);
+            OnHandStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+        public int GetHandValue()
+        {
+            int total = 0;
+            int aceCount = 0;
+
+            foreach (var card in Cards)
+            {
+                total += card.GetCardValue();
+
+                if (card.Rank == Models.CardModel.Ranks.Ace)
+                    aceCount++;
+            }
+
+            // Downgrade Aces from 11 to 1 as needed
+            while (total > 21 && aceCount > 0)
+            {
+                total -= 10; // 11 -> 1
+                aceCount--;
+            }
+
+            return total;
         }
 
         public override void CalculateHandValue()
         {
-            HandValue = Cards.Sum(card => card.GetCardValue());
+            HandValue = GetHandValue();
             IsBust = HandValue > 21;
             if (IsBust)
                 HandColor = Colors.Gray;
@@ -31,7 +56,9 @@ namespace blackjack.ModelsLogic
                 HandColor = Colors.Gold;
             else
                 HandColor = Colors.Black;
-
+            OnHandValueChanged?.Invoke(this, EventArgs.Empty);
+            OnHandColorChanged?.Invoke(this, EventArgs.Empty);
+            OnHandStateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

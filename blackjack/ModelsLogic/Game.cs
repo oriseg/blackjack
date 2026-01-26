@@ -3,6 +3,7 @@ using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 
 namespace blackjack.ModelsLogic
@@ -250,11 +251,8 @@ namespace blackjack.ModelsLogic
         }
         public override void DealDealerCards()
         {
-            for (int i = 0; i < 1; i++)
-            {
                 Card card = CreateRandomCard();
-                Dealer?.DealerHand.AddCard(card);
-            }
+                Dealer?.DealerHand.AddCard(card);        
         }
         public override void CheckAndStartCountdown()
         {
@@ -296,9 +294,9 @@ namespace blackjack.ModelsLogic
             Player current = Players[CurrentPlayerIndex];
             current.PlayerHand.AddCard(CreateRandomCard());
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-
             if (current.PlayerHand.IsBust)
             {
+                Onbust?.Invoke(this, EventArgs.Empty);
                 NextTurn();
             }
         }
@@ -307,19 +305,11 @@ namespace blackjack.ModelsLogic
 
             Player current = Players[CurrentPlayerIndex];
             current.IsCurrentTurn = false;
-
-            // Check if all players have finished their turns
             bool allPlayersDone = Players.All(p => p.PlayerHand.IsBust || !p.IsCurrentTurn);
-
             if (allPlayersDone)
-            {
                 DealerTurn();
-            }
             else
-            {
-                NextTurn(); // Move to the next player's turn
-            }
-
+                NextTurn();
             // Update the database after turn ends
             if (HostIsCurrentUser())
             {
@@ -327,17 +317,16 @@ namespace blackjack.ModelsLogic
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
             }
         }
-        private void DealerTurn()
+        private async void DealerTurn()
         {
             if (Dealer == null) return;
-
             // Dealer keeps drawing cards until 17 or more
             while (Dealer.DealerHand.HandValue < 17)
             {
+                await Task.Delay(2000);
                 Dealer.DealerHand.AddCard(CreateRandomCard());
             }
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
-
             EvaluateWinners();
 
         }

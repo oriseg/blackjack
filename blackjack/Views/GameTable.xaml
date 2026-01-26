@@ -9,31 +9,31 @@
     x:DataType="vm:GameTableVM"
     BackgroundColor="LightGreen">
 
-    <!-- RESOURCES -->
+    <!--  RESOURCES  -->
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:PlayerToRectConverter x:Key="PlayerToRectConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <!-- ROOT -->
+    <!--  ROOT  -->
     <AbsoluteLayout>
 
-        <!-- GAME ID -->
+        <!--  GAME ID  -->
         <Frame
+            Padding="8"
             AbsoluteLayout.LayoutBounds="1,0,67,50"
             AbsoluteLayout.LayoutFlags="PositionProportional"
-            Padding="8"
             BackgroundColor="Green"
             CornerRadius="10">
             <Label
-                Text="{Binding Id}"
                 FontSize="14"
+                Text="{Binding Id}"
                 TextColor="White"
                 VerticalOptions="Center" />
         </Frame>
 
-        <!-- WAITING MESSAGE -->
+        <!--  WAITING MESSAGE  -->
         <Label
             AbsoluteLayout.LayoutBounds="0.5,0.1,AutoSize,AutoSize"
             AbsoluteLayout.LayoutFlags="PositionProportional"
@@ -42,13 +42,13 @@
             Text="{Binding WaitingMessage}"
             TextColor="Black" />
 
-        <!-- TABLE FRAME (dealer cards) -->
+        <!--  TABLE FRAME (dealer cards)  -->
         <Frame
+            Padding="0"
             AbsoluteLayout.LayoutBounds="0.5,0.45,400,160"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             BackgroundColor="DarkGreen"
-            CornerRadius="100"
-            Padding="0">
+            CornerRadius="100">
 
             <HorizontalStackLayout
                 BindableLayout.ItemsSource="{Binding DealerCards}"
@@ -58,14 +58,14 @@
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="ml:Card">
                         <Image
-                            WidthRequest="70"
-                            HeightRequest="90"
                             Aspect="AspectFit"
-                            Source="{Binding ImagePath}">
+                            HeightRequest="90"
+                            Source="{Binding ImagePath}"
+                            WidthRequest="70">
                             <Image.Triggers>
                                 <DataTrigger
-                                    TargetType="Image"
                                     Binding="{Binding IsFaceDown}"
+                                    TargetType="Image"
                                     Value="True">
                                     <Setter Property="Source" Value="main_card.png" />
                                 </DataTrigger>
@@ -78,41 +78,41 @@
 
         </Frame>
 
-        <!-- DEALER HAND VALUE (ON TOP, LEFT OF CARDS) -->
-        <!--<Label
-            AbsoluteLayout.LayoutBounds="0.25,0.45,AutoSize,AutoSize"
+        <!--  DEALER HAND VALUE (ON TOP, LEFT OF CARDS)  -->
+        <Label
+            AbsoluteLayout.LayoutBounds="0.2,0.45,AutoSize,AutoSize"
             AbsoluteLayout.LayoutFlags="PositionProportional"
-            Text="{Binding DealerHandValue}"
-            FontSize="25"
             FontAttributes="Bold"
-            TextColor="Black"
+            FontSize="30"
             HorizontalOptions="End"
+            Text="{Binding CurrentDealerHandValue}"
+            TextColor="Black"
             VerticalOptions="Center">
             <Label.Triggers>
-                <DataTrigger
+                <!--<DataTrigger
+                    Binding="{Binding CurrentDealerHandValue}"
                     TargetType="Label"
-                    Binding="{Binding DealerHandValue}"
                     Value="0">
                     <Setter Property="IsVisible" Value="False" />
-                </DataTrigger>
+                </DataTrigger>-->
             </Label.Triggers>
-        </Label>-->
+        </Label>
 
-        <!-- DEALER CIRCLE -->
+        <!--  DEALER CIRCLE  -->
         <Frame
+            Padding="5"
             AbsoluteLayout.LayoutBounds="0.5,0.25,80,80"
             AbsoluteLayout.LayoutFlags="PositionProportional"
-            Padding="5"
             BackgroundColor="Maroon"
             CornerRadius="40">
             <Label
+                HorizontalOptions="Center"
                 Text="Dealer"
                 TextColor="White"
-                HorizontalOptions="Center"
                 VerticalOptions="Center" />
         </Frame>
 
-        <!-- PLAYERS -->
+        <!--  PLAYERS  -->
         <AbsoluteLayout BindableLayout.ItemsSource="{Binding Players}">
 
             <BindableLayout.ItemTemplate>
@@ -124,19 +124,19 @@
                         HorizontalOptions="Center"
                         Spacing="4">
 
-                        <!-- PLAYER CIRCLE -->
+                        <!--  PLAYER CIRCLE  -->
                         <Border
-                            WidthRequest="70"
                             HeightRequest="70"
+                            HorizontalOptions="Center"
                             Stroke="Transparent"
-                            StrokeThickness="2"
                             StrokeShape="RoundRectangle 35"
-                            HorizontalOptions="Center">
+                            StrokeThickness="2"
+                            WidthRequest="70">
 
                             <Border.Triggers>
                                 <DataTrigger
-                                    TargetType="Border"
                                     Binding="{Binding IsCurrentTurn}"
+                                    TargetType="Border"
                                     Value="True">
                                     <Setter Property="Stroke" Value="Red" />
                                     <Setter Property="StrokeThickness" Value="4" />
@@ -144,28 +144,28 @@
                             </Border.Triggers>
 
                             <Image
-                                WidthRequest="70"
+                                Aspect="AspectFill"
                                 HeightRequest="70"
-                                Aspect="AspectFill" />
+                                WidthRequest="70" />
                         </Border>
 
-                        <!-- USERNAME -->
+                        <!--  USERNAME  -->
                         <Label
-                            Text="{Binding UserName}"
-                            FontSize="12"
                             FontAttributes="Bold"
+                            FontSize="12"
                             HorizontalOptions="Center"
-                            TextColor="White" />
+                            Text="{Binding UserName}"
+                            TextColor="Black" />
 
-                        <!-- PLAYER HAND VALUE -->
+                        <!--  PLAYER HAND VALUE  -->
                         <Label
-                            Text="{Binding PlayerHand.HandValue}"
-                            TextColor="{Binding PlayerHand.HandColor}"
-                            FontSize="20"
                             FontAttributes="Italic"
-                            HorizontalOptions="Center" />
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding PlayerHand.HandValue}"
+                            TextColor="{Binding PlayerHand.HandColor}" />
 
-                        <!-- PLAYER CARDS -->
+                        <!--  PLAYER CARDS  -->
                         <HorizontalStackLayout
                             BindableLayout.ItemsSource="{Binding PlayerHand.Cards}"
                             HorizontalOptions="Center"
@@ -174,10 +174,10 @@
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="ml:Card">
                                     <Image
-                                        WidthRequest="70"
-                                        HeightRequest="90"
                                         Aspect="AspectFit"
-                                        Source="{Binding ImagePath}" />
+                                        HeightRequest="90"
+                                        Source="{Binding ImagePath}"
+                                        WidthRequest="70" />
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
 

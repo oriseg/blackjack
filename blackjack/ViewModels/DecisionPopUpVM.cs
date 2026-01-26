@@ -20,30 +20,35 @@ namespace blackjack.ViewModels
         {
             this.game = game;
             this.popup = popup;
-
             HitCommand = new Command(OnHit);
             StandCommand = new Command(OnStand);
             DoubleCommand = new Command(OnDouble);
+            game.Onbust += Bust;
+        }
+
+        private void Bust(object? sender, EventArgs e)
+        {
+            ClosePopUp();
         }
 
         private void OnDouble()
         {
             game.Hit();
-
-            // אם Bust – המשחק כבר העביר תור
-                popup.Close();
-
+            ClosePopUp();
         }
 
         private void OnStand()
         {
             game.Stand();
-            popup.Close();
+            ClosePopUp();
         }
 
         private void OnHit()
         {
-            game.Double();
+            game.Hit();          
+        } 
+        public void ClosePopUp()
+        {
             popup.Close();
         }
     }
