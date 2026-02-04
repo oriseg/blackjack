@@ -35,6 +35,7 @@ namespace blackjack.ViewModels
             game.OnPlayerTurn += OnPlayerTurn;
             game.OnWatingMassgeChanged += OnWatingMassgeChanged;
             game.Dealer!.DealerHand.OnHandValueChanged += DealerHandValueChanged;
+            game.OnRoundResult += OnRoundResult;
             // Subscribe current player hand 
 
             CurrentPlayer.PlayerHand.OnHandValueChanged += HandValueChanged;
@@ -44,6 +45,18 @@ namespace blackjack.ViewModels
             game.ArrangePlayerSeats();
         }
 
+        private async void OnRoundResult(object? sender, RoundResultData data)
+        {
+            await Application.Current!
+                .MainPage!
+                .ShowPopupAsync(new ResultPopup(data));
+
+            // 🔥 ONLY HOST CLEARS RESULTS
+            if (game.HostIsCurrentUser())
+            {
+                game.ClearRoundResults();
+            }
+        }
         private void DealerHandValueChanged(object? sender, EventArgs e)
         {
           OnPropertyChanged(nameof(CurrentDealerHandValue));

@@ -15,8 +15,10 @@ namespace blackjack.Models
         public DateTime Created { get; set; }
         public bool IsFull { get; set; }
         public int CurrentPlayerIndex { get; set; }
-        public int PlayerCount { get; set; }  
-        public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
+        public int PlayerCount { get; set; }
+        public Dictionary<string, RoundResultData> RoundResults { get; set; } = new Dictionary<string, RoundResultData>();
+    
+        public ObservableCollection<Player> Players { get; set; } = [];
         protected TimerSettings timerSettings = new(Keys.TimerTotalTime, Keys.TimerInterval);
         [Ignored]
         public string TimeLeft { get; protected set; } = string.Empty;
@@ -52,6 +54,8 @@ namespace blackjack.Models
         public EventHandler? OnTimeLeftChanged;
         [Ignored]
         public EventHandler? Onbust;
+        [Ignored]
+        public EventHandler<RoundResultData>? OnRoundResult;
         [Ignored]
         protected IListenerRegistration? ilr;
         public abstract void SetDocument(Action<System.Threading.Tasks.Task> OnComplete);

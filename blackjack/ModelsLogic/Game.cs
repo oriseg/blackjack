@@ -150,10 +150,12 @@ namespace blackjack.ModelsLogic
                     IsFull = updatedGame.IsFull;
                     ArrangePlayerSeats();
                 }
+
                 for (int i = 0; i < Players.Count; i++)
                 {
                     Players[i].PlayerHand = updatedGame.Players[i].PlayerHand;
                 }
+
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
@@ -162,13 +164,28 @@ namespace blackjack.ModelsLogic
                     Players[prevCurrnetPlayerIndex].IsCurrentTurn = false;
                     CheckLocalPlayerTurn();
                 }
+
                 HostName = updatedGame.HostName;
+
                 if (Dealer != null && updatedGame.Dealer != null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
+
+                // ============================
+                // 🔥 ADD THIS PART HERE
+                // ============================
+                string myUserName = Preferences.Get(Keys.NameKey, string.Empty);
+
+                if (updatedGame.RoundResults != null && updatedGame.RoundResults.TryGetValue(myUserName, out RoundResultData? myResult))
+                {
+                    OnRoundResult?.Invoke(this, myResult);
+                }
+                // ============================
+
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
             }
         }
+
         public override void AddSnapshotListener()
         {
             ilr = fbd.AddSnapshotListener(Keys.GamesCollection, Id, OnChange);
@@ -314,39 +331,70 @@ namespace blackjack.ModelsLogic
                 await Task.Delay(Keys.TwoSecondDelay);
                 Dealer.DealerHand.AddCard(CreateRandomCard());
             }
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
-            EvaluateWinners();
-
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+                EvaluateWinners();          
         }
 
-        private void EvaluateWinners()
+         private void EvaluateWinners()
         {
+            Dictionary<string, RoundResultData> results = [];
+
             foreach (Player player in Players)
             {
+                RoundResultData result = new()
+                {
+                    TargetUserName = player.UserName
+                };
+
                 if (player.PlayerHand.IsBust)
                 {
-                   
+                    result.Title = "💥 Bust!";
+                    result.Message = "You went over 21";
                 }
-                else if (Dealer != null && Dealer.DealerHand.IsBust)
+                else if (Dealer!.DealerHand.IsBust)
                 {
-                   
+                    result.Title = "🎉 You Win!";
+                    result.Message = "Dealer busted";
                 }
-                else if (player.PlayerHand.HandValue > Dealer!.DealerHand.HandValue)
+                else if (player.PlayerHand.HandValue > Dealer.DealerHand.HandValue)
                 {
-                   
+                    result.Title = "🏆 You Win!";
+                    result.Message = "Great hand!";
                 }
-                else if (player.PlayerHand.HandValue < Dealer!.DealerHand.HandValue)
+                else if (player.PlayerHand.HandValue < Dealer.DealerHand.HandValue)
                 {
-                   
+                    result.Title = "😞 You Lose";
+                    result.Message = "Dealer wins";
                 }
                 else
                 {
-                   
+                    result.Title = "🤝 Push";
+                    result.Message = "It's a tie";
                 }
+
+                results[player.UserName] = result;
             }
+
+            // 🔥 SAVE RESULTS TO FIRESTORE
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), results, _ => { });
+
         }
+        public void ClearRoundResults()
+        {
+            fbd.UpdateFields(
+                Keys.GamesCollection,
+                Id,
+                nameof(RoundResults),
+                new Dictionary<string, RoundResultData>(),
+                _ => { }
+            );
+        }
+
     }
+
 }
+
+
 
        
 

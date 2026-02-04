@@ -8,6 +8,7 @@
         public abstract void AddCard(Card card);
         public abstract void Clear();
         public abstract void CalculateHandValue();
+   
         public EventHandler? OnHandValueChanged;
         public EventHandler? OnHandColorChanged;
         public EventHandler? OnHandStateChanged;
