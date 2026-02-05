@@ -305,14 +305,14 @@ namespace blackjack.ModelsLogic
                 NextTurn();
             }
         }
-        public override void PlayersTurnEnds()
+        public override async void PlayersTurnEnds()
         {
 
             Player current = Players[CurrentPlayerIndex];
             current.IsCurrentTurn = false;
             bool allPlayersDone = Players.All(p => p.PlayerHand.IsBust || !p.IsCurrentTurn);
             if (allPlayersDone)
-                DealerTurn();
+               await DealerTurn();
             else
                 NextTurn();
             // Update the database after turn ends
@@ -322,7 +322,7 @@ namespace blackjack.ModelsLogic
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
             }
         }
-        private async void DealerTurn()
+        private async Task DealerTurn()
         {
             if (Dealer == null) return;
             // Dealer keeps drawing cards until 17 or more
@@ -330,9 +330,9 @@ namespace blackjack.ModelsLogic
             {
                 await Task.Delay(Keys.TwoSecondDelay);
                 Dealer.DealerHand.AddCard(CreateRandomCard());
-            }
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
-                EvaluateWinners();          
+            }
+            EvaluateWinners();          
         }
 
          private void EvaluateWinners()
@@ -381,14 +381,20 @@ namespace blackjack.ModelsLogic
         }
         public void ClearRoundResults()
         {
-            fbd.UpdateFields(
-                Keys.GamesCollection,
-                Id,
-                nameof(RoundResults),
-                new Dictionary<string, RoundResultData>(),
-                _ => { }
-            );
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(),_ => { });
         }
+        public async Task StartCountdownAsync()
+        {
+            for (roundCountdown = 5; roundCountdown > 0; roundCountdown--)
+            {
+                RoundCountdownText = $" {roundCountdown}";
+                OnRoundCountdownChanged?.Invoke(this, EventArgs.Empty);
+                await Task.Delay(1000);
+            }
+            OnRoundCountdownFinished?.Invoke(this, EventArgs.Empty);
+        }
+
+
 
     }
 

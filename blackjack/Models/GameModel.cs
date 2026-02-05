@@ -3,6 +3,7 @@ using blackjack.ModelsLogic;
 using Plugin.CloudFirestore;
 using Plugin.CloudFirestore.Attributes;
 using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace blackjack.Models
 {
@@ -74,6 +75,14 @@ namespace blackjack.Models
         public abstract void Double(); 
         public abstract bool CanStart();
         public abstract void PlayersTurnEnds();
+        [Ignored]
+        public EventHandler? OnRoundCountdownChanged;
+        [Ignored]
+        public EventHandler? OnRoundCountdownFinished;
+        [Ignored]
+        public int roundCountdown;
+        [Ignored]
+        public string RoundCountdownText { get;  set; } = "Next round starting in";
         [Ignored]
         public string WaitingMessage
         {

@@ -1,4 +1,6 @@
-﻿namespace blackjack.Models
+﻿using Plugin.CloudFirestore.Attributes;
+
+namespace blackjack.Models
 {
    public abstract class CardModel
     {
@@ -13,6 +15,7 @@
         public Ranks Rank { get; set; }
         public string ?ImagePath { get; set; }
         public bool IsFaceDown { get; set; } = false;
+        [Ignored]
         public EventHandler? FaceDownChanged;
         public abstract int GetCardValue();
     }

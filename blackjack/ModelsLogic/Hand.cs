@@ -49,7 +49,7 @@ namespace blackjack.ModelsLogic
         public override void CalculateHandValue()
         {
             HandValue = GetHandValue();
-            IsBust = HandValue > 21;
+            IsBust = HandValue >= 21;
             if (IsBust)
                 HandColor = Colors.Gray;
             else if (HandValue == 21)

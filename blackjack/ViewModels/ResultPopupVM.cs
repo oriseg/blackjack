@@ -10,7 +10,6 @@ namespace blackjack.ViewModels
             public string Title { get; }
             public string Message { get; }
             public ICommand CloseCommand { get; }
-
             public ResultPopupVM(RoundResultData data, Popup popup)
             {
                 Title = data.Title;
