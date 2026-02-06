@@ -2,6 +2,7 @@
 using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
+using System.Threading.Tasks;
 
 namespace blackjack.ModelsLogic
 {
@@ -170,9 +171,6 @@ namespace blackjack.ModelsLogic
                 if (Dealer != null && updatedGame.Dealer != null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
 
-                // ============================
-                // 🔥 ADD THIS PART HERE
-                // ============================
                 string myUserName = Preferences.Get(Keys.NameKey, string.Empty);
 
                 if (updatedGame.RoundResults != null && updatedGame.RoundResults.TryGetValue(myUserName, out RoundResultData? myResult))
@@ -208,7 +206,7 @@ namespace blackjack.ModelsLogic
         }
         public override void CheckLocalPlayerTurn()
         {
-            if (IsMyTurn() && CanStart())
+            if (!suppressDecisionPopup && IsMyTurn() && CanStart())
             {
                 OnPlayerTurn?.Invoke(this, EventArgs.Empty);
             }
@@ -335,7 +333,7 @@ namespace blackjack.ModelsLogic
             EvaluateWinners();          
         }
 
-         private void EvaluateWinners()
+         private  void EvaluateWinners()
         {
             Dictionary<string, RoundResultData> results = [];
 
@@ -348,54 +346,78 @@ namespace blackjack.ModelsLogic
 
                 if (player.PlayerHand.IsBust)
                 {
-                    result.Title = "💥 Bust!";
-                    result.Message = "You went over 21";
+                    result.Title = "💥 " + Strings.Bust;
+                    result.Message = Strings.WentOver21;
                 }
                 else if (Dealer!.DealerHand.IsBust)
                 {
-                    result.Title = "🎉 You Win!";
-                    result.Message = "Dealer busted";
+                    result.Title = "🎉 " + Strings.YouWin;
+                    result.Message = Strings.Dealerbusted;
                 }
                 else if (player.PlayerHand.HandValue > Dealer.DealerHand.HandValue)
                 {
-                    result.Title = "🏆 You Win!";
-                    result.Message = "Great hand!";
+                    result.Title = "🏆 " + Strings.YouWin;
+                    result.Message = Strings.GreatHand;
                 }
                 else if (player.PlayerHand.HandValue < Dealer.DealerHand.HandValue)
                 {
-                    result.Title = "😞 You Lose";
-                    result.Message = "Dealer wins";
+                    result.Title = "😞 " + Strings.Lost;
+                    result.Message = Strings.DealerWins;
                 }
                 else
                 {
-                    result.Title = "🤝 Push";
-                    result.Message = "It's a tie";
+                    result.Title = "🤝 " + Strings.Push;
+                    result.Message = Strings.tie;
                 }
-
                 results[player.UserName] = result;
             }
 
-            // 🔥 SAVE RESULTS TO FIRESTORE
+            // SAVE RESULTS TO FIRESTORE
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), results, _ => { });
+        }
+        public void ClearAndRestart()
+        {
+            ClearRoundData();
+            DealCards();
+            suppressDecisionPopup = false;
 
         }
-        public void ClearRoundResults()
+        public void ClearRoundData()
         {
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(),_ => { });
-        }
-        public async Task StartCountdownAsync()
-        {
-            for (roundCountdown = 5; roundCountdown > 0; roundCountdown--)
-            {
-                RoundCountdownText = $" {roundCountdown}";
-                OnRoundCountdownChanged?.Invoke(this, EventArgs.Empty);
-                await Task.Delay(1000);
+            if (!HostIsCurrentUser())
+                return;  
+                // Suppress decision popup during clearing
+                suppressDecisionPopup = true;
+
+                // Clear round results
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
+
+                // Clear each player's hand and reset turn flags
+                foreach (var player in Players)
+                {
+                    player.PlayerHand.Clear();           // remove cards
+                    player.PlayerHand.HandValue = 0;     // reset hand value explicitly 
+                    player.PlayerHand.IsBust = false;    // reset bust status 
+                    player.PlayerHand.HandColor = Colors.Black; // reset hand color
+                    player.IsCurrentTurn = false;
+                }
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+
+                // Clear dealer hand and value
+                if (Dealer != null)
+                {
+                    Dealer.DealerHand.Clear();
+                    Dealer.DealerHand.HandValue = 0;
+                }
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
+
+                // Reset bets if any
+                //Bets?.Clear();
+                //fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Bets), Bets, _ => { });
+                // Reset current player index
+                CurrentPlayerIndex = 0;
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), CurrentPlayerIndex, _ => { });
             }
-            OnRoundCountdownFinished?.Invoke(this, EventArgs.Empty);
-        }
-
-
-
     }
 
 }
