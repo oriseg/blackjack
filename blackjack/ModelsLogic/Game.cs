@@ -2,7 +2,6 @@
 using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
-using System.Threading.Tasks;
 
 namespace blackjack.ModelsLogic
 {
@@ -177,7 +176,6 @@ namespace blackjack.ModelsLogic
                 {
                     OnRoundResult?.Invoke(this, myResult);
                 }
-                // ============================
 
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
@@ -199,7 +197,7 @@ namespace blackjack.ModelsLogic
             fbd.DeleteDocument(Keys.GamesCollection, Id, OnComplete);
         }
 
-        public bool IsMyTurn()
+        public override bool IsMyTurn()
         {
             string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
             return Players[CurrentPlayerIndex].UserName.Equals(currLocalUserName);
@@ -333,7 +331,7 @@ namespace blackjack.ModelsLogic
             EvaluateWinners();          
         }
 
-         private  void EvaluateWinners()
+         public override void EvaluateWinners()
         {
             Dictionary<string, RoundResultData> results = [];
 
@@ -375,23 +373,20 @@ namespace blackjack.ModelsLogic
             // SAVE RESULTS TO FIRESTORE
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), results, _ => { });
         }
-        public void ClearAndRestart()
+        public override void ClearAndRestart()
         {
             ClearRoundData();
             DealCards();
             suppressDecisionPopup = false;
-
-        }
-        public void ClearRoundData()
+        }   
+       public override void ClearRoundData()
         {
             if (!HostIsCurrentUser())
                 return;  
                 // Suppress decision popup during clearing
                 suppressDecisionPopup = true;
-
                 // Clear round results
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
-
                 // Clear each player's hand and reset turn flags
                 foreach (var player in Players)
                 {
@@ -410,7 +405,6 @@ namespace blackjack.ModelsLogic
                     Dealer.DealerHand.HandValue = 0;
                 }
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
-
                 // Reset bets if any
                 //Bets?.Clear();
                 //fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Bets), Bets, _ => { });
