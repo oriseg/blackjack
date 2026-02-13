@@ -3,6 +3,7 @@
     x:Class="blackjack.Views.RegisterPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:camera="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     Title="RegisterPage"
@@ -46,21 +47,13 @@
                 </Frame>
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-
-                    <Button
-                        BackgroundColor="Transparent"
-                        Command="{Binding PickProfileImageCommand}"
-                        FontSize="14"
-                        Text="Gallery"
-                        TextColor="Gold" />
-
+                    <!--  Camera button  -->
                     <Button
                         BackgroundColor="Transparent"
                         Command="{Binding TakePhotoCommand}"
                         FontSize="14"
                         Text="Camera"
                         TextColor="Gold" />
-
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
@@ -132,7 +125,7 @@
                 </Grid>
             </Frame>
 
-            <!--  Register  -->
+            <!--  Register button  -->
             <Button
                 BackgroundColor="Gold"
                 Command="{Binding RegisterCommand}"
@@ -145,5 +138,12 @@
                 WidthRequest="350" />
 
         </VerticalStackLayout>
+
+        <!--  Hidden CameraView for taking profile photos  -->
+        <camera:CameraView
+            x:Name="RegisterCamera"
+            x:FieldModifier="public"
+            IsVisible="False" />
+
     </Grid>
 </ContentPage>

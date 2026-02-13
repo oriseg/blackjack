@@ -1,0 +1,21 @@
+<ContentPage
+    x:Class="blackjack.Views.CameraPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:camera="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+    BackgroundColor="Black">
+
+    <Grid RowDefinitions="*,Auto">
+        <camera:CameraView
+            x:Name="CameraView"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill" />
+
+        <Button
+            Grid.Row="1"
+            BackgroundColor="Gold"
+            Command="{Binding TakePhotoCommand}"
+            Text="Take Photo"
+            TextColor="Black" />
+    </Grid>
+</ContentPage>

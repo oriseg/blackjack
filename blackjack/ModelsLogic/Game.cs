@@ -297,7 +297,7 @@ namespace blackjack.ModelsLogic
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
             if (current.PlayerHand.IsBust)
             {
-                Onbust?.Invoke(this, EventArgs.Empty);
+                Onbust?.Invoke(this, EventArgs.Empty); 
                 NextTurn();
             }
         }
@@ -373,45 +373,74 @@ namespace blackjack.ModelsLogic
             // SAVE RESULTS TO FIRESTORE
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), results, _ => { });
         }
-        public override void ClearAndRestart()
-        {
-            ClearRoundData();
-            DealCards();
-            suppressDecisionPopup = false;
-        }   
-       public override void ClearRoundData()
+        public override void ClearRoundData()
         {
             if (!HostIsCurrentUser())
-                return;  
-                // Suppress decision popup during clearing
-                suppressDecisionPopup = true;
-                // Clear round results
-                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
-                // Clear each player's hand and reset turn flags
-                foreach (var player in Players)
-                {
-                    player.PlayerHand.Clear();           // remove cards
-                    player.PlayerHand.HandValue = 0;     // reset hand value explicitly 
-                    player.PlayerHand.IsBust = false;    // reset bust status 
-                    player.PlayerHand.HandColor = Colors.Black; // reset hand color
-                    player.IsCurrentTurn = false;
-                }
-                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+                return;
 
-                // Clear dealer hand and value
-                if (Dealer != null)
-                {
-                    Dealer.DealerHand.Clear();
-                    Dealer.DealerHand.HandValue = 0;
-                }
-                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
-                // Reset bets if any
-                //Bets?.Clear();
-                //fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Bets), Bets, _ => { });
-                // Reset current player index
-                CurrentPlayerIndex = 0;
-                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), CurrentPlayerIndex, _ => { });
+            suppressDecisionPopup = true; // prevent premature turn popups
+
+            // Reset RoundResults in Firestore
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
+
+            // Reset players
+            foreach (var player in Players)
+            {
+                // Ensure PlayerHand is not null
+                if (player.PlayerHand == null)
+                    player.PlayerHand = new Hand();
+                else
+                    player.PlayerHand.Clear();
+
+                player.PlayerHand.HandValue = 0;
+                player.PlayerHand.IsBust = false;
+                player.PlayerHand.HandColor = Colors.Black;
+
+                player.IsCurrentTurn = false; // clear current turn
             }
+
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+
+            // Reset dealer
+            if (Dealer != null)
+            {
+                if (Dealer.DealerHand == null)
+                    Dealer.DealerHand = new Hand();
+                else
+                    Dealer.DealerHand.Clear();
+
+                Dealer.DealerHand.HandValue = 0;
+            }
+
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
+
+            // Reset current player index
+            CurrentPlayerIndex = 0;
+            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), CurrentPlayerIndex, _ => { });
+        }
+
+        public override void ClearAndRestart()
+        {
+            // Step 1: clear previous round safely
+            ClearRoundData();
+
+            // Step 2: set first player as current turn
+            if (Players.Count > 0)
+            {
+                Players[0].IsCurrentTurn = true;
+                CurrentPlayerIndex = 0;
+            }
+
+            // Step 3: deal new round cards
+            DealCards();
+
+            // Step 4: allow decision popups again
+            suppressDecisionPopup = false;
+
+            //// Step 5: notify local player if it's their turn
+            //CheckLocalPlayerTurn();
+        }
+
     }
 
 }

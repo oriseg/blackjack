@@ -1,5 +1,4 @@
-using blackjack.ViewModels;
-
+using blackjack.ViewModels; 
 namespace blackjack.Views;
 
 public partial class RegisterPage : ContentPage
