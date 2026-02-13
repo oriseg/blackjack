@@ -11,29 +11,16 @@ namespace blackjack.ViewModels
         private readonly User user = new();
         public ICommand RegisterCommand { get; }
         public ICommand ToggleIsPasswordCommand { get; }
-        public ICommand PickProfileImageCommand { get; }
-        public ICommand TakePhotoCommand { get; }
+
         public bool IsPassword { get; set; } = true;
         public RegisterPageVM()
         {
             RegisterCommand = new Command(Register, CanRegister);
             ToggleIsPasswordCommand = new Command(ToggleIsPassword);
-            PickProfileImageCommand = new Command(async () => await PickProfileImage());
-            TakePhotoCommand = new Command(async () => await TakePhoto());
             user.OnAuthComplete += OnAuthComplete;
         }
 
-        private async Task PickProfileImage()
-        {
-            await user.PickProfileImageAsync();
-            OnPropertyChanged(nameof(ProfileImage)); // Update UI
-        }
 
-        private async Task TakePhoto()
-        {
-            await user.TakePhotoAsync();
-            OnPropertyChanged(nameof(ProfileImage)); // Update UI
-        }
 
         private void OnAuthComplete(object? sender, EventArgs e)
         {

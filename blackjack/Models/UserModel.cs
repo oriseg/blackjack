@@ -5,7 +5,7 @@ namespace blackjack.Models
 {
     public abstract class UserModel
     {
-        public readonly IMedia mediaService = new Media();
+
         protected FbData fbd = new();
         public EventHandler? OnAuthComplete;
         public bool IsRegistered { get; set; }

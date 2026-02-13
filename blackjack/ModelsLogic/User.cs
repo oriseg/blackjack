@@ -88,19 +88,6 @@ namespace blackjack.ModelsLogic
             Email = Preferences.Get(Keys.EmailKey, string.Empty);
             ProfileImagePath = Preferences.Get(Keys.ProfileImageKey, null);
         }
-        public async Task PickProfileImageAsync()
-        {
-            var path = await mediaService!.PickImageAsync();
-            if (path == null) return;
 
-            ProfileImagePath = path;
-        }
-
-        public async Task TakePhotoAsync()
-        {
-            var path = await mediaService!.TakePhotoAsync();
-            if (path == null) return;
-            ProfileImagePath = path;
-        }
     }
 }
