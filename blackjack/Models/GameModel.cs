@@ -21,6 +21,8 @@ namespace blackjack.Models
         public ObservableCollection<Player> Players { get; set; } = [];
         protected TimerSettings timerSettings = new(Keys.TimerTotalTime, Keys.TimerInterval);
         [Ignored]
+        public bool suppressDecisionPopup = false;
+        [Ignored]
         public string TimeLeft { get; protected set; } = string.Empty;
         [Ignored]
         public bool countdownStarted = false;
@@ -73,7 +75,15 @@ namespace blackjack.Models
         public abstract void Hit(); 
         public abstract void Double(); 
         public abstract bool CanStart();
-        public abstract void PlayersTurnEnds();
+        public abstract void PlayersTurnEnds(); 
+        public abstract bool IsMyTurn(); 
+        public abstract void ClearAndRestart(); 
+        public abstract void EvaluateWinners(); 
+        public abstract void ClearRoundData();
+        [Ignored]
+        public EventHandler? OnRoundCountdownChanged;
+        [Ignored]
+        public EventHandler? OnRoundCountdownFinished;
         [Ignored]
         public string WaitingMessage
         {

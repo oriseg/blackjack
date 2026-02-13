@@ -49,12 +49,12 @@ namespace blackjack.ViewModels
         {
             await Application.Current!
                 .MainPage!
-                .ShowPopupAsync(new ResultPopup(data));
+                .ShowPopupAsync(new ResultPopup(data,game));
 
             // 🔥 ONLY HOST CLEARS RESULTS
             if (game.HostIsCurrentUser())
             {
-                game.ClearRoundResults();
+                game.ClearAndRestart();
             }
         }
         private void DealerHandValueChanged(object? sender, EventArgs e)

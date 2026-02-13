@@ -1,8 +1,8 @@
 ﻿using blackjack.ModelsLogic;
     public abstract class HandModel
     {
-        public int HandValue { get; protected set; }
-        public Color HandColor { get; protected set; } = Colors.Black;
+        public int HandValue { get; set; }
+        public Color HandColor { get; set; } = Colors.Black;
         public bool IsBust { get; set; }
         public int Total = 0;
         public abstract void AddCard(Card card);

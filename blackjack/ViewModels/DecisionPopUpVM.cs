@@ -22,7 +22,6 @@ namespace blackjack.ViewModels
             DoubleCommand = new Command(OnDouble);
             game.Onbust += Bust;
         }
-
         private void Bust(object? sender, EventArgs e)
         {
             ClosePopUp();
