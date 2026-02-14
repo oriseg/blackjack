@@ -9,7 +9,6 @@ namespace blackjack.ViewModels
     {
         private readonly Game game;
         private readonly Popup popup;
-
         public ICommand HitCommand { get; }
         public ICommand StandCommand { get; }
         public ICommand DoubleCommand { get; }
@@ -19,8 +18,8 @@ namespace blackjack.ViewModels
             this.popup = popup;
             HitCommand = new Command(OnHit);
             StandCommand = new Command(OnStand);
-            DoubleCommand = new Command(OnDouble);
-            game.Onbust += Bust;
+            DoubleCommand = new Command(OnDouble);           
+            game.Onbust += Bust;        
         }
         private void Bust(object? sender, EventArgs e)
         {
@@ -46,6 +45,7 @@ namespace blackjack.ViewModels
         public void ClosePopUp()
         {
             popup.Close();
+            game.Onbust -= Bust;
         }
     }
 }
