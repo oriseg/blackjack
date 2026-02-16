@@ -140,10 +140,7 @@
         </VerticalStackLayout>
 
         <!--  Hidden CameraView for taking profile photos  -->
-        <camera:CameraView
-            x:Name="RegisterCamera"
-            x:FieldModifier="public"
-            IsVisible="False" />
+
 
     </Grid>
 </ContentPage>

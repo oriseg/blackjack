@@ -10,16 +10,32 @@ public partial class CameraPage : ContentPage
     public CameraPage()
     {
         InitializeComponent();
-
         CameraVM = new CameraVM(CameraView);
         BindingContext = CameraVM;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        CameraView.StartCameraAsync(); // ?? This is required
+
+        var status = await Permissions.RequestAsync<Permissions.Camera>();
+        if (status != PermissionStatus.Granted)
+            return;
+
+        await CameraView.StartCameraAsync();
+
+        await Task.Delay(500); // small delay helps emulator
+
+        Console.WriteLine("Detected: " + CameraView.NumCamerasDetected);
+
+        if (CameraView.NumCamerasDetected > 0)
+        {
+            CameraView.Camera = CameraView.Cameras
+                .FirstOrDefault(c => c.Position == CameraPosition.Back)
+                ?? CameraView.Cameras.First();
+        }
     }
+
 
     protected override void OnDisappearing()
     {
