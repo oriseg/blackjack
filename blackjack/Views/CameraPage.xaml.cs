@@ -23,16 +23,11 @@ public partial class CameraPage : ContentPage
             return;
 
         await CameraView.StartCameraAsync();
-
-        await Task.Delay(500); // small delay helps emulator
-
         Console.WriteLine("Detected: " + CameraView.NumCamerasDetected);
 
         if (CameraView.NumCamerasDetected > 0)
         {
-            CameraView.Camera = CameraView.Cameras
-                .FirstOrDefault(c => c.Position == CameraPosition.Back)
-                ?? CameraView.Cameras.First();
+            CameraView.Camera = CameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Back) ?? CameraView.Cameras.First();
         }
     }
 

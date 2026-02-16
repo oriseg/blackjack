@@ -1,11 +1,5 @@
 ﻿using blackjack.Models;
-using blackjack.Views;
-using Firebase.Auth;
-using Firebase.Auth.Providers;
-using Newtonsoft.Json.Linq;
 using Plugin.CloudFirestore;
-using System.Text.RegularExpressions;
-
 
 namespace blackjack.ModelsLogic
 {

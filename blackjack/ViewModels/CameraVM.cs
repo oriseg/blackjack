@@ -1,23 +1,26 @@
 ﻿using blackjack.Models;
 using Camera.MAUI;
-using Microsoft.Maui.Controls;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels;
 
-public class CameraVM : ObservableObject
+public partial class CameraVM : ObservableObject
 {
     private ImageSource? _capturedPhoto;
     private readonly CameraView _cameraView;
-
+    public ICommand TakePhotoCommand { get; }
     public CameraVM(CameraView cameraView)
     {
         _cameraView = cameraView;
-        TakePhotoCommand = new Command(async () =>
+        TakePhotoCommand = new Command(async () => await TakePhoto());
+    }
+
+    private async Task TakePhoto()
+    {
         {
             try
             {
-                var stream = await _cameraView.TakePhotoAsync();
+                Stream stream = await _cameraView.TakePhotoAsync();
                 if (stream != null)
                     CapturedPhoto = ImageSource.FromStream(() => stream);
             }
@@ -25,7 +28,7 @@ public class CameraVM : ObservableObject
             {
                 await App.Current!.MainPage!.DisplayAlert("Error", ex.Message, "OK");
             }
-        });
+        }
     }
 
     public ImageSource? CapturedPhoto
@@ -38,5 +41,5 @@ public class CameraVM : ObservableObject
         }
     }
 
-    public ICommand TakePhotoCommand { get; }
+  
 }
