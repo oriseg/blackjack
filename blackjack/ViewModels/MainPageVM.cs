@@ -6,20 +6,54 @@ using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    public class MainPageVM : ObservableObject
+    public partial class MainPageVM : ObservableObject
     {
-        public readonly Game game = new();
-        public ICommand JoinGameCommand => new Command(JoinGame); 
-        public ICommand CreateGameCommand => new Command(CreateGame);
-        public ObservableCollection<PlayerCount>? PlayerCount { get => game.PlayerCountDL; set => game.PlayerCountDL = value; }
-        public PlayerCount SelectedPlayerCount { get => game.SelectedPlayerCount; set => game.SelectedPlayerCount = value; }
-        public string? GameCode { get; set; } 
+        private readonly Game game;
 
-       
+        public ICommand JoinGameCommand => new Command(JoinGame);
+        public ICommand CreateGameCommand => new Command(CreateGame);
+
+        // Expose Game Properties (NO LOGIC)
+        public ObservableCollection<PlayerCount>? PlayerCount => game.PlayerCountDL;
+
+        public PlayerCount SelectedPlayerCount
+        {
+            get => game.SelectedPlayerCount;
+            set => game.SelectedPlayerCount = value;
+        }
+
+        public List<int> BetOptions => game.BetOptions;
+
+        public int SelectedBetAmount
+        {
+            get => game.SelectedBetAmount;
+            set => game.SelectedBetAmount = value;
+        }
+
+        public string? GameCode { get; set; }
+
         public MainPageVM()
         {
-            game.OnGameAdded += OnGameAdded;
+            game = new Game();
+
             game.OnGameJoined += OnGameJoined;
+            game.OnGameAdded += OnGameAdded;
+        }
+
+        private void CreateGame(object obj)
+        {
+            game.CreateGame(SelectedPlayerCount.Count);
+
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Shell.Current.Navigation.PushAsync(new GameTable(game));
+            });
+        }
+
+        private void JoinGame()
+        {
+            if (!string.IsNullOrEmpty(GameCode))
+                game.JoinGame(GameCode);
         }
 
         private void OnGameJoined(object? sender, EventArgs e)
@@ -30,31 +64,9 @@ namespace blackjack.ViewModels
             });
         }
 
-        private void CreateGame(object obj)
-        {
-            game.CreateGame(SelectedPlayerCount.Count);
-            MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Shell.Current.Navigation.PushAsync(new GameTable(game));
-            });
-        }
-
         private void OnGameAdded(object? sender, bool e)
         {
-          OnPropertyChanged(nameof(e));
+            OnPropertyChanged(nameof(PlayerCount));
         }
-
-        private void JoinGame()
-        {
-            if (GameCode != null)
-            {
-                game.JoinGame(GameCode);
-            }
-       
-        } 
-
-
     }
-
 }
-

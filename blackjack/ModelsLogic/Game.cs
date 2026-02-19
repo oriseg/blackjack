@@ -32,19 +32,23 @@ namespace blackjack.ModelsLogic
                 Players[i].IsCurrentTurn = (i == CurrentPlayerIndex);
             }
         }
-        public void CreateGame(int PlayerCount)
+        public void CreateGame(int playerCount)
         {
-            //clean prev game after back
+            DefaultBet = SelectedBetAmount;
+
             int uniqueSeed = Guid.NewGuid().GetHashCode();
             Random generator = new(uniqueSeed);
-            this.Id = generator.Next(0, Keys.IdGenerator).ToString("D6");
-            this.Players.Clear();
-            this.PlayerCount = PlayerCount;
+            Id = generator.Next(0, Keys.IdGenerator).ToString("D6");
+
+            Players.Clear();
+            PlayerCount = playerCount;
+
             Player host = new(HostName);
             host.IsCurrentTurn = true;
-            this.Players.Add(host);
-            this.SetDocument(OnComplete);
 
+            Players.Add(host);
+
+            SetDocument(OnComplete);
         }
         private void RegisterTimer()
         {

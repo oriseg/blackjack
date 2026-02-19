@@ -6,38 +6,42 @@
     xmlns:m="clr-namespace:blackjack.Models"
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:MainPageVM">
+
     <Grid
         Padding="40"
         BackgroundColor="Black"
         ColumnDefinitions="*,Auto,Auto,*"
         ColumnSpacing="20"
-        RowDefinitions="Auto,Auto,100,Auto,50,Auto,Auto"
+        RowDefinitions="Auto,Auto,100,Auto,Auto,50,Auto,Auto"
         RowSpacing="20">
-        <!--  Title  -->
+
+        <!--  TITLE  -->
         <Label
             Grid.Row="0"
             Grid.ColumnSpan="4"
             HorizontalOptions="Center"
             Style="{StaticResource HomeTitleStyle}"
             Text="{x:Static m:Strings.blackjack}" />
-        <!--  Subtitle  -->
+
+        <!--  SUBTITLE  -->
         <Label
             Grid.Row="1"
             Grid.ColumnSpan="4"
             HorizontalOptions="Center"
             Style="{StaticResource HomeSubtitleStyle}"
             Text="{x:Static m:Strings.CreateOrJoin}" />
-        <!--  Divider  -->
+
+        <!--  DIVIDER  -->
         <BoxView
             Grid.Row="2"
             Grid.ColumnSpan="4"
             Style="{StaticResource DividerStyle}" />
-        <!--  Picker with underline  -->
+
+        <!--  PLAYER COUNT PICKER  -->
         <Grid
             Grid.Row="3"
             Grid.Column="1"
             WidthRequest="120">
-
             <Picker
                 Title="{x:Static m:Strings.SelectPlayerAmount}"
                 BackgroundColor="Transparent"
@@ -51,28 +55,49 @@
             <BoxView
                 BackgroundColor="White"
                 HeightRequest="1"
-                HorizontalOptions="Fill"
                 VerticalOptions="End" />
         </Grid>
-        <!--  Create Game Button  -->
+
+        <!--  BET PICKER  -->
+        <Grid
+            Grid.Row="4"
+            Grid.Column="1"
+            WidthRequest="120">
+            <Picker
+                Title="Select Bet"
+                BackgroundColor="Transparent"
+                FontSize="24"
+                HorizontalTextAlignment="Center"
+                ItemsSource="{Binding BetOptions}"
+                SelectedItem="{Binding SelectedBetAmount}"
+                TextColor="Gold"
+                TitleColor="White" />
+            <BoxView
+                BackgroundColor="White"
+                HeightRequest="1"
+                VerticalOptions="End" />
+        </Grid>
+
+        <!--  CREATE GAME  -->
         <Button
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="2"
             Command="{Binding CreateGameCommand}"
             Style="{StaticResource MainButtonStyle}"
             Text="{x:Static m:Strings.CreateGame}" />
-        <!--  Join Game Button  -->
 
+        <!--  JOIN CODE  -->
         <Entry
-            Grid.Row="5"
+            Grid.Row="6"
             Grid.ColumnSpan="4"
             Margin="10"
             FontSize="Title"
             Placeholder="{x:Static m:Strings.EnterCode}"
             Text="{Binding GameCode}"
             TextColor="White" />
+
         <Button
-            Grid.Row="6"
+            Grid.Row="7"
             Grid.ColumnSpan="4"
             Command="{Binding JoinGameCommand}"
             HorizontalOptions="Center"

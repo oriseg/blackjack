@@ -17,7 +17,13 @@ namespace blackjack.Models
         public int CurrentPlayerIndex { get; set; }
         public int PlayerCount { get; set; }
         public Dictionary<string, RoundResultData> RoundResults { get; set; } = new Dictionary<string, RoundResultData>();
-    
+        [Ignored]
+        public int DefaultBet { get; set; }
+        [Ignored]
+        public List<int> BetOptions { get; private set; } = [10, 25, 50, 100, 200];
+        [Ignored]
+        public int SelectedBetAmount { get; set; }
+
         public ObservableCollection<Player> Players { get; set; } = [];
         protected TimerSettings timerSettings = new(Keys.TimerTotalTime, Keys.TimerInterval);
         [Ignored]
