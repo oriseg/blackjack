@@ -1,5 +1,7 @@
 ﻿using blackjack.Models;
-using Plugin.CloudFirestore;
+using CommunityToolkit.Maui.Alerts;
+using Plugin.CloudFirestore; 
+
 
 namespace blackjack.ModelsLogic
 {
@@ -78,6 +80,33 @@ namespace blackjack.ModelsLogic
             ((Game)obj).Id = dr.Id;
             dr.SetAsync(obj).ContinueWith(OnComplete); 
             return dr.Id;
+
+        }
+      
+        public override void SetUserDocument(User user, Action<Task> OnComplete)
+        {
+            try
+            {
+                IDocumentReference dr = fdb.Collection("Users").Document(user.UserName);
+                dr.SetAsync(user).ContinueWith(OnComplete);
+            }
+            catch (Exception ex)
+            {
+                OnComplete(Task.FromException(ex));
+            }
+        }
+        public override async void GetDocument(string collectionName, string id, Action<IDocumentSnapshot, Exception?> OnComplete)
+        {
+            try
+            {
+                IDocumentReference dr = fdb.Collection(collectionName).Document(id);
+                IDocumentSnapshot snapshot = await dr.GetAsync();
+                OnComplete(snapshot, null);
+            }
+            catch (Exception ex)
+            {
+                OnComplete(null!, ex);
+            }
         }
         public async void GetDocumentsWhereEqualTo(string collectonName, string fName, object fValue, Action<IQuerySnapshot> OnComplete)
         {
@@ -116,6 +145,28 @@ namespace blackjack.ModelsLogic
         {
             IDocumentReference dr = fdb.Collection(collectonName).Document(id);
             await dr.DeleteAsync().ContinueWith(OnComplete);
+        }
+        public override async void CheckGameCode(string gameCode, Action<bool> onComplete)
+        {
+            try
+            {
+                IDocumentReference dr = fdb.Collection(Keys.GamesCollection).Document(gameCode);
+                IDocumentSnapshot snapshot = await dr.GetAsync();
+
+                if (!snapshot.Exists)
+                {
+                    await Toast.Make(Strings.WrongCode).Show();
+                    onComplete(false);
+                    return;
+                }
+
+                onComplete(true);
+            }
+            catch (Exception)
+            {
+                await Toast.Make(Strings.SomthingWentWrong).Show();
+                onComplete(false);
+            }
         }
         public override string DisplayName
         {

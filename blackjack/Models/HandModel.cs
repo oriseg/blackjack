@@ -1,5 +1,6 @@
 ﻿using blackjack.ModelsLogic;
-    public abstract class HandModel
+using Plugin.CloudFirestore.Attributes;
+public abstract class HandModel
     {
         public int HandValue { get; set; }
         public Color HandColor { get; set; } = Colors.Black;
@@ -8,9 +9,11 @@
         public abstract void AddCard(Card card);
         public abstract void Clear();
         public abstract void CalculateHandValue();
-   
+    [Ignored]
         public EventHandler? OnHandValueChanged;
-        public EventHandler? OnHandColorChanged;
-        public EventHandler? OnHandStateChanged;
+    [Ignored]
+    public EventHandler? OnHandColorChanged;
+    [Ignored]
+    public EventHandler? OnHandStateChanged;
     }
 

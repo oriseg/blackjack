@@ -19,6 +19,71 @@
     <!--  ROOT  -->
     <AbsoluteLayout>
 
+        <Frame
+            Padding="8"
+            AbsoluteLayout.LayoutBounds="0,0,AutoSize,AutoSize"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            BackgroundColor="#1B5E20"
+            CornerRadius="10"
+            HasShadow="True">
+
+            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+
+                <!-- Coin icon -->
+                <Label
+                   Text="💰"
+                   FontSize="18"
+                   VerticalOptions="Center"
+                   TextColor="Gold" />
+
+                <!-- Coin amount -->
+                <Label
+                   FontAttributes="Bold"
+                   FontSize="18"
+                   Text="{Binding MyCoins}"
+                   TextColor="White"
+                   VerticalOptions="Center" />
+
+            </HorizontalStackLayout>
+
+        </Frame>
+        <!--  SELECTED BET (TOP CENTER)  --> 
+        <Frame
+              Padding="10"
+              AbsoluteLayout.LayoutBounds="0.5,0.02,AutoSize,AutoSize"
+              AbsoluteLayout.LayoutFlags="PositionProportional"
+              BackgroundColor="#1B5E20"
+              CornerRadius="20"
+              HasShadow="True">
+
+            <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                <!--  MY COINS (TOP LEFT)  -->
+              
+                <!-- Bet Icon  -->
+                <Label
+                    Text="💰"
+                    FontSize="18"
+                    VerticalOptions="Center" />
+
+                <!-- Bet Text -->
+                <Label
+                    Text="Bet:"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+
+                <!-- Bet Amount -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Text="{Binding DefaultBet}"
+                    TextColor="Gold"
+                    VerticalOptions="Center" />
+
+            </HorizontalStackLayout>
+
+        </Frame>
         <!--  GAME ID  -->
         <Frame
             Padding="8"
@@ -190,5 +255,6 @@
 
         </AbsoluteLayout>
 
-    </AbsoluteLayout>
+    </AbsoluteLayout> 
+
 </ContentPage>

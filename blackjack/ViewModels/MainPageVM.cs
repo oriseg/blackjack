@@ -13,7 +13,6 @@ namespace blackjack.ViewModels
         public ICommand JoinGameCommand => new Command(JoinGame);
         public ICommand CreateGameCommand => new Command(CreateGame);
 
-        // Expose Game Properties (NO LOGIC)
         public ObservableCollection<PlayerCount>? PlayerCount => game.PlayerCountDL;
 
         public PlayerCount SelectedPlayerCount
@@ -35,13 +34,13 @@ namespace blackjack.ViewModels
         public MainPageVM()
         {
             game = new Game();
-
             game.OnGameJoined += OnGameJoined;
             game.OnGameAdded += OnGameAdded;
         }
 
         private void CreateGame(object obj)
         {
+
             game.CreateGame(SelectedPlayerCount.Count);
 
             MainThread.InvokeOnMainThreadAsync(() =>

@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace blackjack.ViewModels
 {
-    public class LogInPageVM : ObservableObject
+    public partial class LogInPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand LogInCommand { get; }

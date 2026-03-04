@@ -40,7 +40,9 @@
         public const string Lost = "You lose";
         public const string DealerWins = "Dealer wins";
         public const string Push = "Push";
-        public const string tie="It's a tie";
+        public const string tie="It's a tie"; 
+        public const string WrongCode = "Wrong code"; 
+        public const string SomthingWentWrong = "Something went wrong.";
 
 
 

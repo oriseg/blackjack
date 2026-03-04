@@ -1,4 +1,5 @@
 ﻿
+
 using blackjack.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.CloudFirestore;
@@ -15,6 +16,7 @@ namespace blackjack.ModelsLogic
             RegisterTimer();
 
         }
+
         public Game(int playercount)
         {
             Dealer = new Dealer();
@@ -25,17 +27,17 @@ namespace blackjack.ModelsLogic
 
         }
         // עדכון מי בתור
-        public void UpdatePlayersTurnState()
+        public override void UpdatePlayersTurnState()
         {
             for (int i = 0; i < Players.Count; i++)
             {
                 Players[i].IsCurrentTurn = (i == CurrentPlayerIndex);
             }
         }
-        public void CreateGame(int playerCount)
+        public override void CreateGame(int playerCount)
         {
             DefaultBet = SelectedBetAmount;
-
+            GetCurrentUserCoins();
             int uniqueSeed = Guid.NewGuid().GetHashCode();
             Random generator = new(uniqueSeed);
             Id = generator.Next(0, Keys.IdGenerator).ToString("D6");
@@ -47,10 +49,9 @@ namespace blackjack.ModelsLogic
             host.IsCurrentTurn = true;
 
             Players.Add(host);
-
             SetDocument(OnComplete);
         }
-        private void RegisterTimer()
+        public override void RegisterTimer()
         {
             WeakReferenceMessenger.Default.Register<AppMessage<long>>(this, (r, m) =>
             {
@@ -61,7 +62,7 @@ namespace blackjack.ModelsLogic
                 }
             });
         }
-        private void OnMessageReceived(long timeLeft)
+        public override void OnMessageReceived(long timeLeft)
         {
             TimeLeft = timeLeft == Keys.FinishedSignal ? String.Empty : double.Round(timeLeft / 1000, 1).ToString();
             OnTimeLeftChanged?.Invoke(this, EventArgs.Empty);
@@ -74,7 +75,7 @@ namespace blackjack.ModelsLogic
             ArrangeSeats(width, height);
 
         }
-        public void ArrangeSeats(double width, double height)
+        public override void ArrangeSeats(double width, double height)
         {
             double centerX = width / 2;
             double centerY = height * 0.55; // slightly below table center
@@ -95,23 +96,20 @@ namespace blackjack.ModelsLogic
         }
         public override void NextTurn()
         {
-            if (Players.Count == 0)
-                return;
-            if (CurrentPlayerIndex >= Players.Count - 1)
+            if (Players.Count > 0)
             {
-                PlayersTurnEnds();
-                return;
+                if (CurrentPlayerIndex >= Players.Count - 1)
+                {
+                    PlayersTurnEnds();
+                }
+                else
+                {
+                    int nextPlayerIndex = CurrentPlayerIndex + 1;
+                    fbd.UpdateFields(Keys.GamesCollection,Id,nameof(CurrentPlayerIndex),nextPlayerIndex,_ => { });
+                }
             }
-            int nextPlayerIndex = CurrentPlayerIndex + 1;
-            // Update the CurrentPlayerIndex field in Firestore.
-            // The last parameter '_ => { }' is a lambda expression (anonymous function) 
-            // that acts as a callback when the update is complete. 
-            // Here it is empty because we don’t need to do anything after the update.
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), nextPlayerIndex, _ => { });
-
-            //OnTurnChanged?.Invoke(this, true);
         }
-        private void OnComplete(Task task)
+        public override void OnComplete(Task task)
         {
             OnGameAdded?.Invoke(this, task.IsCompletedSuccessfully);
         }
@@ -119,12 +117,19 @@ namespace blackjack.ModelsLogic
         {
             Id = fbd.SetDocument(this, Keys.GamesCollection, Id, OnComplete);
         }
-        public void JoinGame(string GameCode)
+        public override void JoinGame(string GameCode)
         {
-            Player joinedPlayer = new(HostName);
-            fbd.UpdateFields(Keys.GamesCollection, GameCode, "Players", FieldValue.ArrayUnion(joinedPlayer), OnComplete);
+            fbd.CheckGameCode(GameCode, (isValid) =>
+            {
+                if (isValid)
+                {
+                    Player joinedPlayer = new(HostName);
+                    fbd.UpdateFields(Keys.GamesCollection, GameCode,"Players",FieldValue.ArrayUnion(joinedPlayer), OnComplete);
+                    GetCurrentUserCoins();
+                }
+            });
         }
-        private void OnComplete(IQuerySnapshot qs)
+        public override void OnComplete(IQuerySnapshot qs)
         {
             foreach (IDocumentSnapshot ds in qs.Documents)
             {
@@ -137,17 +142,27 @@ namespace blackjack.ModelsLogic
                     this.PlayerCount = game.PlayerCount;
                     this.HostName = game.HostName;
                     this.Dealer = game.Dealer;
-                    //if username not exist in list
+                    this.DefaultBet = game.DefaultBet;
                 }
             }
             OnGameJoined?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnChange(IDocumentSnapshot? snapshot, Exception? error)
+        public override void OnChange(IDocumentSnapshot? snapshot, Exception? error)
         {
             Game? updatedGame = snapshot?.ToObject<Game>();
             if (updatedGame != null)
             {
+                if (updatedGame.GameEnded)
+                {
+                    OnGameOver?.Invoke(this, EventArgs.Empty);
+
+                    ilr?.Remove();        // stop listening
+                   // DeleteDocument(_ => { }); // delete safely
+
+                    return;
+                }
+                // 1️⃣ Update players count
                 if (Players.Count != updatedGame.Players.Count)
                 {
                     Players = updatedGame.Players;
@@ -155,11 +170,13 @@ namespace blackjack.ModelsLogic
                     ArrangePlayerSeats();
                 }
 
+                // 2️⃣ Update players' hands
                 for (int i = 0; i < Players.Count; i++)
                 {
                     Players[i].PlayerHand = updatedGame.Players[i].PlayerHand;
                 }
 
+                // 3️⃣ Update current turn
                 if (CurrentPlayerIndex != updatedGame.CurrentPlayerIndex)
                 {
                     int prevCurrnetPlayerIndex = CurrentPlayerIndex;
@@ -169,18 +186,20 @@ namespace blackjack.ModelsLogic
                     CheckLocalPlayerTurn();
                 }
 
+                // 4️⃣ Update dealer
                 HostName = updatedGame.HostName;
-
                 if (Dealer != null && updatedGame.Dealer != null)
                     Dealer.DealerHand = updatedGame.Dealer.DealerHand;
 
+                // 5️⃣ Update round results for local player
                 string myUserName = Preferences.Get(Keys.NameKey, string.Empty);
-
-                if (updatedGame.RoundResults != null && updatedGame.RoundResults.TryGetValue(myUserName, out RoundResultData? myResult))
+                if (updatedGame.RoundResults != null &&
+                    updatedGame.RoundResults.TryGetValue(myUserName, out RoundResultData? myResult))
                 {
                     OnRoundResult?.Invoke(this, myResult);
                 }
 
+                // ✅ 6️⃣ **Update UsersMap coins**
                 OnTurnChanged?.Invoke(this, true);
                 OnGameChanged?.Invoke(this, true);
             }
@@ -193,8 +212,12 @@ namespace blackjack.ModelsLogic
 
         public override void RemoveSnapshotListener()
         {
-            ilr?.Remove();
-            DeleteDocument(OnComplete);
+            if (HostIsCurrentUser())
+            {
+                ilr?.Remove();
+                DeleteDocument(OnComplete);
+            }
+
         }
         public override void DeleteDocument(Action<Task> OnComplete)
         {
@@ -210,36 +233,34 @@ namespace blackjack.ModelsLogic
         {
             if (!suppressDecisionPopup && IsMyTurn() && CanStart())
             {
-                OnPlayerTurn?.Invoke(this, EventArgs.Empty);
+                    OnPlayerTurn?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public bool HostIsCurrentUser()
+        public override bool HostIsCurrentUser()
         {
             string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
             return currLocalUserName.Equals(HostName);
         }
-        private Card CreateRandomCard()
+        public override Card CreateRandomCard()
         {
             int suitIndex = rnd.Next(0, 4);
             int rankIndex = rnd.Next(0, 13);
-
-            var suit = (CardModel.Shapes)suitIndex;
-            var rank = (CardModel.Ranks)rankIndex;
+            CardModel.Shapes suit = (CardModel.Shapes)suitIndex;
+            CardModel.Ranks rank = (CardModel.Ranks)rankIndex;
             string imageName = CardModel.cardsImage[suitIndex, rankIndex];
-
             return new Card(suit, rank, imageName);
         }
         public override void DealCards()
         {
-            if (!HostIsCurrentUser())
-                return;
-            DealPlayersCards();
-            DealDealerCards();
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+            if (HostIsCurrentUser())
+            {
+                DealPlayersCards();
+                DealDealerCards();
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+            }
         }
-
         public override void DealPlayersCards()
         {
             if (HostIsCurrentUser())
@@ -256,8 +277,8 @@ namespace blackjack.ModelsLogic
         }
         public override void DealDealerCards()
         {
-                Card card = CreateRandomCard();
-                Dealer?.DealerHand.AddCard(card);        
+           Card card = CreateRandomCard();
+           Dealer?.DealerHand.AddCard(card);        
         }
         public override void CheckAndStartCountdown()
         {
@@ -276,34 +297,33 @@ namespace blackjack.ModelsLogic
 
         public override void Double()
         {
-            if (!IsMyTurn())
-                return;
-            Player current = Players[CurrentPlayerIndex];
-            current.PlayerHand.AddCard(CreateRandomCard());
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            NextTurn();
+            if (IsMyTurn())
+            {
+                Player current = Players[CurrentPlayerIndex];
+                current.PlayerHand.AddCard(CreateRandomCard());
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+                NextTurn();
+            }
         }
         public override void Stand()
         {
-            if (!IsMyTurn())
-                return;
-            NextTurn();
+            if (IsMyTurn())
+                   NextTurn();
+
         }
-
-
         public override void Hit()
         {
-            if (!IsMyTurn())
-                return;
-
-            Player current = Players[CurrentPlayerIndex];
-            current.PlayerHand.AddCard(CreateRandomCard());
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-            if (current.PlayerHand.IsBust)
+            if (IsMyTurn())
             {
-                Onbust?.Invoke(this, EventArgs.Empty); 
-                NextTurn();
-            }
+                Player current = Players[CurrentPlayerIndex];
+                current.PlayerHand.AddCard(CreateRandomCard());
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
+                if (current.PlayerHand.IsBust)
+                {
+                    Onbust?.Invoke(this, EventArgs.Empty);
+                    NextTurn();
+                }
+            }               
         }
         public override async void PlayersTurnEnds()
         {
@@ -322,72 +342,135 @@ namespace blackjack.ModelsLogic
                 fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
             }
         }
-        private async Task DealerTurn()
+        public override async Task DealerTurn()
         {
-            if (Dealer == null) return;
-            // Dealer keeps drawing cards until 17 or more
-            while (Dealer.DealerHand.HandValue < 17)
+            if (Dealer != null)
             {
-                await Task.Delay(Keys.TwoSecondDelay);
-                Dealer.DealerHand.AddCard(CreateRandomCard());
-                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
-            }
-            EvaluateWinners();          
+                while (Dealer.DealerHand.HandValue < 17)
+                {
+                    await Task.Delay(Keys.TwoSecondDelay);
+                    Dealer.DealerHand.AddCard(CreateRandomCard());
+                    fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Game.Dealer), Dealer!, _ => { });
+                }
+                EvaluateWinners();
+            }    
         }
 
-         public override void EvaluateWinners()
+        public void GetCurrentUserCoins()
         {
-            Dictionary<string, RoundResultData> results = [];
+            string userName = Preferences.Get(Keys.NameKey, string.Empty);
+             GetCoinsForPlayer(userName);
+        }
+        public void GetCoinsForPlayer(string userName)
+        {
+            fbd.GetDocument("Users", userName, OnUserLoaded);
+        }
+
+        private void OnUserLoaded(IDocumentSnapshot? snapshot, Exception? error)
+        {
+            if (error != null)
+            {
+                // handle error if needed
+                return;
+            }
+            if (snapshot != null && snapshot.Exists)
+            {
+                User? userFromDb = snapshot.ToObject<User>();
+                CurrCoins = userFromDb!.Coins;
+            }
+
+
+        }
+        public void UpdateCoinsForPlayer(string userName, int coinChange)
+        {             
+            fbd.GetDocument("Users", userName, (snapshot, error) =>
+            {
+                if (error == null && snapshot != null && snapshot.Exists)
+                {
+                    User? user = snapshot.ToObject<User>();
+                    if (user != null)
+                    {
+                        int newCoins = user.Coins + coinChange;
+                        newCoins = Math.Max(newCoins, 0); // prevent negative coins
+                        CurrCoins = newCoins;
+                        fbd.UpdateFields("Users", userName, nameof(User.Coins), newCoins, _ => { });
+                    }
+                }
+            });
+        }
+        public override void EvaluateWinners()
+        {
+            string currLocalUserName = Preferences.Get(Keys.NameKey, string.Empty);
+            Dictionary<string, RoundResultData> results = new();
 
             foreach (Player player in Players)
             {
-                RoundResultData result = new()
-                {
-                    TargetUserName = player.UserName
-                };
+                    RoundResultData result = new()
+                    {
+                        TargetUserName = player.UserName
+                    };
 
-                if (player.PlayerHand.IsBust)
-                {
-                    result.Title = "💥 " + Strings.Bust;
-                    result.Message = Strings.WentOver21;
-                }
-                else if (Dealer!.DealerHand.IsBust)
-                {
-                    result.Title = "🎉 " + Strings.YouWin;
-                    result.Message = Strings.Dealerbusted;
-                }
-                else if (player.PlayerHand.HandValue > Dealer.DealerHand.HandValue)
-                {
-                    result.Title = "🏆 " + Strings.YouWin;
-                    result.Message = Strings.GreatHand;
-                }
-                else if (player.PlayerHand.HandValue < Dealer.DealerHand.HandValue)
-                {
-                    result.Title = "😞 " + Strings.Lost;
-                    result.Message = Strings.DealerWins;
-                }
-                else
-                {
-                    result.Title = "🤝 " + Strings.Push;
-                    result.Message = Strings.tie;
-                }
-                results[player.UserName] = result;
+                    // Determine round result
+                    if (player.PlayerHand.IsBust)
+                    {
+                        result.Title = "💥 " + Strings.Bust;
+                        result.Message = Strings.WentOver21; 
+                        result.Outcome = RoundOutcome.Lose;
+                    }
+                    else if (Dealer!.DealerHand.IsBust)
+                    {
+                        result.Title = "🎉 " + Strings.YouWin;
+                        result.Message = Strings.Dealerbusted; 
+                        result.Outcome = RoundOutcome.Win;
+                    }
+                    else if (player.PlayerHand.HandValue > Dealer.DealerHand.HandValue)
+                    {
+                        result.Title = "🏆 " + Strings.YouWin;
+                        result.Message = Strings.GreatHand; 
+                        result.Outcome = RoundOutcome.Win;
+                    }
+                    else if (player.PlayerHand.HandValue < Dealer.DealerHand.HandValue)
+                    {
+                        result.Title = "😞 " + Strings.Lost;
+                        result.Message = Strings.DealerWins; 
+                        result.Outcome = RoundOutcome.Lose;
+                    }
+                    else
+                    {
+                        result.Title = "🤝 " + Strings.Push;
+                        result.Message = Strings.tie; 
+                        result.Outcome = RoundOutcome.Push;
+                    }
+
+                    results[player.UserName] = result;
+                
             }
 
             // SAVE RESULTS TO FIRESTORE
             fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), results, _ => { });
+
+
+            OnGameChanged?.Invoke(this, true);
         }
-        public override void ClearRoundData()
+
+
+        public void HandelResults(RoundResultData data)
         {
-            if (!HostIsCurrentUser())
-                return;
-
-            suppressDecisionPopup = true; // prevent premature turn popups
-
-            // Reset RoundResults in Firestore
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
-
-            // Reset players
+            switch (data.Outcome)
+            {
+                case RoundOutcome.Win:
+                    UpdateCoinsForPlayer(data.TargetUserName, DefaultBet);
+                    break; 
+                case RoundOutcome.Lose:
+                    UpdateCoinsForPlayer(data.TargetUserName, -DefaultBet);
+                    break; 
+                case RoundOutcome.Push:
+                    // No coin change for a push
+                    break;
+            }
+        }
+        public void ClearRoundDataForAllPlayers()
+        {
             foreach (var player in Players)
             {
                 // Ensure PlayerHand is not null
@@ -399,13 +482,11 @@ namespace blackjack.ModelsLogic
                 player.PlayerHand.HandValue = 0;
                 player.PlayerHand.IsBust = false;
                 player.PlayerHand.HandColor = Colors.Black;
-
                 player.IsCurrentTurn = false; // clear current turn
             }
-
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
-
-            // Reset dealer
+        }
+        public void ClearDealerData()
+        {
             if (Dealer != null)
             {
                 if (Dealer.DealerHand == null)
@@ -415,34 +496,55 @@ namespace blackjack.ModelsLogic
 
                 Dealer.DealerHand.HandValue = 0;
             }
+        }
+        public override void ClearRoundData()
+        {
+            if (HostIsCurrentUser())
+            {
+                suppressDecisionPopup = true; // prevent premature turn popups
+                // Reset RoundResults in Firestore
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(RoundResults), new Dictionary<string, RoundResultData>(), _ => { });
+                // Reset players
+                ClearRoundDataForAllPlayers();
 
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Players), Players, _ => { });
 
-            // Reset current player index
-            CurrentPlayerIndex = 0;
-            fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), CurrentPlayerIndex, _ => { });
+                // Reset dealer
+                ClearDealerData();
+
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(Dealer), Dealer!, _ => { });
+
+                // Reset current player index
+                CurrentPlayerIndex = 0;
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(CurrentPlayerIndex), CurrentPlayerIndex, _ => { });
+            }    
         }
 
         public override void ClearAndRestart()
         {
             // Step 1: clear previous round safely
             ClearRoundData();
-
             // Step 2: set first player as current turn
             if (Players.Count > 0)
             {
                 Players[0].IsCurrentTurn = true;
                 CurrentPlayerIndex = 0;
             }
-
             // Step 3: deal new round cards
             DealCards();
-
             // Step 4: allow decision popups again
             suppressDecisionPopup = false;
-
-            //// Step 5: notify local player if it's their turn
-            //CheckLocalPlayerTurn();
+        }
+        public void LeaveGame()
+        {
+            if (HostIsCurrentUser())
+            {
+                // 1️⃣ mark game as ended
+                fbd.UpdateFields(Keys.GamesCollection, Id, nameof(GameEnded), true, _ => { });
+            }
+            ClearRoundDataForAllPlayers();
+            ClearDealerData();
+            CurrentPlayerIndex = 0;
         }
 
     }

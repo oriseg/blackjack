@@ -16,6 +16,9 @@ namespace blackjack.Models
         public abstract void DeleteDocument(string collectonName, string id, Action<Task> OnComplete);
         public abstract void UpdateFields(string collectonName, string id, string fieldName, object value, Action<IQuerySnapshot> OnComplete);
         public abstract void UpdateFields(string collectonName, string id, string fieldName, FieldValue fieldValue, Action<IQuerySnapshot> OnComplete);
+        public abstract void GetDocument(string collectionName, string id, Action<IDocumentSnapshot, Exception?> OnComplete);
+        public abstract void SetUserDocument(ModelsLogic.User user, Action<Task> OnComplete);
+        public abstract void CheckGameCode(string gameCode, Action<bool> onComplete);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, Plugin.CloudFirestore.QuerySnapshotHandler OnChange);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange);
         public FbDataModel()

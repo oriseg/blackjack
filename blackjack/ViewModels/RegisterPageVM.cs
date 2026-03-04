@@ -1,12 +1,11 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
 using blackjack.Views;
-using Microsoft.Maui.Controls;
 using System.Windows.Input;
 
 namespace blackjack.ViewModels;
 
-public class RegisterPageVM : ObservableObject
+public partial class RegisterPageVM : ObservableObject
 {
     private readonly User user = new();
     private ImageSource? _capturedPhoto;
@@ -19,7 +18,10 @@ public class RegisterPageVM : ObservableObject
 
     public RegisterPageVM()
     {
+        user.OnRegAuthComplete += User_OnRegAuthComplete;
+
         RegisterCommand = new Command(Register, CanRegister);
+
         ToggleIsPasswordCommand = new Command(() =>
         {
             IsPassword = !IsPassword;
@@ -28,18 +30,31 @@ public class RegisterPageVM : ObservableObject
 
         TakePhotoCommand = new Command(async () =>
         {
-            var cameraPage = new CameraPage();
+            CameraPage cameraPage = new CameraPage();
+
             await Application.Current!.MainPage!.Navigation.PushModalAsync(cameraPage);
 
             cameraPage.Disappearing += (s, e) =>
             {
-                if (cameraPage.CameraVM.CapturedPhoto != null)
+                if (cameraPage.CapturedPhoto != null)
                 {
-                    _capturedPhoto = cameraPage.CameraVM.CapturedPhoto;
+                    _capturedPhoto = cameraPage.CapturedPhoto;
                     OnPropertyChanged(nameof(ProfileImage));
                 }
             };
         });
+
+    }
+
+    private void User_OnRegAuthComplete(object? sender, EventArgs e)
+    {
+        if (Application.Current != null)
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Application.Current.MainPage = new LoginPage();
+            });
+        }
     }
 
     public string UserName
@@ -60,8 +75,7 @@ public class RegisterPageVM : ObservableObject
         set { user.Email = value; (RegisterCommand as Command)?.ChangeCanExecute(); }
     }
 
-    public ImageSource? ProfileImage => _capturedPhoto ??
-        (!string.IsNullOrEmpty(user.ProfileImagePath) ? ImageSource.FromFile(user.ProfileImagePath) : null);
+    public ImageSource? ProfileImage => _capturedPhoto;
 
     private bool CanRegister() =>
         !string.IsNullOrWhiteSpace(UserName) &&

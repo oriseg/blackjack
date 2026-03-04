@@ -16,14 +16,15 @@ namespace blackjack.Models
         public bool IsFull { get; set; }
         public int CurrentPlayerIndex { get; set; }
         public int PlayerCount { get; set; }
+
         public Dictionary<string, RoundResultData> RoundResults { get; set; } = new Dictionary<string, RoundResultData>();
-        [Ignored]
+        public bool GameEnded { get; set; }
+        public int CurrCoins { get; set; }
         public int DefaultBet { get; set; }
         [Ignored]
         public List<int> BetOptions { get; private set; } = [10, 25, 50, 100, 200];
         [Ignored]
         public int SelectedBetAmount { get; set; }
-
         public ObservableCollection<Player> Players { get; set; } = [];
         protected TimerSettings timerSettings = new(Keys.TimerTotalTime, Keys.TimerInterval);
         [Ignored]
@@ -36,6 +37,8 @@ namespace blackjack.Models
         public DateTime GameStartTime { get;  set; }
         [Ignored]
         public int CurrentPlayerCount => Players.Count;
+        [Ignored]
+        public Player? CurrentLocalPlayer => Players.FirstOrDefault(p => p.UserName == Preferences.Get(Keys.NameKey, string.Empty));
         [Ignored]
         public Random rnd = new();
         [Ignored]
@@ -63,6 +66,8 @@ namespace blackjack.Models
         [Ignored]
         public EventHandler? Onbust;
         [Ignored]
+        public EventHandler? OnGameOver;
+        [Ignored]
         public EventHandler<RoundResultData>? OnRoundResult;
         [Ignored]
         protected IListenerRegistration? ilr;
@@ -70,7 +75,19 @@ namespace blackjack.Models
         public abstract void ArrangePlayerSeats();
         public abstract void RemoveSnapshotListener();
         public abstract void AddSnapshotListener();
-        public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete); 
+        public abstract void DeleteDocument(Action<System.Threading.Tasks.Task> OnComplete);
+        public abstract void JoinGame(string GameCode);
+        public abstract bool HostIsCurrentUser();
+        public abstract Card CreateRandomCard();
+        public abstract Task DealerTurn();
+        public abstract void ArrangeSeats(double width, double height);
+        public abstract void OnMessageReceived(long timeLeft);
+        public abstract void RegisterTimer();
+        public abstract void CreateGame(int playerCount);
+        public abstract void UpdatePlayersTurnState();
+        public abstract void OnComplete(Task task);
+        public abstract void OnComplete(IQuerySnapshot qs);
+        public abstract void OnChange(IDocumentSnapshot? snapshot, Exception? error);
         public abstract void NextTurn();
         public abstract void DealPlayersCards();
         public abstract void DealDealerCards();

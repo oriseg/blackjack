@@ -27,6 +27,5 @@
             HorizontalOptions="Center"
             Text="{Binding CountdownMessage}"
             TextColor="Gray" />
-        <Button Command="{Binding CloseCommand}" Text="OK" />
     </VerticalStackLayout>
 </toolkit:Popup>

@@ -1,7 +1,7 @@
 ﻿using blackjack.Models;
 using blackjack.ModelsLogic;
 using CommunityToolkit.Maui.Views;
-using System.Windows.Input;
+
 
 public class ResultPopupVM : BindableObject
 {
@@ -22,7 +22,6 @@ public class ResultPopupVM : BindableObject
     public string Title { get; }
     public string Message { get; }
 
-    public ICommand CloseCommand { get; }
 
     public ResultPopupVM(RoundResultData data, Game game, Popup popup)
     {
@@ -30,7 +29,6 @@ public class ResultPopupVM : BindableObject
         Message = data.Message;
         this.game = game;
         this.popup = popup;
-        CloseCommand = new Command(() => popup.Close());
         StartCountdown();
     }
 

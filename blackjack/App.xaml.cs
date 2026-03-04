@@ -10,9 +10,6 @@ namespace blackjack
             InitializeComponent();
 
             MainPage = new HomePage();
-            //User user = new();
-            //Page page = user.IsRegistered ? new LoginPage() : new RegisterPage();
-            //MainPage = page;
         }
     }
 }

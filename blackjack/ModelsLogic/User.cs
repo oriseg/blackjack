@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using Firebase.Auth;
+using Plugin.CloudFirestore;
 
 
 namespace blackjack.ModelsLogic 
@@ -18,8 +19,10 @@ namespace blackjack.ModelsLogic
         {
             if (task.IsCompletedSuccessfully)
             {
+                Coins = 1000;
+                fbd.SetUserDocument(this, _ => { });
                 SaveToPreferences();
-                OnAuthComplete?.Invoke(this, EventArgs.Empty);
+                OnRegAuthComplete?.Invoke(this, EventArgs.Empty);
             }
             
             else if (task.Exception != null)
@@ -36,9 +39,6 @@ namespace blackjack.ModelsLogic
 
 
         }
-
-
-  
         private static void ShowAlert(string msg)
         {
             MainThread.InvokeOnMainThreadAsync(() =>
@@ -62,6 +62,7 @@ namespace blackjack.ModelsLogic
         {
             if (task.IsCompletedSuccessfully)
             {
+                fbd.GetDocument("Users", UserName, OnUserLoaded);
                 this.IsRegistered = true;
                 OnAuthComplete?.Invoke(this, EventArgs.Empty);
             }
@@ -81,6 +82,21 @@ namespace blackjack.ModelsLogic
 
                 }      
             }
+        }
+        private void OnUserLoaded(IDocumentSnapshot? snapshot, Exception? error)
+        {
+            if (error != null)
+            {
+              // handle error if needed
+                return;
+            }
+            if (snapshot != null && snapshot.Exists)
+            {
+                User ?userFromDb = snapshot.ToObject<User>();
+                Coins = userFromDb!.Coins;
+            }
+
+            OnAuthComplete?.Invoke(this, EventArgs.Empty);
         }
         public User()
         {

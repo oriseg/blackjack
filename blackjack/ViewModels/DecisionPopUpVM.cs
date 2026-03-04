@@ -28,7 +28,7 @@ namespace blackjack.ViewModels
 
         private void OnDouble()
         {
-            game.Hit();
+            game.Double();
             ClosePopUp();
         }
 
