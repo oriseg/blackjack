@@ -1,11 +1,15 @@
 ﻿using blackjack.ModelsLogic;
 using Plugin.CloudFirestore.Attributes;
+
 namespace blackjack.Models
 {
-    public class Player 
+    public class Player
     {
-        public string UserName { get; set; } = string.Empty;
+        #region Fields
+        #endregion
 
+        #region Properties
+        public string UserName { get; set; } = string.Empty;
         public Hand PlayerHand { get; set; } = new Hand();
 
         [Ignored]
@@ -16,7 +20,9 @@ namespace blackjack.Models
 
         [Ignored]
         public double Y { get; set; }
+        #endregion
 
+        #region Constructor
         public Player(string username)
         {
             UserName = username;
@@ -25,5 +31,12 @@ namespace blackjack.Models
         public Player()
         {
         }
+        #endregion
+
+        #region Public Methods
+        #endregion
+
+        #region Private Methods
+        #endregion
     }
 }

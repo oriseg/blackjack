@@ -2,6 +2,7 @@
 {
     public class Strings
     {
+        #region Fields / Constants
         public const string Welcome = "Welcome";
         public const string UserName = "User name";
         public const string Password = "Password";
@@ -26,25 +27,24 @@
         public const string CreateOrJoin = " Create or Join a Game to Begin";
         public const string CreateGame = "Create";
         public const string JoinGame = "Join Game";
-        public const string EnterCode = "Enter Code"; 
-        public const string SelectPlayerAmount = "players\n Amount "; 
+        public const string EnterCode = "Enter Code";
+        public const string SelectPlayerAmount = "players\n Amount ";
         public const string Id = "Id";
         public const string Waitingfor = "Waiting for";
-        public const string players = "players..."; 
+        public const string players = "players...";
         public const string GameStartingIn = "Game starting in";
         public const string Bust = "Bust!";
         public const string WentOver21 = "You went over 21";
-        public const string YouWin = "you win!"; 
-        public const string Dealerbusted = "Dealer busted"; 
+        public const string YouWin = "you win!";
+        public const string Dealerbusted = "Dealer busted";
         public const string GreatHand = "Great hand!";
         public const string Lost = "You lose";
         public const string DealerWins = "Dealer wins";
         public const string Push = "Push";
-        public const string tie="It's a tie"; 
-        public const string WrongCode = "Wrong code"; 
+        public const string tie = "It's a tie";
+        public const string WrongCode = "Wrong code";
         public const string SomthingWentWrong = "Something went wrong.";
-
-
+        #endregion
 
     }
 }

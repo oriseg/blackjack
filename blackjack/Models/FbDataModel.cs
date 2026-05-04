@@ -1,14 +1,22 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Plugin.CloudFirestore;
+
 namespace blackjack.Models
 {
     public abstract class FbDataModel
     {
+        #region Fields
         protected FirebaseAuthClient facl;
         protected IFirestore fdb;
+        #endregion
+
+        #region Properties
         public abstract string DisplayName { get; }
         public abstract string UserId { get; }
+        #endregion
+
+        #region Abstract Methods
         public abstract void CreateUserWithEmailAndPasswordAsync(string email, string password, string name, Action<System.Threading.Tasks.Task> OnComplete);
         public abstract void SignInWithEmailAndPasswordAsync(string email, string password, Action<System.Threading.Tasks.Task> OnComplete);
         public abstract string GetFirebaseErrorMessage(string msg);
@@ -21,17 +29,21 @@ namespace blackjack.Models
         public abstract void CheckGameCode(string gameCode, Action<bool> onComplete);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, Plugin.CloudFirestore.QuerySnapshotHandler OnChange);
         public abstract IListenerRegistration AddSnapshotListener(string collectonName, string id, Plugin.CloudFirestore.DocumentSnapshotHandler OnChange);
+        #endregion
+
+        #region Constructor
         public FbDataModel()
         {
-            FirebaseAuthConfig fac = new()
+            var fac = new FirebaseAuthConfig
             {
                 ApiKey = Keys.FbApiKey,
                 AuthDomain = Keys.FbAppDomainKey,
-                Providers = [new EmailProvider()]
+                Providers = new FirebaseAuthProvider[] { new EmailProvider() } // fixed array syntax
             };
+
             facl = new FirebaseAuthClient(fac);
             fdb = CrossCloudFirestore.Current.Instance;
-
         }
+        #endregion
     }
 }

@@ -1,22 +1,30 @@
-﻿
-using blackjack.Models;
+﻿using blackjack.Models;
 
 namespace blackjack.ModelsLogic
 {
     public class Card : CardModel
     {
-        public Card(Shapes suit, Ranks rank, string ?imagePath, bool isFaceDown = false)
+        #region Fields
+        #endregion
+
+        #region Properties
+        #endregion
+
+        #region Constructor
+        public Card(Shapes suit, Ranks rank, string? imagePath, bool isFaceDown = false)
         {
             Suit = suit;
             Rank = rank;
-            ImagePath = imagePath; 
+            ImagePath = imagePath;
             IsFaceDown = isFaceDown;
         }
+
         public Card()
         {
+        }
+        #endregion
 
-        } 
-
+        #region Public Methods
         public override int GetCardValue()
         {
             return Rank switch
@@ -34,5 +42,9 @@ namespace blackjack.ModelsLogic
                 _ => 0,
             };
         }
+        #endregion
+
+        #region Private Methods
+        #endregion
     }
 }

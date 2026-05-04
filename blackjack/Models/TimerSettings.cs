@@ -1,8 +1,18 @@
 ﻿namespace blackjack.Models
 {
-    public class TimerSettings(long totalTimeInMilliseconds, long intervalInMilliseconds)
+    public class TimerSettings
     {
-        public long TotalTimeInMilliseconds { get; set; } = totalTimeInMilliseconds;
-        public long IntervalInMilliseconds { get; set; } = intervalInMilliseconds;
+        #region Properties
+        public long TotalTimeInMilliseconds { get; set; }
+        public long IntervalInMilliseconds { get; set; }
+        #endregion
+
+        #region Constructor
+        public TimerSettings(long totalTimeInMilliseconds, long intervalInMilliseconds)
+        {
+            TotalTimeInMilliseconds = totalTimeInMilliseconds;
+            IntervalInMilliseconds = intervalInMilliseconds;
+        }
+        #endregion
     }
 }

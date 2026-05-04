@@ -6,20 +6,26 @@ namespace blackjack.ViewModels
 {
     public partial class HomePageVM : ObservableObject
     {
+
+        #region Commands
         public ICommand NavToLoginCommand => new Command(NavToLogin);
 
-        public ICommand NavToRegisterCommand => new Command(NavToRegister); 
+        public ICommand NavToRegisterCommand => new Command(NavToRegister);
+        #endregion
 
-        private  void NavToRegister()
+
+        #region Private Methods
+        private void NavToRegister()
         {
             if (Application.Current != null)
                 Application.Current.MainPage = new RegisterPage();
         }
 
-        private  void NavToLogin()
+        private void NavToLogin()
         {
             if (Application.Current != null)
                 Application.Current.MainPage = new LoginPage();
         }
+        #endregion
     }
 }

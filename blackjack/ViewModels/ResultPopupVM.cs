@@ -2,12 +2,14 @@
 using blackjack.ModelsLogic;
 using CommunityToolkit.Maui.Views;
 
-
 public class ResultPopupVM : BindableObject
 {
+    #region Fields
     private readonly Game game;
     private readonly Popup popup;
+    #endregion
 
+    #region Properties
     private string? countdownMessage;
     public string? CountdownMessage
     {
@@ -21,8 +23,9 @@ public class ResultPopupVM : BindableObject
 
     public string Title { get; }
     public string Message { get; }
+    #endregion
 
-
+    #region Constructor
     public ResultPopupVM(RoundResultData data, Game game, Popup popup)
     {
         Title = data.Title;
@@ -31,19 +34,23 @@ public class ResultPopupVM : BindableObject
         this.popup = popup;
         StartCountdown();
     }
+    #endregion
 
+
+    #region Private Methods
     private async void StartCountdown()
     {
-        int countdown = 5; 
+        int countdown = 5;
         while (countdown > 0)
         {
             CountdownMessage = $"Next round starting in {countdown}...";
-            await Task.Delay(1000); 
+            await Task.Delay(1000);
             countdown--;
         }
 
         CountdownMessage = "Starting next round...";
-        await Task.Delay(500); 
+        await Task.Delay(500);
         popup.Close();
     }
+    #endregion
 }

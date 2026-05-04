@@ -7,55 +7,18 @@ namespace blackjack.ViewModels;
 
 public partial class RegisterPageVM : ObservableObject
 {
+    #region Fields
     private readonly User user = new();
-    private ImageSource? _capturedPhoto;
+    #endregion
 
-    public bool IsPassword { get; set; } = true;
 
+    #region Commands
     public ICommand RegisterCommand { get; }
     public ICommand ToggleIsPasswordCommand { get; }
-    public ICommand TakePhotoCommand { get; }
+    #endregion
 
-    public RegisterPageVM()
-    {
-        user.OnRegAuthComplete += User_OnRegAuthComplete;
-
-        RegisterCommand = new Command(Register, CanRegister);
-
-        ToggleIsPasswordCommand = new Command(() =>
-        {
-            IsPassword = !IsPassword;
-            OnPropertyChanged(nameof(IsPassword));
-        });
-
-        TakePhotoCommand = new Command(async () =>
-        {
-            CameraPage cameraPage = new CameraPage();
-
-            await Application.Current!.MainPage!.Navigation.PushModalAsync(cameraPage);
-
-            cameraPage.Disappearing += (s, e) =>
-            {
-                if (cameraPage.CapturedPhoto != null)
-                {
-                    _capturedPhoto = cameraPage.CapturedPhoto;
-                    OnPropertyChanged(nameof(ProfileImage));
-                }
-            };
-        });
-
-    }
-
-    private void User_OnRegAuthComplete(object? sender, EventArgs e)
-    {
-        if (Application.Current != null)
-        {
-            MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Application.Current.MainPage = new LoginPage();
-            });
-        }
-    }
+    #region Properties
+    public bool IsPassword { get; set; } = true;
 
     public string UserName
     {
@@ -75,7 +38,35 @@ public partial class RegisterPageVM : ObservableObject
         set { user.Email = value; (RegisterCommand as Command)?.ChangeCanExecute(); }
     }
 
-    public ImageSource? ProfileImage => _capturedPhoto;
+    #endregion
+
+    #region Constructor
+    public RegisterPageVM()
+    {
+        user.OnRegAuthComplete += User_OnRegAuthComplete;
+
+        RegisterCommand = new Command(Register, CanRegister);
+
+        ToggleIsPasswordCommand = new Command(() =>
+        {
+            IsPassword = !IsPassword;
+            OnPropertyChanged(nameof(IsPassword));
+        });
+    }
+    #endregion
+
+
+    #region Private Methods
+    private void User_OnRegAuthComplete(object? sender, EventArgs e)
+    {
+        if (Application.Current != null)
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Application.Current.MainPage = new LoginPage();
+            });
+        }
+    }
 
     private bool CanRegister() =>
         !string.IsNullOrWhiteSpace(UserName) &&
@@ -86,4 +77,5 @@ public partial class RegisterPageVM : ObservableObject
     {
         user.Register();
     }
+    #endregion
 }

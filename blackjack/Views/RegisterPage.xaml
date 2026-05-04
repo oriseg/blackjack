@@ -32,31 +32,6 @@
                 Text="{x:Static m:Strings.Register}"
                 TextColor="Gold" />
 
-            <!--  Profile Photo  -->
-            <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
-
-                <Frame
-                    Padding="0"
-                    BackgroundColor="#2A2A2A"
-                    CornerRadius="70"
-                    HeightRequest="140"
-                    IsClippedToBounds="True"
-                    WidthRequest="140">
-
-                    <Image Aspect="AspectFill" Source="{Binding ProfileImage}" />
-                </Frame>
-
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-                    <!--  Camera button  -->
-                    <Button
-                        BackgroundColor="Transparent"
-                        Command="{Binding TakePhotoCommand}"
-                        FontSize="14"
-                        Text="Camera"
-                        TextColor="Gold" />
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
-
             <!--  Email  -->
             <Frame
                 Padding="11"
@@ -139,7 +114,7 @@
 
         </VerticalStackLayout>
 
-        <!--  Hidden CameraView for taking profile photos  -->
+
 
 
     </Grid>

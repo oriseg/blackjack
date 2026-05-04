@@ -7,12 +7,21 @@
     xmlns:vm="clr-namespace:blackjack.ViewModels"
     x:DataType="vm:MainPageVM">
 
+    <!-- Toolbar Items -->
+    <ContentPage.ToolbarItems > 
+        <ToolbarItem
+            Command="{Binding ProfileCommand}"
+            Order="Secondary"
+            Text="Profile" />
+    </ContentPage.ToolbarItems>
+
+    <!-- Main Grid Content -->
     <Grid
         Padding="40"
         BackgroundColor="Black"
         ColumnDefinitions="*,Auto,Auto,*"
         ColumnSpacing="20"
-        RowDefinitions="Auto,Auto,100,Auto,Auto,50,Auto,Auto"
+        RowDefinitions="Auto,Auto,100,Auto,Auto,50,Auto,Auto,Auto"
         RowSpacing="20">
 
         <!--  TITLE  -->
@@ -85,6 +94,7 @@
             Command="{Binding CreateGameCommand}"
             Style="{StaticResource MainButtonStyle}"
             Text="{x:Static m:Strings.CreateGame}" />
+
 
         <!--  JOIN CODE  -->
         <Entry

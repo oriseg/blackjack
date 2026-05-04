@@ -10,27 +10,38 @@ namespace blackjack.ViewModels
 {
     public partial class GameTableVM : ObservableObject
     {
+        #region Fields
         public readonly Game game;
+        private Player CurrentPlayer => game.Players[game.CurrentPlayerIndex];
+        #endregion
+
+        #region Properties
         public IEnumerable<PlayerVM> Players => game.Players.Select(p => new PlayerVM(p));
         public ObservableCollection<Card> DealerCards => game.Dealer!.DealerHand.Cards;
-        private Player CurrentPlayer => game.Players[game.CurrentPlayerIndex];
+
         public string Id => game.Id;
         public int SelectedPlayerCount => game.PlayerCount;
         public int CurrentPlayerCount => game.CurrentPlayerCount;
         public string TimeLeft => game.TimeLeft;
-        public string WaitingMessage=> game.WaitingMessage;
+        public string WaitingMessage => game.WaitingMessage;
         public bool CanStart => game.CanStart();
         public bool IsMyTurn => game.IsMyTurn();
+
         public int CurrentHandValue => CurrentPlayer.PlayerHand.HandValue;
         public Color CurrentHandColor => CurrentPlayer.PlayerHand.HandColor;
         public bool CurrentHandIsBust => CurrentPlayer.PlayerHand.IsBust;
-        public int CurrentDealerHandValue=> game.Dealer!.DealerHand.HandValue; 
+
+        public int CurrentDealerHandValue => game.Dealer!.DealerHand.HandValue;
+
         public int DefaultBet => game.DefaultBet;
         public int MyCoins => game.CurrCoins;
+        #endregion
 
+        #region Constructor
         public GameTableVM(Game game)
         {
             this.game = game;
+
             // Subscribe to game events
             game.OnGameAdded += OnGameAdded;
             game.OnGameChanged += OnGameChanged;
@@ -42,20 +53,28 @@ namespace blackjack.ViewModels
             game.Dealer!.DealerHand.OnHandValueChanged += DealerHandValueChanged;
             game.OnRoundResult += OnRoundResult;
             game.OnGameOver += OnGameOver;
+
             // Subscribe current player hand 
             CurrentPlayer.PlayerHand.OnHandValueChanged += HandValueChanged;
             CurrentPlayer.PlayerHand.OnHandColorChanged += HandColorChanged;
-            CurrentPlayer.PlayerHand.OnHandStateChanged += HandStateChanged; 
+            CurrentPlayer.PlayerHand.OnHandStateChanged += HandStateChanged;
+
             game.AddSnapshotListener();
             game.ArrangePlayerSeats();
-         
-
         }
+        #endregion
+
+        #region Public Methods
         public void LeaveGame()
         {
             game.LeaveGame();
         }
 
+        public void AddSnapshotListener() => game.AddSnapshotListener();
+        public void RemoveSnapshotListener() => game.RemoveSnapshotListener();
+        #endregion
+
+        #region Private Methods
         private async void OnGameOver(object? sender, EventArgs e)
         {
             await Application.Current!.MainPage!.DisplayAlert("Game Over", "A player left the game", "OK");
@@ -64,22 +83,25 @@ namespace blackjack.ViewModels
 
             await Application.Current!.MainPage!.Navigation.PopToRootAsync();
         }
+
         private async void OnRoundResult(object? sender, RoundResultData data)
         {
             await Application.Current!
                 .MainPage!
-                .ShowPopupAsync(new ResultPopup(data,game));
+                .ShowPopupAsync(new ResultPopup(data, game));
 
             game.HandelResults(data);
+
             // 🔥 ONLY HOST CLEARS RESULTS
             if (game.HostIsCurrentUser())
             {
-                game.ClearAndRestart(); 
+                game.ClearAndRestart();
             }
         }
+
         private void DealerHandValueChanged(object? sender, EventArgs e)
         {
-          OnPropertyChanged(nameof(CurrentDealerHandValue));
+            OnPropertyChanged(nameof(CurrentDealerHandValue));
         }
 
         private void HandValueChanged(object? sender, EventArgs e)
@@ -104,7 +126,7 @@ namespace blackjack.ViewModels
 
         private async void OnPlayerTurn(object? sender, EventArgs e)
         {
-          await Application.Current!.MainPage!.ShowPopupAsync(new DecisionPopUp(game));
+            await Application.Current!.MainPage!.ShowPopupAsync(new DecisionPopUp(game));
         }
 
         private void OnCountdownFinished(object? sender, EventArgs e)
@@ -121,15 +143,15 @@ namespace blackjack.ViewModels
         {
             game.UpdatePlayersTurnState();
             OnPropertyChanged(nameof(IsMyTurn));
-            OnPropertyChanged(nameof(Players)); 
-
+            OnPropertyChanged(nameof(Players));
         }
+
         private void OnGameAdded(object? sender, bool e)
         {
             game.UpdatePlayersTurnState();
             OnPropertyChanged(nameof(Players));
             OnPropertyChanged(nameof(SelectedPlayerCount));
-            OnPropertyChanged(nameof(WaitingMessage)); 
+            OnPropertyChanged(nameof(WaitingMessage));
             OnPropertyChanged(nameof(DealerCards));
             OnPropertyChanged(nameof(DefaultBet));
             OnPropertyChanged(nameof(MyCoins));
@@ -144,12 +166,9 @@ namespace blackjack.ViewModels
             OnPropertyChanged(nameof(CurrentDealerHandValue));
             OnPropertyChanged(nameof(DefaultBet));
             OnPropertyChanged(nameof(MyCoins));
-            game.CheckAndStartCountdown();  
+
+            game.CheckAndStartCountdown();
         }
-
-        public void AddSnapshotListener() => game.AddSnapshotListener();
-        public void RemoveSnapshotListener() => game.RemoveSnapshotListener();
-
-
+        #endregion
     }
 }

@@ -1,17 +1,19 @@
-﻿
+﻿using blackjack.Models;
 using System.Collections.ObjectModel;
 
 namespace blackjack.ModelsLogic
 {
     public class Hand : HandModel
     {
+        #region Properties
         public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
+        #endregion
 
+        #region Public Methods
         public override void AddCard(Card card)
         {
             Cards.Add(card);
             CalculateHandValue();
-         
         }
 
         public override void Clear()
@@ -23,6 +25,7 @@ namespace blackjack.ModelsLogic
             OnHandColorChanged?.Invoke(this, EventArgs.Empty);
             OnHandStateChanged?.Invoke(this, EventArgs.Empty);
         }
+
         public int GetHandValue()
         {
             int total = 0;
@@ -60,5 +63,7 @@ namespace blackjack.ModelsLogic
             OnHandColorChanged?.Invoke(this, EventArgs.Empty);
             OnHandStateChanged?.Invoke(this, EventArgs.Empty);
         }
+        #endregion
+
     }
 }
